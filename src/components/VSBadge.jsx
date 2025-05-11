@@ -50,4 +50,3 @@ const VSBadge = () => {
 };
 
 export default VSBadge;
-hola
