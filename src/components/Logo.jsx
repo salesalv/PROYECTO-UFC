@@ -5,7 +5,7 @@ const Logo = ({ className }) => {
     <img
       src="/LOGO UFC.png"
       alt="UFC Logo"
-      className={className}
+      className={`h-24 w-auto object-contain ${className}`}
     />
   );
 };
