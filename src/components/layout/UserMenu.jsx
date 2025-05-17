@@ -81,9 +81,8 @@ const UserMenu = () => {
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
             <Link to="/rankings" className="flex items-center text-gray-300 hover:text-white hover:bg-gray-800/50 rounded-md">
-              <Trophy className="mr-2 h-4 w-4 text-yellow-500" />
+              <Trophy className="mr-2 h-4 w-4 text-gray-300" />
               <span>Ranking Global</span>
-              <span className="ml-auto text-xs text-gray-400">#{userData.rank}</span>
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>

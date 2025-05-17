@@ -11,6 +11,8 @@ import EventsPage from "../pages/EventsPage";
 import HighlightsPage from "../pages/HighlightsPage";
 import ForumPage from "../pages/ForumPage";
 import PredictionPage from "../pages/PredictionPage";
+import LivePage from "../pages/LivePage";
+import UFC303CardPage from "../pages/UFC303CardPage";
 
 const AppRoutes = () => {
   return (
@@ -26,7 +28,8 @@ const AppRoutes = () => {
       <Route path="/highlights" element={<HighlightsPage />} />
       <Route path="/forum" element={<ForumPage />} />
       <Route path="/predict" element={<PredictionPage />} />
-      <Route path="/live" element={<div className="pt-20 text-center">Ver en Vivo (Próximamente)</div>} />
+      <Route path="/live" element={<LivePage />} />
+      <Route path="/ufc303" element={<UFC303CardPage />} />
     </Routes>
   );
 };

@@ -93,10 +93,19 @@ const EventsPage = () => {
                     {event.coMainEvent !== "TBD" && <p className="flex items-start"><Users className="w-4 h-4 mr-2 mt-1 text-red-500 flex-shrink-0" /> <span className="font-semibold">Co-Estelar:</span>&nbsp;{event.coMainEvent}</p>}
                   </div>
                   <div className="mt-auto flex justify-end">
-                     <Button className="bg-red-600 hover:bg-red-700">
-                       <Ticket className="w-4 h-4 mr-2" />
-                       Ver Detalles / Comprar
-                     </Button>
+                    {event.title === "UFC 303: McGregor vs. Chandler" ? (
+                      <Button className="bg-red-600 hover:bg-red-700" asChild>
+                        <a href="/ufc303">
+                          <Ticket className="w-4 h-4 mr-2" />
+                          Ver Detalles / Comprar
+                        </a>
+                      </Button>
+                    ) : (
+                      <Button className="bg-red-600 hover:bg-red-700">
+                        <Ticket className="w-4 h-4 mr-2" />
+                        Ver Detalles / Comprar
+                      </Button>
+                    )}
                   </div>
                 </CardContent>
               </Card>

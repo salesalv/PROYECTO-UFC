@@ -40,6 +40,7 @@ const FeaturedFight = () => {
     return () => clearTimeout(timer);
   }, [showVotes, selectedFighter]);
 
+  const videoSrc = 'https://c2f2zq.fubohd.com/espnpremium/mono.m3u8?token=ea699a8c767f357480edf2fe011f86801ec31bb6-65-1747530421-1747512421';
 
   return (
     <section className="relative min-h-[90vh] mt-16 flex items-center justify-center">
@@ -155,16 +156,16 @@ const FeaturedFight = () => {
             </div>
 
             <div className="flex flex-wrap gap-3 md:gap-4 justify-center mt-6">
-              <Button size="lg" className="bg-red-600 hover:bg-red-700 text-base md:text-lg px-6 md:px-8 font-bold uppercase tracking-wider flex-grow sm:flex-grow-0">
-                Ver en Vivo
+              <Button size="lg" className="bg-red-600 hover:bg-red-700 text-base md:text-lg px-6 md:px-8 font-bold uppercase tracking-wider flex-grow sm:flex-grow-0" asChild>
+                <Link to="/live">
+                  Ver en Vivo
+                </Link>
               </Button>
-               {/* Changed Button to Link for navigation */}
               <Button size="lg" variant="outline" className="border-red-600 text-red-600 hover:bg-red-600 hover:text-white text-base md:text-lg px-6 md:px-8 font-bold uppercase tracking-wider flex-grow sm:flex-grow-0" asChild>
                 <Link to="/predict">
                     Hacer Predicción
                 </Link>
               </Button>
-              {/* Removed Community Button */}
             </div>
           </div>
         </motion.div>
