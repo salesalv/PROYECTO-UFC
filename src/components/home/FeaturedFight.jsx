@@ -40,7 +40,7 @@ const FeaturedFight = () => {
     return () => clearTimeout(timer);
   }, [showVotes, selectedFighter]);
 
-  const videoSrc = 'https://c2f2zq.fubohd.com/espnpremium/mono.m3u8?token=ea699a8c767f357480edf2fe011f86801ec31bb6-65-1747530421-1747512421';
+  const videoSrc = 'https://anvtcax.fubohd.com/foxsports2/mono.m3u8?token=59d292f66a92396ac4f5e89b78852f60bced60b3-f6-1747553284-1747535284';
 
   return (
     <section className="relative min-h-[90vh] mt-16 flex items-center justify-center">
@@ -89,9 +89,9 @@ const FeaturedFight = () => {
                     <Award className="h-7 w-7 md:h-8 md:w-8 text-yellow-500 transition-colors duration-300" />
                   </button>
                   <img 
-                    className="w-28 h-28 md:w-40 md:h-40 mx-auto object-contain shadow-md filter drop-shadow-[0_5px_5px_rgba(0,0,0,0.4)]" // Changed to object-contain, added drop-shadow
+                    className="w-28 h-28 md:w-60 md:h-40 mx-auto object-contain shadow-md filter drop-shadow-[0_5px_5px_rgba(0,0,0,0.4)]" // Changed to object-contain, added drop-shadow
                     alt="Fighter A portrait"
-                   src="https://images.unsplash.com/photo-1656968420874-989b1ee53143" />
+                   src="../public/foto jon.png" />
                 </div>
                 <p className="font-bold text-lg md:text-2xl uppercase">Luchador A</p>
                 <p className="text-gray-400 text-sm mb-2">Campeón | 28-0-0</p>
@@ -131,9 +131,9 @@ const FeaturedFight = () => {
                     <Award className="h-7 w-7 md:h-8 md:w-8 text-yellow-500 transition-colors duration-300" />
                    </button>
                   <img 
-                    className="w-28 h-28 md:w-40 md:h-40 mx-auto object-contain shadow-md filter drop-shadow-[0_5px_5px_rgba(0,0,0,0.4)]" // Changed to object-contain, added drop-shadow
+                    className="w-28 h-28 md:w-60 md:h-40 mx-auto object-contain shadow-md filter drop-shadow-[0_5px_5px_rgba(0,0,0,0.4)]" // Changed to object-contain, added drop-shadow
                     alt="Fighter B portrait"
-                   src="https://images.unsplash.com/photo-1545191488-2682adc1dfe4" />
+                   src="../public/foto khabib.png" />
                 </div>
                 <p className="font-bold text-lg md:text-2xl uppercase">Luchador B</p>
                 <p className="text-gray-400 text-sm mb-2">Retador | 25-2-0</p>

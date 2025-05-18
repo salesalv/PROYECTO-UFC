@@ -23,7 +23,7 @@ const LivePage = () => {
   };
 
   useEffect(() => {
-    const videoSrc = 'https://c2f2zq.fubohd.com/espnpremium/mono.m3u8?token=ea699a8c767f357480edf2fe011f86801ec31bb6-65-1747530421-1747512421';
+    const videoSrc = 'https://qzv4jmsc.fubohd.com/foxsports2/mono.m3u8?token=ae5614411426e3dac3d96055ae1685930c3d3ba0-2e-1747554177-1747536177';
 
     const initPlayer = () => {
       if (Hls.isSupported()) {
