@@ -93,7 +93,7 @@ const FeaturedFight = () => {
                     alt="Fighter A portrait"
                    src="../public/foto jon.png" />
                 </div>
-                <p className="font-bold text-lg md:text-2xl uppercase">Luchador A</p>
+                <p className="font-bold text-lg md:text-2xl uppercase">Jon </p>
                 <p className="text-gray-400 text-sm mb-2">Campeón | 28-0-0</p>
                 {/* Vote Percentage Display */}
                 <AnimatePresence>
@@ -135,7 +135,7 @@ const FeaturedFight = () => {
                     alt="Fighter B portrait"
                    src="../public/foto khabib.png" />
                 </div>
-                <p className="font-bold text-lg md:text-2xl uppercase">Luchador B</p>
+                <p className="font-bold text-lg md:text-2xl uppercase">khabib </p>
                 <p className="text-gray-400 text-sm mb-2">Retador | 25-2-0</p>
                  {/* Vote Percentage Display */}
                  <AnimatePresence>
