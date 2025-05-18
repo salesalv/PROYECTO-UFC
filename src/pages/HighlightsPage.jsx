@@ -1,4 +1,3 @@
-
 import React from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
@@ -26,7 +25,7 @@ const HighlightsPage = () => {
       >
         <h1 className="text-4xl md:text-5xl font-black mb-10 text-center uppercase text-red-500 tracking-wider flex items-center justify-center">
           <Star className="w-10 h-10 mr-4 text-yellow-400" />
-          Momentos Destacados
+          Clips Destacados
         </h1>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">

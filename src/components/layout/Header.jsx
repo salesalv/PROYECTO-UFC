@@ -22,7 +22,7 @@ const Header = () => {
     { name: "Foro", path: "/forum", icon: MessageSquare },
     { name: "Peleadores", path: "/fighters", icon: Users },
     { name: "Comparar", path: "/compare", icon: GitCompare },
-    { name: "Momentos Destacados", path: "/highlights", icon: Star },
+    { name: "Clips Destacados", path: "/highlights", icon: Star },
     { name: "Eventos", path: "/events", icon: Calendar },
     { name: "Clips Guardados", path: "/clips", icon: Scissors },
     { name: "Ver en Vivo", path: "/live", icon: PlayCircle },
