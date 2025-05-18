@@ -4,10 +4,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Scissors, Download, Share2, Clock } from "lucide-react";
 import Hls from "hls.js";
+import { useClips } from "@/context/ClipsContext";
 
 const LivePage = () => {
   const [isRecording, setIsRecording] = useState(false);
-  const [recordedClips, setRecordedClips] = useState([]);
   const [error, setError] = useState(null);
   const videoRef = useRef(null);
   const mediaRecorderRef = useRef(null);
@@ -16,6 +16,7 @@ const LivePage = () => {
   const [chatMessages, setChatMessages] = useState([]);
   const [chatInput, setChatInput] = useState("");
   const chatEndRef = useRef(null);
+  const { addClip } = useClips();
 
   // Simulación de usuario actual (puedes reemplazarlo por el usuario real de tu app)
   const currentUser = {
@@ -120,7 +121,12 @@ const LivePage = () => {
           const blob = new Blob(chunksRef.current, { type: 'video/webm' });
           const url = URL.createObjectURL(blob);
           const timestamp = new Date().toLocaleTimeString();
-          setRecordedClips(prev => [...prev, { url, timestamp }]);
+          addClip({
+            url,
+            title: `Clip ${timestamp}`,
+            duration: "0:45", // Esto debería calcularse en base a la duración real
+            timestamp: new Date().toISOString()
+          });
         };
 
         mediaRecorder.start();
@@ -137,15 +143,6 @@ const LivePage = () => {
       mediaRecorderRef.current.stop();
       setIsRecording(false);
     }
-  };
-
-  const downloadClip = (url, timestamp) => {
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `clip-${timestamp}.webm`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
   };
 
   const handleSendMessage = (e) => {

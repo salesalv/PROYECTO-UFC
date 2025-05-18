@@ -13,6 +13,7 @@ import ForumPage from "../pages/ForumPage";
 import PredictionPage from "../pages/PredictionPage";
 import LivePage from "../pages/LivePage";
 import UFC303CardPage from "../pages/UFC303CardPage";
+import SavedClipsPage from "../pages/SavedClipsPage";
 
 const AppRoutes = () => {
   return (
@@ -30,6 +31,7 @@ const AppRoutes = () => {
       <Route path="/predict" element={<PredictionPage />} />
       <Route path="/live" element={<LivePage />} />
       <Route path="/ufc303" element={<UFC303CardPage />} />
+      <Route path="/clips" element={<SavedClipsPage />} />
     </Routes>
   );
 };
