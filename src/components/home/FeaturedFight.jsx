@@ -40,7 +40,7 @@ const FeaturedFight = () => {
     return () => clearTimeout(timer);
   }, [showVotes, selectedFighter]);
 
-  const videoSrc = 'https://anvtcax.fubohd.com/foxsports2/mono.m3u8?token=59d292f66a92396ac4f5e89b78852f60bced60b3-f6-1747553284-1747535284';
+  const videoSrc = 'https://c2nvdxq.fubohd.com/foxsports2/mono.m3u8?token=32c0e7ea94352c73069367d5dbe4557b9ed3ed22-ae-1747765456-1747747456';
 
   return (
     <section className="relative min-h-[90vh] mt-16 flex items-center justify-center">

@@ -24,7 +24,7 @@ const LivePage = () => {
   };
 
   useEffect(() => {
-    const videoSrc = 'https://qzv4jmsc.fubohd.com/foxsports2/mono.m3u8?token=ae5614411426e3dac3d96055ae1685930c3d3ba0-2e-1747554177-1747536177';
+    const videoSrc = 'https://c2nvdxq.fubohd.com/foxsports2/mono.m3u8?token=32c0e7ea94352c73069367d5dbe4557b9ed3ed22-ae-1747765456-1747747456';
 
     const initPlayer = () => {
       if (Hls.isSupported()) {
