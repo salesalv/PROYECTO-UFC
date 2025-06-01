@@ -12,12 +12,12 @@ import { Input } from "@/components/ui/input";
 
 // Placeholder user data
 const userData = {
-  username: "MMA_Predictor_Pro",
-  email: "predictor.pro@email.com",
+  username: "Rugal444",
+  email: "rugal444@gmail.com",
   joinedDate: "2024-01-15",
   points: 1250,
   rank: "#6",
-  avatar: "https://images.unsplash.com/photo-1545191488-2682adc1dfe4",
+  avatar: "image.png",
   notifications: true,
   theme: "dark",
   privacy: "public"
@@ -45,7 +45,7 @@ const UserProfilePage = () => {
                   <img  
                     className="w-32 h-32 rounded-full mx-auto border-4 border-red-600 object-cover"
                     alt="User Avatar"
-                    src={userData.avatar} />
+                    src="/pain.png" />
                   <Button variant="ghost" size="icon" className="absolute bottom-0 right-0 bg-gray-700/80 rounded-full hover:bg-red-600">
                     <Edit className="w-4 h-4" />
                   </Button>

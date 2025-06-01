@@ -218,7 +218,7 @@ const PredictionPage = () => {
         <Card className="bg-black/70 border border-gray-800 shadow-lg shadow-red-900/10 backdrop-blur-sm">
           <CardHeader className="text-center border-b border-gray-700 pb-4">
             <CardTitle className="text-2xl sm:text-3xl font-black uppercase text-red-500 tracking-wider">
-              Haz tu Predicción y Apuesta
+              Predicción y Apuesta
             </CardTitle>
             <CardDescription className="text-base sm:text-lg text-gray-300 mt-1">
               {fightDetails.event}: {fightDetails.fighter1} vs. {fightDetails.fighter2}

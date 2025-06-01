@@ -12,12 +12,12 @@ import { UserCircle, Settings, LogOut, Award, BarChart2, Star, Trophy } from "lu
 import { Link } from "react-router-dom";
 
 const userData = {
-  username: "MMA_Predictor_Pro",
-  email: "predictor.pro@email.com",
+  username: "Rugal444",
+  email: "rugal444@gmail.com",
   joinedDate: "2024-01-15",
   points: 1250,
   rank: "#6",
-  avatar: "https://images.unsplash.com/photo-1545191488-2682adc1dfe4",
+  avatar: "/pain.png",
   level: 5,
   winRate: "78%",
   predictions: 156
