@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { User, Mail, Calendar, Award, Edit, Trophy, Settings, Bell, Shield } from "lucide-react";
+import { User, Mail, Calendar, Award, Edit, Trophy, Bell, Shield } from "lucide-react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -27,6 +27,22 @@ const UserProfilePage = () => {
   const [notifications, setNotifications] = useState(userData.notifications);
   const [theme, setTheme] = useState(userData.theme);
   const [privacy, setPrivacy] = useState(userData.privacy);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editableUsername, setEditableUsername] = useState(userData.username);
+  const [editableEmail, setEditableEmail] = useState(userData.email);
+
+  const handleEditToggle = () => {
+    setIsEditing(!isEditing);
+    if (isEditing) {
+      // Aquí iría la lógica para guardar los cambios, por ahora solo alterna
+      console.log("Guardando cambios...");
+      // En una aplicación real, enviarías editableUsername y editableEmail a una API
+    } else {
+      // Cuando entras en modo edición, inicializa los valores con los actuales
+      setEditableUsername(userData.username);
+      setEditableEmail(userData.email);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-black via-gray-900 to-black text-white pt-24 pb-12 px-4">
@@ -62,14 +78,30 @@ const UserProfilePage = () => {
                   <User className="w-6 h-6 text-red-500" />
                   <div>
                     <p className="text-sm text-gray-300">Nombre de Usuario</p>
-                    <p className="font-semibold text-white">{userData.username}</p>
+                    {isEditing ? (
+                      <Input
+                        className="font-semibold text-white bg-gray-800 border-gray-700"
+                        value={editableUsername}
+                        onChange={(e) => setEditableUsername(e.target.value)}
+                      />
+                    ) : (
+                      <p className="font-semibold text-white">{userData.username}</p>
+                    )}
                   </div>
                 </div>
                 <div className="flex items-center space-x-4 p-4 bg-gray-900/50 rounded-lg border border-gray-700">
                   <Mail className="w-6 h-6 text-red-500" />
                   <div>
                     <p className="text-sm text-gray-300">Correo Electrónico</p>
-                    <p className="font-semibold text-white">{userData.email}</p>
+                    {isEditing ? (
+                      <Input
+                        className="font-semibold text-white bg-gray-800 border-gray-700"
+                        value={editableEmail}
+                        onChange={(e) => setEditableEmail(e.target.value)}
+                      />
+                    ) : (
+                      <p className="font-semibold text-white">{userData.email}</p>
+                    )}
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
@@ -90,62 +122,11 @@ const UserProfilePage = () => {
                 </div>
               </CardContent>
               <CardFooter className="flex justify-between">
-                <Sheet>
-                  <SheetTrigger asChild>
-                    <Button variant="outline" className="flex items-center gap-2">
-                      <Settings className="w-4 h-4" />
-                      Configuración
-                    </Button>
-                  </SheetTrigger>
-                  <SheetContent className="bg-gray-900 text-white">
-                    <SheetHeader>
-                      <SheetTitle>Configuración</SheetTitle>
-                    </SheetHeader>
-                    <div className="mt-6 space-y-6">
-                      <div className="space-y-2">
-                        <Label>Notificaciones</Label>
-                        <RadioGroup value={notifications ? "on" : "off"} onValueChange={(value) => setNotifications(value === "on")}>
-                          <div className="flex items-center space-x-2">
-                            <RadioGroupItem value="on" id="notifications-on" />
-                            <Label htmlFor="notifications-on">Activadas</Label>
-                          </div>
-                          <div className="flex items-center space-x-2">
-                            <RadioGroupItem value="off" id="notifications-off" />
-                            <Label htmlFor="notifications-off">Desactivadas</Label>
-                          </div>
-                        </RadioGroup>
-                      </div>
-                      <div className="space-y-2">
-                        <Label>Tema</Label>
-                        <Select value={theme} onValueChange={setTheme}>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Seleccionar tema" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="dark">Oscuro</SelectItem>
-                            <SelectItem value="light">Claro</SelectItem>
-                            <SelectItem value="system">Sistema</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div className="space-y-2">
-                        <Label>Privacidad</Label>
-                        <Select value={privacy} onValueChange={setPrivacy}>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Seleccionar privacidad" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="public">Público</SelectItem>
-                            <SelectItem value="private">Privado</SelectItem>
-                            <SelectItem value="friends">Solo Amigos</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
-                  </SheetContent>
-                </Sheet>
-                <Button className="bg-red-600 hover:bg-red-700 font-bold uppercase tracking-wider">
-                  Editar Perfil
+                <Button
+                  className="bg-red-600 hover:bg-red-700 font-bold uppercase tracking-wider"
+                  onClick={handleEditToggle}
+                >
+                  {isEditing ? "Guardar Cambios" : "Editar Perfil"}
                 </Button>
               </CardFooter>
             </Card>

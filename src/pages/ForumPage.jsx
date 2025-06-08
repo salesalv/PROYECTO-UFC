@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea"; // Assuming Textarea exists or create it
 import { MessageSquare, Search, PlusCircle, Users, TrendingUp, Rss } from "lucide-react";
+import ThreadButton from '../components/ThreadButton'; // Import ThreadButton
+import { Link } from 'react-router-dom'; // Import Link
 
 // Placeholder forum data
 const categories = [
@@ -15,10 +17,10 @@ const categories = [
 ];
 
 const recentThreads = [
-  { id: 1, title: "¿Quién gana en UFC 303?", author: "FanUFC_123", replies: 45, category: "Predicciones", time: "hace 2 horas" },
-  { id: 2, title: "El legado de Khabib", author: "MMA_Guru", replies: 102, category: "General", time: "hace 5 horas" },
-  { id: 3, title: "Posible regreso de GSP", author: "NostalgicFan", replies: 30, category: "Rumores", time: "hace 1 día" },
-  { id: 4, title: "Top 5 Peso Pluma Actual", author: "AnalistaX", replies: 67, category: "Peleadores", time: "hace 1 día" },
+  { id: '1', title: "¿Quién gana en UFC 303?", author: "FanUFC_123", replies: 45, category: "Predicciones", time: "hace 2 horas" },
+  { id: '2', title: "El legado de Khabib", author: "MMA_Guru", replies: 102, category: "General", time: "hace 5 horas" },
+  { id: '3', title: "Posible regreso de GSP", author: "NostalgicFan", replies: 30, category: "Rumores", time: "hace 1 día" },
+  { id: '4', title: "Top 5 Peso Pluma Actual", author: "AnalistaX", replies: 67, category: "Peleadores", time: "hace 1 día" },
 ];
 
 const ForumPage = () => {
@@ -57,15 +59,17 @@ const ForumPage = () => {
                 whileHover={{ scale: 1.03 }}
                 transition={{ type: "spring", stiffness: 300 }}
               >
-                <Card className="bg-black/60 border-gray-800 hover:border-red-600/50 transition-colors duration-200 cursor-pointer">
-                  <CardHeader className="flex flex-row items-center gap-4 pb-2">
-                    <category.icon className="w-6 h-6 text-red-500" />
-                    <CardTitle className="text-lg text-white">{category.name}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <CardDescription className="text-gray-400">{category.description}</CardDescription>
-                  </CardContent>
-                </Card>
+                <Link to={`/category/${category.id}`}> {/* Link to category page */}
+                  <Card className="bg-black/60 border-gray-800 hover:border-red-600/50 transition-colors duration-200 cursor-pointer">
+                    <CardHeader className="flex flex-row items-center gap-4 pb-2">
+                      <category.icon className="w-6 h-6 text-red-500" />
+                      <CardTitle className="text-lg text-white">{category.name}</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <CardDescription className="text-gray-400">{category.description}</CardDescription>
+                    </CardContent>
+                  </Card>
+                </Link>
               </motion.div>
             ))}
           </div>
@@ -79,13 +83,13 @@ const ForumPage = () => {
                   {recentThreads.map(thread => (
                     <li key={thread.id} className="p-4 hover:bg-gray-800/50 transition-colors duration-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
                       <div>
-                        <a href="#" className="text-lg font-semibold text-white hover:text-red-400 transition-colors">{thread.title}</a>
+                        <Link to={`/thread/${thread.id}`} className="text-lg font-semibold text-white hover:text-red-400 transition-colors">{thread.title}</Link>
                         <p className="text-sm text-gray-500">
                           por <span className="font-medium text-gray-400">{thread.author}</span> en <span className="text-red-400">{thread.category}</span> - {thread.time}
                         </p>
                       </div>
                       <div className="text-sm text-gray-400 mt-2 sm:mt-0 text-right flex-shrink-0">
-                        {thread.replies} respuestas
+                        <ThreadButton threadId={thread.id} />
                       </div>
                     </li>
                   ))}

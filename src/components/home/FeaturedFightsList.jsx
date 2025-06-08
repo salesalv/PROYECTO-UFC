@@ -1,4 +1,3 @@
-
 import React from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -13,7 +12,8 @@ const previewEvents = [
     date: "2025-06-29",
     fighters: "McGregor vs. Chandler",
     imageSlug: "arena-lights-crowd",
-    altText: "Brightly lit arena packed with spectators for a UFC event"
+    altText: "Brightly lit arena packed with spectators for a UFC event",
+    link: "/ufc303"
   },
   {
     id: 2,
@@ -21,7 +21,8 @@ const previewEvents = [
     date: "2025-07-13",
     fighters: "Namajunas vs. Barber",
     imageSlug: "octagon-side-view",
-    altText: "Side view of the UFC octagon during a fight"
+    altText: "Side view of the UFC octagon during a fight",
+    link: "/ufcnamajunasbarber"
   },
   {
     id: 3,
@@ -29,7 +30,17 @@ const previewEvents = [
     date: "2025-07-27",
     fighters: "Edwards vs. Muhammad",
     imageSlug: "fighters-staredown",
-    altText: "Two fighters facing off intensely before a match"
+    altText: "Two fighters facing off intensely before a match",
+    link: "/ufc304"
+  },
+  {
+    id: 4,
+    title: "UFC Fight Night: Sandhagen vs. Nurmagomedov",
+    date: "2025-08-03",
+    fighters: "Sandhagen vs. Nurmagomedov",
+    imageSlug: "fighter-celebrating-victory",
+    altText: "A victorious fighter celebrating in the octagon",
+    link: "/ufcsandhagennurmagomedov"
   },
 ];
 
@@ -77,7 +88,7 @@ const FeaturedFightsList = () => {
                 </p>
                 <div className="flex justify-end">
                   <Button variant="ghost" size="sm" className="text-red-500 hover:text-red-400 hover:bg-red-900/30" asChild>
-                     <Link to="/events"> {/* Link to events page */}
+                     <Link to={event.link}> {/* Link to events page */}
                        Ver Detalles
                      </Link>
                   </Button>

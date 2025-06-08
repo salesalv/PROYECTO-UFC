@@ -1,20 +1,23 @@
-
 import React from "react";
 import { Link } from "react-router-dom";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetClose } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import Logo from "@/components/Logo";
-import { User, BarChart2, Settings, LogOut, Coins } from "lucide-react"; // Removed unused icons
+import { User, BarChart2, LogOut, Coins } from "lucide-react"; // Removed unused icons
 
-const Sidebar = ({ trigger }) => {
+const Sidebar = ({ trigger, navItems }) => {
   // Placeholder user data
   const userPoints = 1250;
 
-  // Simplified sidebar links
-  const sidebarLinks = [
+  // Combined sidebar links
+  const allSidebarLinks = [
+    ...(navItems || []).map(item => ({
+      icon: item.icon,
+      label: item.name,
+      path: item.path,
+    })),
     { icon: User, label: "Mi Perfil", path: "/profile" },
     { icon: BarChart2, label: "Mis Rankings", path: "/rankings" },
-    { icon: Settings, label: "Configuración", path: "/settings" }, // Placeholder path
   ];
 
   const handleLogout = () => {
@@ -47,13 +50,13 @@ const Sidebar = ({ trigger }) => {
 
           {/* Navigation Links */}
           <nav className="flex-grow space-y-1">
-            {sidebarLinks.map((link) => (
+            {allSidebarLinks.map((link) => (
               <SheetClose key={link.label} asChild>
                 <Link
                   to={link.path}
                   className="flex items-center px-4 py-2.5 rounded-md text-gray-300 hover:bg-gray-800 hover:text-white transition-colors duration-200"
                 >
-                  <link.icon className="h-5 w-5 mr-3" />
+                  {link.icon && <link.icon className="h-5 w-5 mr-3" />}
                   <span className="font-medium text-sm">{link.label}</span>
                 </Link>
               </SheetClose>
@@ -61,7 +64,7 @@ const Sidebar = ({ trigger }) => {
           </nav>
 
           {/* Auth Buttons (Mobile) */}
-          <div className="mt-auto space-y-2 md:hidden border-t border-gray-700 pt-4">
+          <div className="mt-auto space-y-2 border-t border-gray-700 pt-4">
              <SheetClose asChild>
                <Button variant="ghost" className="w-full justify-start" asChild>
                  <Link to="/login">Iniciar Sesión</Link>

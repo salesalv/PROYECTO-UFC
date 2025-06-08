@@ -3,19 +3,31 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { User, Mail, Lock, Eye, EyeOff } from "lucide-react";
 
 const RegisterForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    // Aquí iría la lógica de registro
-    setTimeout(() => setIsLoading(false), 1000);
+    
+    try {
+      // Aquí iría la lógica de registro
+      // Por ahora simulamos un registro exitoso
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Si el registro es exitoso, redirigimos a la página de inicio de sesión
+      navigate('/login');
+    } catch (error) {
+      console.error('Error en el registro:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (

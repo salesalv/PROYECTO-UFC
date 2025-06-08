@@ -93,9 +93,17 @@ const EventsPage = () => {
                     {event.coMainEvent !== "TBD" && <p className="flex items-start"><Users className="w-4 h-4 mr-2 mt-1 text-red-500 flex-shrink-0" /> <span className="font-semibold">Co-Estelar:</span>&nbsp;{event.coMainEvent}</p>}
                   </div>
                   <div className="mt-auto flex justify-end">
-                    {event.title === "UFC 303: McGregor vs. Chandler" ? (
+                    {event.title === "UFC 303: McGregor vs. Chandler" ||
+                     event.title === "UFC Fight Night: Namajunas vs. Barber" ||
+                     event.title === "UFC 304: Edwards vs. Muhammad 2" ||
+                     event.title === "UFC Fight Night: Sandhagen vs. Nurmagomedov" ? (
                       <Button className="bg-red-600 hover:bg-red-700" asChild>
-                        <a href="/ufc303">
+                        <a href={
+                          event.title === "UFC 303: McGregor vs. Chandler" ? "/ufc303" :
+                          event.title === "UFC Fight Night: Namajunas vs. Barber" ? "/ufcnamajunasbarber" :
+                          event.title === "UFC 304: Edwards vs. Muhammad 2" ? "/ufc304" :
+                          "/ufcsandhagennurmagomedov"
+                        }>
                           <Ticket className="w-4 h-4 mr-2" />
                           Ver Detalles / Comprar
                         </a>

@@ -76,7 +76,10 @@ const Header = () => {
           </div>
 
           <div className="lg:hidden">
-            <Sidebar trigger={<Button variant="ghost" size="icon"><UserCircle className="h-6 w-6" /></Button>} />
+            <Sidebar 
+              trigger={<Button variant="ghost" size="icon"><UserCircle className="h-6 w-6" /></Button>}
+              navItems={navItems}
+            />
           </div>
         </div>
       </nav>

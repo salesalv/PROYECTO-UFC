@@ -14,6 +14,11 @@ import PredictionPage from "../pages/PredictionPage";
 import LivePage from "../pages/LivePage";
 import UFC303CardPage from "../pages/UFC303CardPage";
 import SavedClipsPage from "../pages/SavedClipsPage";
+import ThreadPage from '../pages/ThreadPage';
+import CategoryPage from '../pages/CategoryPage';
+import UFCNamajunasBarberCardPage from '../pages/UFCNamajunasBarberCardPage';
+import UFC304CardPage from '../pages/UFC304CardPage';
+import UFCSandhagenNurmagomedovCardPage from '../pages/UFCSandhagenNurmagomedovCardPage';
 
 const AppRoutes = () => {
   return (
@@ -31,7 +36,12 @@ const AppRoutes = () => {
       <Route path="/predict" element={<PredictionPage />} />
       <Route path="/live" element={<LivePage />} />
       <Route path="/ufc303" element={<UFC303CardPage />} />
+      <Route path="/ufcnamajunasbarber" element={<UFCNamajunasBarberCardPage />} />
+      <Route path="/ufc304" element={<UFC304CardPage />} />
+      <Route path="/ufcsandhagennurmagomedov" element={<UFCSandhagenNurmagomedovCardPage />} />
       <Route path="/clips" element={<SavedClipsPage />} />
+      <Route path="/thread/:id" element={<ThreadPage />} />
+      <Route path="/category/:id" element={<CategoryPage />} />
     </Routes>
   );
 };
