@@ -60,7 +60,7 @@ const FeaturedFightsList = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {previewEvents.map((event, index) => (
+          {previewEvents.slice(0, 3).map((event, index) => (
             <motion.div
               key={event.id}
               initial={{ opacity: 0, y: 20 }}
