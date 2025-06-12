@@ -91,7 +91,7 @@ const FeaturedFight = () => {
                   <img 
                     className="w-28 h-28 md:w-60 md:h-40 mx-auto object-contain shadow-md filter drop-shadow-[0_5px_5px_rgba(0,0,0,0.4)]" // Changed to object-contain, added drop-shadow
                     alt="Fighter A portrait"
-                   src="../public/foto jon.png" />
+                   src="/foto jon.png" />
                 </div>
                 <p className="font-bold text-lg md:text-2xl uppercase">Jon </p>
                 <p className="text-gray-400 text-sm mb-2">Campeón | 28-0-0</p>
@@ -133,7 +133,7 @@ const FeaturedFight = () => {
                   <img 
                     className="w-28 h-28 md:w-60 md:h-40 mx-auto object-contain shadow-md filter drop-shadow-[0_5px_5px_rgba(0,0,0,0.4)]" // Changed to object-contain, added drop-shadow
                     alt="Fighter B portrait"
-                   src="../public/foto khabib.png" />
+                   src="/foto khabib.png" />
                 </div>
                 <p className="font-bold text-lg md:text-2xl uppercase">khabib </p>
                 <p className="text-gray-400 text-sm mb-2">Retador | 25-2-0</p>
