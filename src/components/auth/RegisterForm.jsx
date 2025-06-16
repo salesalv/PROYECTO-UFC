@@ -10,21 +10,61 @@ const RegisterForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    nombre_usuario: '',
+    correo: '',
+    contraseña: '',
+    confirmar_contraseña: ''
+  });
+  const [error, setError] = useState('');
   const navigate = useNavigate();
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
+
+    // Validar que las contraseñas coincidan
+    if (formData.contraseña !== formData.confirmar_contraseña) {
+      setError('Las contraseñas no coinciden');
+      return;
+    }
+
     setIsLoading(true);
     
     try {
-      // Aquí iría la lógica de registro
-      // Por ahora simulamos un registro exitoso
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Si el registro es exitoso, redirigimos a la página de inicio de sesión
-      navigate('/login');
-    } catch (error) {
-      console.error('Error en el registro:', error);
+      const response = await fetch('http://localhost:3001/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          nombre_usuario: formData.nombre_usuario,
+          correo: formData.correo,
+          contraseña: formData.contraseña
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Error en el registro');
+      }
+
+      // Guardar el token y los datos del usuario
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('user', JSON.stringify(data.user));
+
+      // Redirigir al usuario a la página principal
+      navigate('/');
+    } catch (err) {
+      setError(err.message);
     } finally {
       setIsLoading(false);
     }
@@ -40,40 +80,54 @@ const RegisterForm = () => {
       </CardHeader>
       <form onSubmit={handleSubmit}>
         <CardContent className="space-y-4">
+          {error && (
+            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+              <span className="block sm:inline">{error}</span>
+            </div>
+          )}
           <div className="space-y-2">
-            <Label htmlFor="username" className="text-sm font-medium text-gray-300">Nombre de Usuario</Label>
+            <Label htmlFor="nombre_usuario" className="text-sm font-medium text-gray-300">Nombre de Usuario</Label>
             <div className="relative">
               <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-500" />
               <Input 
-                id="username" 
+                id="nombre_usuario" 
+                name="nombre_usuario"
                 placeholder="TuUsuario" 
                 required 
                 className="pl-10 bg-gray-900/50 border-gray-700 focus:ring-red-600 focus:border-red-600" 
+                value={formData.nombre_usuario}
+                onChange={handleChange}
               />
             </div>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="email" className="text-sm font-medium text-gray-300">Correo Electrónico</Label>
+            <Label htmlFor="correo" className="text-sm font-medium text-gray-300">Correo Electrónico</Label>
             <div className="relative">
               <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-500" />
               <Input 
-                id="email" 
+                id="correo" 
+                name="correo"
                 type="email" 
                 placeholder="tu@email.com" 
                 required 
                 className="pl-10 bg-gray-900/50 border-gray-700 focus:ring-red-600 focus:border-red-600" 
+                value={formData.correo}
+                onChange={handleChange}
               />
             </div>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="password" className="text-sm font-medium text-gray-300">Contraseña</Label>
+            <Label htmlFor="contraseña" className="text-sm font-medium text-gray-300">Contraseña</Label>
             <div className="relative">
               <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-500" />
               <Input 
-                id="password" 
+                id="contraseña" 
+                name="contraseña"
                 type={showPassword ? "text" : "password"} 
                 required 
                 className="pl-10 bg-gray-900/50 border-gray-700 focus:ring-red-600 focus:border-red-600 pr-10" 
+                value={formData.contraseña}
+                onChange={handleChange}
               />
               <button
                 type="button"
@@ -85,14 +139,17 @@ const RegisterForm = () => {
             </div>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="confirm-password" className="text-sm font-medium text-gray-300">Confirmar Contraseña</Label>
+            <Label htmlFor="confirmar_contraseña" className="text-sm font-medium text-gray-300">Confirmar Contraseña</Label>
             <div className="relative">
                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-500" />
               <Input 
-                id="confirm-password" 
+                id="confirmar_contraseña" 
+                name="confirmar_contraseña"
                 type={showConfirmPassword ? "text" : "password"} 
                 required 
                 className="pl-10 bg-gray-900/50 border-gray-700 focus:ring-red-600 focus:border-red-600 pr-10" 
+                value={formData.confirmar_contraseña}
+                onChange={handleChange}
               />
                <button
                 type="button"

@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "lint": "eslint src --ext js,jsx,ts,tsx",
     "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,css,md}\"",
-    "lint:css": "stylelint \"src/**/*.css\""
+    "lint:css": "stylelint \"src/**/*.css\"",
+    "init-db": "node src/db/init.js"
   },
   "dependencies": {
     "@radix-ui/react-alert-dialog": "^1.0.5",

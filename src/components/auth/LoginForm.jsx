@@ -9,22 +9,48 @@ import { Eye, EyeOff, Mail, Lock } from "lucide-react";
 const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    correo: '',
+    contraseña: ''
+  });
+  const [error, setError] = useState('');
   const navigate = useNavigate();
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
     setIsLoading(true);
-    
-    // Aquí iría la lógica de autenticación
-    // Por ahora simulamos un inicio de sesión exitoso
+
     try {
-      // Simulamos una llamada a la API
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Si el inicio de sesión es exitoso, redirigimos a la página principal
+      const response = await fetch('http://localhost:3001/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Error al iniciar sesión');
+      }
+
+      // Guardar el token y los datos del usuario
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('user', JSON.stringify(data.user));
+
+      // Redirigir al usuario a la página principal
       navigate('/');
-    } catch (error) {
-      console.error('Error en el inicio de sesión:', error);
+    } catch (err) {
+      setError(err.message);
     } finally {
       setIsLoading(false);
     }
@@ -53,29 +79,40 @@ const LoginForm = () => {
         </CardDescription>
       </CardHeader>
       <form onSubmit={handleSubmit}>
+        {error && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+            <span className="block sm:inline">{error}</span>
+          </div>
+        )}
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="email" className="text-sm font-medium text-gray-300">Correo Electrónico</Label>
+            <Label htmlFor="correo" className="text-sm font-medium text-gray-300">Correo Electrónico</Label>
             <div className="relative">
               <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-500" />
               <Input 
-                id="email" 
+                id="correo" 
+                name="correo" 
                 type="email" 
                 placeholder="tu@email.com" 
                 required 
                 className="pl-10 bg-gray-900/50 border-gray-700 focus:ring-red-600 focus:border-red-600" 
+                value={formData.correo}
+                onChange={handleChange}
               />
             </div>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="password" className="text-sm font-medium text-gray-300">Contraseña</Label>
+            <Label htmlFor="contraseña" className="text-sm font-medium text-gray-300">Contraseña</Label>
             <div className="relative">
               <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-500" />
               <Input 
-                id="password" 
+                id="contraseña" 
+                name="contraseña" 
                 type={showPassword ? "text" : "password"} 
                 required 
                 className="pl-10 bg-gray-900/50 border-gray-700 focus:ring-red-600 focus:border-red-600" 
+                value={formData.contraseña}
+                onChange={handleChange}
               />
               <button
                 type="button"
