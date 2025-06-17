@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -10,21 +10,28 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { UserCircle, LogOut, Award, BarChart2, Star, Trophy } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-
-const userData = {
-  username: "Rugal444",
-  email: "rugal444@gmail.com",
-  joinedDate: "2024-01-15",
-  points: 1250,
-  rank: "#6",
-  avatar: "/pain.png",
-  level: 5,
-  winRate: "78%",
-  predictions: 156
-};
+import supabase from "@/db";
 
 const UserMenu = () => {
   const navigate = useNavigate();
+  const [userData, setUserData] = useState(null);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const user = JSON.parse(localStorage.getItem('user'));
+      if (!user) return;
+      const { data } = await supabase
+        .from('usuario')
+        .select('*')
+        .eq('correo', user.email)
+        .single();
+      if (data) setUserData(data);
+    };
+    fetchUserData();
+    const onStorage = () => fetchUserData();
+    window.addEventListener('storage', onStorage);
+    return () => window.removeEventListener('storage', onStorage);
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem('user');
@@ -45,20 +52,20 @@ const UserMenu = () => {
           <div className="flex items-center space-x-4">
             <div className="relative">
               <img
-                src={userData.avatar}
-                alt={userData.username}
+                src={userData?.avatar || "/pain.png"}
+                alt={userData?.nombre_usuario || "Usuario"}
                 className="h-20 w-20 rounded-full object-cover ring-2 ring-red-600"
               />
               <div className="absolute -bottom-1 -right-1 bg-yellow-500 text-black text-xs rounded-full w-6 h-6 flex items-center justify-center font-bold">
-                {userData.level}
+                {userData?.nivel || 1}
               </div>
             </div>
             <div className="flex flex-col space-y-1">
-              <p className="text-lg font-bold text-white">{userData.username}</p>
-              <p className="text-xs text-gray-400">{userData.email}</p>
+              <p className="text-lg font-bold text-white">{userData?.nombre_usuario || "Usuario"}</p>
+              <p className="text-xs text-gray-400">{userData?.correo || "-"}</p>
               <div className="flex items-center space-x-2">
                 <Award className="h-4 w-4 text-yellow-500" />
-                <span className="text-sm font-medium text-yellow-500">{userData.points.toLocaleString()} pts</span>
+                <span className="text-sm font-medium text-yellow-500">{userData?.puntos?.toLocaleString() || 0} pts</span>
               </div>
             </div>
           </div>
@@ -69,14 +76,14 @@ const UserMenu = () => {
             <BarChart2 className="h-4 w-4 text-green-500" />
             <div>
               <p className="text-xs text-gray-400">Win Rate</p>
-              <p className="text-sm font-medium text-white">{userData.winRate}</p>
+              <p className="text-sm font-medium text-white">{userData?.winRate || "-"}</p>
             </div>
           </div>
           <div className="flex items-center space-x-2 p-2 rounded-lg bg-gray-800/50">
             <Star className="h-4 w-4 text-blue-500" />
             <div>
               <p className="text-xs text-gray-400">Predicciones</p>
-              <p className="text-sm font-medium text-white">{userData.predictions}</p>
+              <p className="text-sm font-medium text-white">{userData?.predictions || "-"}</p>
             </div>
           </div>
         </div>

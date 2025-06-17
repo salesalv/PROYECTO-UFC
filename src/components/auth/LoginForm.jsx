@@ -43,6 +43,7 @@ const LoginForm = () => {
       // Guardar el usuario en localStorage si lo deseas
       localStorage.setItem('user', JSON.stringify(data.user));
       localStorage.setItem('access_token', data.session?.access_token || '');
+      window.dispatchEvent(new Event('storage'));
 
       // Redirigir al usuario a la página principal
       navigate('/');

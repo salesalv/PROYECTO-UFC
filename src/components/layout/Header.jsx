@@ -33,7 +33,10 @@ const Header = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    setIsAuthenticated(!!localStorage.getItem('user'));
+    const checkAuth = () => setIsAuthenticated(!!localStorage.getItem('user'));
+    checkAuth();
+    window.addEventListener('storage', checkAuth);
+    return () => window.removeEventListener('storage', checkAuth);
   }, []);
 
   return (
