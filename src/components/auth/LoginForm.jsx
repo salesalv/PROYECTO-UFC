@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff, Mail, Lock } from "lucide-react";
+import supabase from "@/db";
 
 const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -29,23 +30,19 @@ const LoginForm = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch('http://localhost:3001/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData)
+      // Login directo con Supabase
+      const { data, error: signInError } = await supabase.auth.signInWithPassword({
+        email: formData.correo,
+        password: formData.contraseña
       });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Error al iniciar sesión');
+      if (signInError) {
+        throw new Error(signInError.message);
       }
 
-      // Guardar el token y los datos del usuario
-      localStorage.setItem('token', data.token);
+      // Guardar el usuario en localStorage si lo deseas
       localStorage.setItem('user', JSON.stringify(data.user));
+      localStorage.setItem('access_token', data.session?.access_token || '');
 
       // Redirigir al usuario a la página principal
       navigate('/');
