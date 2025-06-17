@@ -54,6 +54,29 @@ const RegisterForm = () => {
         throw new Error(signUpError.message);
       }
 
+      // Si el registro fue exitoso, inserta en la tabla personalizada
+      const { user } = data;
+      const { error: insertError } = await supabase
+        .from('usuario')
+        .insert([
+          {
+            nombre_usuario: formData.nombre_usuario,
+            correo: formData.correo,
+            fecha_registro: new Date().toISOString(),
+            puntos: 0,
+            rango: 'Novato',
+            avatar: null,
+            notificaciones: true,
+            tema: 'dark',
+            contraseña: '', // No guardar la contraseña aquí
+            saldo: 0
+          }
+        ]);
+
+      if (insertError) {
+        throw new Error(insertError.message);
+      }
+
       // Puedes guardar el usuario en localStorage si lo deseas
       // localStorage.setItem('user', JSON.stringify(data.user));
 
