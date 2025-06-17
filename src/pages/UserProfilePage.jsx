@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -9,27 +9,37 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
-
-// Placeholder user data
-const userData = {
-  username: "Rugal444",
-  email: "rugal444@gmail.com",
-  joinedDate: "2024-01-15",
-  points: 1250,
-  rank: "#6",
-  avatar: "image.png",
-  notifications: true,
-  theme: "dark",
-  privacy: "public"
-};
+import supabase from "@/db";
 
 const UserProfilePage = () => {
-  const [notifications, setNotifications] = useState(userData.notifications);
-  const [theme, setTheme] = useState(userData.theme);
-  const [privacy, setPrivacy] = useState(userData.privacy);
+  const [userData, setUserData] = useState(null);
+  const [notifications, setNotifications] = useState(false);
+  const [theme, setTheme] = useState('dark');
+  const [privacy, setPrivacy] = useState('public');
   const [isEditing, setIsEditing] = useState(false);
-  const [editableUsername, setEditableUsername] = useState(userData.username);
-  const [editableEmail, setEditableEmail] = useState(userData.email);
+  const [editableUsername, setEditableUsername] = useState('');
+  const [editableEmail, setEditableEmail] = useState('');
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const user = JSON.parse(localStorage.getItem('user'));
+      if (!user) return;
+      // Buscar datos personalizados en la tabla 'usuario'
+      const { data, error } = await supabase
+        .from('usuario')
+        .select('*')
+        .eq('correo', user.email)
+        .single();
+      if (data) {
+        setUserData(data);
+        setNotifications(data.notificaciones);
+        setTheme(data.tema);
+        setEditableUsername(data.nombre_usuario);
+        setEditableEmail(data.correo);
+      }
+    };
+    fetchUserData();
+  }, []);
 
   const handleEditToggle = () => {
     setIsEditing(!isEditing);
@@ -39,8 +49,8 @@ const UserProfilePage = () => {
       // En una aplicación real, enviarías editableUsername y editableEmail a una API
     } else {
       // Cuando entras en modo edición, inicializa los valores con los actuales
-      setEditableUsername(userData.username);
-      setEditableEmail(userData.email);
+      setEditableUsername(userData?.nombre_usuario || '');
+      setEditableEmail(userData?.correo || '');
     }
   };
 
@@ -61,16 +71,16 @@ const UserProfilePage = () => {
                   <img  
                     className="w-32 h-32 rounded-full mx-auto border-4 border-red-600 object-cover"
                     alt="User Avatar"
-                    src="/pain.png" />
+                    src={userData?.avatar || "/pain.png"} />
                   <Button variant="ghost" size="icon" className="absolute bottom-0 right-0 bg-gray-700/80 rounded-full hover:bg-red-600">
                     <Edit className="w-4 h-4" />
                   </Button>
                 </div>
                 <CardTitle className="text-3xl font-black uppercase tracking-wider text-red-500">
-                  {userData.username}
+                  {userData?.nombre_usuario || "Usuario"}
                 </CardTitle>
                 <CardDescription className="text-gray-300">
-                  Miembro desde {new Date(userData.joinedDate).toLocaleDateString()}
+                  Miembro desde {userData ? new Date(userData.fecha_registro).toLocaleDateString() : "-"}
                 </CardDescription>
               </CardHeader>
               <CardContent className="mt-6 space-y-6">
@@ -85,7 +95,7 @@ const UserProfilePage = () => {
                         onChange={(e) => setEditableUsername(e.target.value)}
                       />
                     ) : (
-                      <p className="font-semibold text-white">{userData.username}</p>
+                      <p className="font-semibold text-white">{userData?.nombre_usuario}</p>
                     )}
                   </div>
                 </div>
@@ -100,7 +110,7 @@ const UserProfilePage = () => {
                         onChange={(e) => setEditableEmail(e.target.value)}
                       />
                     ) : (
-                      <p className="font-semibold text-white">{userData.email}</p>
+                      <p className="font-semibold text-white">{userData?.correo}</p>
                     )}
                   </div>
                 </div>
@@ -109,14 +119,14 @@ const UserProfilePage = () => {
                     <Award className="w-6 h-6 text-yellow-500" />
                     <div>
                       <p className="text-sm text-gray-300">Puntos Totales</p>
-                      <p className="font-semibold text-xl text-white">{userData.points.toLocaleString()}</p>
+                      <p className="font-semibold text-xl text-white">{userData?.puntos ?? 0}</p>
                     </div>
                   </div>
                   <div className="flex items-center space-x-4 p-4 bg-gray-900/50 rounded-lg border border-gray-700">
                     <Trophy className="w-6 h-6 text-yellow-500" />
                     <div>
                       <p className="text-sm text-gray-300">Ranking</p>
-                      <p className="font-semibold text-xl text-white">{userData.rank}</p>
+                      <p className="font-semibold text-xl text-white">{userData?.rango ?? '-'}</p>
                     </div>
                   </div>
                 </div>

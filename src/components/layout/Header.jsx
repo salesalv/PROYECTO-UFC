@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -30,6 +30,11 @@ const Header = () => {
 
   const userPoints = 1500;
   const userLevel = 5;
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    setIsAuthenticated(!!localStorage.getItem('user'));
+  }, []);
 
   return (
     <motion.header
@@ -66,12 +71,16 @@ const Header = () => {
 
         <div className="flex items-center space-x-4">
           <div className="hidden md:flex items-center space-x-2">
-            <Button variant="ghost" size="sm" asChild>
-              <Link to="/login">Iniciar Sesión</Link>
-            </Button>
-            <Button size="sm" className="bg-red-600 hover:bg-red-700" asChild>
-              <Link to="/register">Registrarse</Link>
-            </Button>
+            {!isAuthenticated && (
+              <>
+                <Button variant="ghost" size="sm" asChild>
+                  <Link to="/login">Iniciar Sesión</Link>
+                </Button>
+                <Button size="sm" className="bg-red-600 hover:bg-red-700" asChild>
+                  <Link to="/register">Registrarse</Link>
+                </Button>
+              </>
+            )}
             <UserMenu />
           </div>
 

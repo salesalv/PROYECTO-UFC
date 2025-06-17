@@ -9,7 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { UserCircle, LogOut, Award, BarChart2, Star, Trophy } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const userData = {
   username: "Rugal444",
@@ -24,6 +24,15 @@ const userData = {
 };
 
 const UserMenu = () => {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem('user');
+    localStorage.removeItem('access_token');
+    // Puedes limpiar otros datos si los guardas
+    window.location.reload(); // Recarga para actualizar la UI
+  };
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -90,7 +99,7 @@ const UserMenu = () => {
         <DropdownMenuSeparator />
 
         <div className="p-2">
-          <DropdownMenuItem className="text-red-500 hover:text-red-400 hover:bg-red-900/20 rounded-md">
+          <DropdownMenuItem className="text-red-500 hover:text-red-400 hover:bg-red-900/20 rounded-md" onClick={handleLogout}>
             <LogOut className="mr-2 h-4 w-4" />
             <span>Cerrar Sesión</span>
           </DropdownMenuItem>

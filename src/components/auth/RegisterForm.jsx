@@ -80,8 +80,8 @@ const RegisterForm = () => {
       // Puedes guardar el usuario en localStorage si lo deseas
       // localStorage.setItem('user', JSON.stringify(data.user));
 
-      // Redirigir al usuario a la página principal o mostrar mensaje de verificación
-      navigate('/');
+      // Redirigir al usuario a la página de inicio de sesión
+      navigate('/login');
     } catch (err) {
       setError(err.message);
     } finally {
