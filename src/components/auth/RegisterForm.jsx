@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link, useNavigate } from "react-router-dom";
 import { User, Mail, Lock, Eye, EyeOff } from "lucide-react";
+import supabase from "@/db";
 
 const RegisterForm = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -37,31 +38,26 @@ const RegisterForm = () => {
     }
 
     setIsLoading(true);
-    
     try {
-      const response = await fetch('http://localhost:3001/api/auth/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          nombre_usuario: formData.nombre_usuario,
-          correo: formData.correo,
-          contraseña: formData.contraseña
-        })
+      // Registro directo con Supabase
+      const { data, error: signUpError } = await supabase.auth.signUp({
+        email: formData.correo,
+        password: formData.contraseña,
+        options: {
+          data: {
+            nombre_usuario: formData.nombre_usuario
+          }
+        }
       });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Error en el registro');
+      if (signUpError) {
+        throw new Error(signUpError.message);
       }
 
-      // Guardar el token y los datos del usuario
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('user', JSON.stringify(data.user));
+      // Puedes guardar el usuario en localStorage si lo deseas
+      // localStorage.setItem('user', JSON.stringify(data.user));
 
-      // Redirigir al usuario a la página principal
+      // Redirigir al usuario a la página principal o mostrar mensaje de verificación
       navigate('/');
     } catch (err) {
       setError(err.message);
