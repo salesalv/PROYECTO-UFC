@@ -75,7 +75,7 @@ const UserProfilePage = () => {
       const { error } = await supabase
         .from('usuario')
         .update({ nombre_usuario: editableUsername, avatar: avatarUrl })
-        .eq('id', userData.id);
+        .eq('correo', userData.correo);
 
       if (error) {
         alert('Error al guardar los cambios: ' + error.message);
