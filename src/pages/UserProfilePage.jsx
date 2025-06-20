@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -20,8 +20,9 @@ const UserProfilePage = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [editableUsername, setEditableUsername] = useState('');
   const [editableEmail, setEditableEmail] = useState('');
-  const [saving, setSaving] = useState(false);
-  const [error, setError] = useState('');
+  const fileInputRef = useRef();
+  const [avatarFile, setAvatarFile] = useState(null);
+  const [avatarPreview, setAvatarPreview] = useState(null);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -44,40 +45,48 @@ const UserProfilePage = () => {
     fetchUserData();
   }, []);
 
-  useEffect(() => {
-    if (userData) {
-      setEditableUsername(userData.nombre_usuario);
-      setEditableEmail(userData.correo);
-    }
-  }, [userData]);
-
-  const handleEditToggle = () => {
-    setIsEditing(!isEditing);
-    setError('');
-    if (!isEditing && userData) {
-      setEditableUsername(userData.nombre_usuario);
-      setEditableEmail(userData.correo);
+  const handleAvatarChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setAvatarFile(file);
+      setAvatarPreview(URL.createObjectURL(file));
     }
   };
 
-  const handleSave = async () => {
-    setSaving(true);
-    setError('');
-    try {
-      const { error } = await supabase
+  const handleEditToggle = async () => {
+    if (isEditing) {
+      // Guardar cambios
+      let avatarUrl = userData?.avatar;
+      if (avatarFile) {
+        // Subir imagen a Supabase Storage
+        const fileExt = avatarFile.name.split('.').pop();
+        const fileName = `${userData.id}_${Date.now()}.${fileExt}`;
+        const { data: storageData, error: storageError } = await supabase.storage
+          .from('avatars')
+          .upload(fileName, avatarFile, { upsert: true });
+        if (!storageError) {
+          const { data: publicUrlData } = supabase.storage
+            .from('avatars')
+            .getPublicUrl(fileName);
+          avatarUrl = publicUrlData.publicUrl;
+        }
+      }
+      // Actualizar en Supabase
+      await supabase
         .from('usuario')
-        .update({
-          nombre_usuario: editableUsername,
-          correo: editableEmail
-        })
+        .update({ nombre_usuario: editableUsername, avatar: avatarUrl })
         .eq('id', userData.id);
-      if (error) throw error;
+      setAvatarFile(null);
+      setAvatarPreview(null);
       setIsEditing(false);
-      await refreshUser();
-    } catch (err) {
-      setError('Error al guardar los cambios');
-    } finally {
-      setSaving(false);
+      // Refrescar contexto
+      if (refreshUser) {
+        refreshUser();
+      }
+    } else {
+      setEditableUsername(userData?.nombre_usuario || '');
+      setEditableEmail(userData?.correo || '');
+      setIsEditing(true);
     }
   };
 
@@ -98,21 +107,22 @@ const UserProfilePage = () => {
                   <img  
                     className="w-32 h-32 rounded-full mx-auto border-4 border-red-600 object-cover"
                     alt="User Avatar"
-                    src={userData?.avatar || "/pain.png"} />
-                  <Button variant="ghost" size="icon" className="absolute bottom-0 right-0 bg-gray-700/80 rounded-full hover:bg-red-600">
+                    src={avatarPreview || userData?.avatar || "/pain.png"} />
+                  <Button variant="ghost" size="icon" className="absolute bottom-0 right-0 bg-gray-700/80 rounded-full hover:bg-red-600" onClick={() => fileInputRef.current.click()}>
                     <Edit className="w-4 h-4" />
                   </Button>
+                  {isEditing && (
+                    <input
+                      type="file"
+                      accept="image/*"
+                      ref={fileInputRef}
+                      style={{ display: 'none' }}
+                      onChange={handleAvatarChange}
+                    />
+                  )}
                 </div>
                 <CardTitle className="text-3xl font-black uppercase tracking-wider text-red-500">
-                  {isEditing ? (
-                    <Input
-                      className="font-black text-3xl uppercase tracking-wider text-red-500 bg-gray-800 border-gray-700"
-                      value={editableUsername}
-                      onChange={e => setEditableUsername(e.target.value)}
-                    />
-                  ) : (
-                    userData?.nombre_usuario || "Usuario"
-                  )}
+                  {userData?.nombre_usuario || "Usuario"}
                 </CardTitle>
                 <CardDescription className="text-gray-300">
                   Miembro desde {userData ? new Date(userData.fecha_registro).toLocaleDateString() : "-"}
@@ -142,7 +152,7 @@ const UserProfilePage = () => {
                       <Input
                         className="font-semibold text-white bg-gray-800 border-gray-700"
                         value={editableEmail}
-                        onChange={e => setEditableEmail(e.target.value)}
+                        onChange={(e) => setEditableEmail(e.target.value)}
                       />
                     ) : (
                       <p className="font-semibold text-white">{userData?.correo}</p>
@@ -167,33 +177,13 @@ const UserProfilePage = () => {
                 </div>
               </CardContent>
               <CardFooter className="flex justify-between">
-                {isEditing ? (
-                  <>
-                    <Button
-                      className="bg-green-600 hover:bg-green-700 font-bold uppercase tracking-wider"
-                      onClick={handleSave}
-                      disabled={saving}
-                    >
-                      {saving ? "Guardando..." : "Guardar Cambios"}
-                    </Button>
-                    <Button
-                      className="bg-gray-600 hover:bg-gray-700 font-bold uppercase tracking-wider"
-                      onClick={handleEditToggle}
-                      disabled={saving}
-                    >
-                      Cancelar
-                    </Button>
-                  </>
-                ) : (
-                  <Button
-                    className="bg-red-600 hover:bg-red-700 font-bold uppercase tracking-wider"
-                    onClick={handleEditToggle}
-                  >
-                    Editar Perfil
-                  </Button>
-                )}
+                <Button
+                  className="bg-red-600 hover:bg-red-700 font-bold uppercase tracking-wider"
+                  onClick={handleEditToggle}
+                >
+                  {isEditing ? "Guardar Cambios" : "Editar Perfil"}
+                </Button>
               </CardFooter>
-              {error && <div className="text-red-500 text-center pb-4">{error}</div>}
             </Card>
           </div>
 
