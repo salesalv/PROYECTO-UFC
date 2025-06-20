@@ -35,12 +35,11 @@ const UserMenu = () => {
   }, []);
 
   const handleLogout = async () => {
-    await supabase.auth.signOut();
+    await supabase.auth.signOut({ redirectTo: window.location.origin + '/login' });
     localStorage.removeItem('user');
     localStorage.removeItem('access_token');
     sessionStorage.clear();
     if (refreshUser) refreshUser();
-    window.location.href = '/login';
   };
 
   return (
