@@ -6,15 +6,7 @@ import Logo from "@/components/Logo";
 import Sidebar from "@/components/layout/Sidebar";
 import { Coins, BarChart2, UserCircle, Calendar, Star, MessageSquare, PlayCircle, Users, GitCompare, User, Mail, Award, Trophy, Edit, Scissors } from "lucide-react";
 import UserMenu from "./UserMenu";
-
-const userData = {
-  username: "MMA_Predictor_Pro",
-  email: "predictor.pro@email.com",
-  joinedDate: "2024-01-15",
-  points: 1250,
-  rank: "#6",
-  avatar: "https://images.unsplash.com/photo-1545191488-2682adc1dfe4"
-};
+import { useUser } from "@/context/UserContext";
 
 const Header = () => {
   const navItems = [
@@ -31,6 +23,7 @@ const Header = () => {
   const userPoints = 1500;
   const userLevel = 5;
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const { user: userData, loading } = useUser();
 
   useEffect(() => {
     const checkAuth = () => setIsAuthenticated(!!localStorage.getItem('user'));
@@ -74,14 +67,14 @@ const Header = () => {
 
         <div className="flex items-center space-x-4">
           <div className="hidden md:flex items-center space-x-2">
-            {!isAuthenticated && (
+            {!userData && (
               <>
-            <Button variant="ghost" size="sm" asChild>
-              <Link to="/login">Iniciar Sesión</Link>
-            </Button>
-            <Button size="sm" className="bg-red-600 hover:bg-red-700" asChild>
-              <Link to="/register">Registrarse</Link>
-            </Button>
+                <Button variant="ghost" size="sm" asChild>
+                  <Link to="/login">Iniciar Sesión</Link>
+                </Button>
+                <Button size="sm" className="bg-red-600 hover:bg-red-700" asChild>
+                  <Link to="/register">Registrarse</Link>
+                </Button>
               </>
             )}
             <UserMenu />
