@@ -19,7 +19,6 @@ const UserProfilePage = () => {
   const [privacy, setPrivacy] = useState('public');
   const [isEditing, setIsEditing] = useState(false);
   const [editableUsername, setEditableUsername] = useState('');
-  const [editableEmail, setEditableEmail] = useState('');
   const fileInputRef = useRef();
   const [avatarFile, setAvatarFile] = useState(null);
   const [avatarPreview, setAvatarPreview] = useState(null);
@@ -39,7 +38,6 @@ const UserProfilePage = () => {
         setNotifications(data.notificaciones);
         setTheme(data.tema);
         setEditableUsername(data.nombre_usuario);
-        setEditableEmail(data.correo);
       }
     };
     fetchUserData();
@@ -85,7 +83,6 @@ const UserProfilePage = () => {
       }
     } else {
       setEditableUsername(userData?.nombre_usuario || '');
-      setEditableEmail(userData?.correo || '');
       setIsEditing(true);
     }
   };
@@ -148,15 +145,7 @@ const UserProfilePage = () => {
                   <Mail className="w-6 h-6 text-red-500" />
                   <div>
                     <p className="text-sm text-gray-300">Correo Electrónico</p>
-                    {isEditing ? (
-                      <Input
-                        className="font-semibold text-white bg-gray-800 border-gray-700"
-                        value={editableEmail}
-                        onChange={(e) => setEditableEmail(e.target.value)}
-                      />
-                    ) : (
-                      <p className="font-semibold text-white">{userData?.correo}</p>
-                    )}
+                    <p className="font-semibold text-white">{userData?.correo}</p>
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
