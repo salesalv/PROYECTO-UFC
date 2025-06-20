@@ -15,7 +15,7 @@ import { useUser } from "@/context/UserContext";
 
 const UserMenu = () => {
   const navigate = useNavigate();
-  const { user: userData, loading } = useUser();
+  const { user: userData, loading, refreshUser } = useUser();
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -34,11 +34,12 @@ const UserMenu = () => {
     return () => window.removeEventListener('storage', onStorage);
   }, []);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
     localStorage.removeItem('user');
     localStorage.removeItem('access_token');
-    // Puedes limpiar otros datos si los guardas
-    window.location.reload(); // Recarga para actualizar la UI
+    if (refreshUser) refreshUser();
+    window.location.reload();
   };
 
   return (
