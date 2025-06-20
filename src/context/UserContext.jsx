@@ -7,10 +7,12 @@ export function UserProvider({ children }) {
   const [user, setUser] = useState(null);
   const [userData, setUserData] = useState(null);
 
-  // Cargar usuario de Supabase Auth y datos personalizados
   useEffect(() => {
+    let isMounted = true;
+
     const getUser = async () => {
       const { data: { user } } = await supabase.auth.getUser();
+      if (!isMounted) return;
       setUser(user);
       if (user) {
         const { data } = await supabase
@@ -23,12 +25,15 @@ export function UserProvider({ children }) {
         setUserData(null);
       }
     };
+
     getUser();
-    // Listener para cambios de sesión
-    const { data: listener } = supabase.auth.onAuthStateChange(() => {
+
+    const { data: listener } = supabase.auth.onAuthStateChange((event, session) => {
       getUser();
     });
+
     return () => {
+      isMounted = false;
       listener?.subscription.unsubscribe();
     };
   }, []);
