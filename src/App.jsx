@@ -37,7 +37,7 @@ const App = () => {
               saldo: 0
             }
           ]);
-          window.location.reload();
+          window.dispatchEvent(new Event('storage'));
         }
       }
     };

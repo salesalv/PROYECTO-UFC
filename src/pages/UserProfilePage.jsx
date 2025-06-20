@@ -10,10 +10,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
 import supabase from "@/db";
-import { useUser } from "@/context/UserContext";
 
 const UserProfilePage = () => {
-  const { userData } = useUser();
+  const [userData, setUserData] = useState(null);
   const [notifications, setNotifications] = useState(false);
   const [theme, setTheme] = useState('dark');
   const [privacy, setPrivacy] = useState('public');
