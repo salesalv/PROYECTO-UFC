@@ -57,12 +57,17 @@ const LoginForm = () => {
   const handleGoogleLogin = async () => {
     setIsLoading(true);
     try {
-      // Aquí iría la lógica de autenticación con Google
-      // Por ahora simulamos un inicio de sesión exitoso
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      navigate('/');
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: window.location.origin
+        }
+      });
+      if (error) {
+        setError(error.message);
+      }
     } catch (error) {
-      console.error('Error en el inicio de sesión con Google:', error);
+      setError(error.message);
     } finally {
       setIsLoading(false);
     }
