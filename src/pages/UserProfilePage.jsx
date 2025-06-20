@@ -53,8 +53,9 @@ const UserProfilePage = () => {
 
   const handleEditToggle = async () => {
     if (isEditing) {
-      // Guardar cambios
       let avatarUrl = userData?.avatar;
+      let updateError = null;
+
       if (avatarFile) {
         // Subir imagen a Supabase Storage
         const fileExt = avatarFile.name.split('.').pop();
@@ -69,17 +70,21 @@ const UserProfilePage = () => {
           avatarUrl = publicUrlData.publicUrl;
         }
       }
+
       // Actualizar en Supabase
-      await supabase
+      const { error } = await supabase
         .from('usuario')
         .update({ nombre_usuario: editableUsername, avatar: avatarUrl })
         .eq('id', userData.id);
-      setAvatarFile(null);
-      setAvatarPreview(null);
-      setIsEditing(false);
-      // Refrescar contexto
-      if (refreshUser) {
-        refreshUser();
+
+      if (error) {
+        alert('Error al guardar los cambios: ' + error.message);
+        updateError = error;
+      } else {
+        setAvatarFile(null);
+        setAvatarPreview(null);
+        setIsEditing(false);
+        if (refreshUser) refreshUser();
       }
     } else {
       setEditableUsername(userData?.nombre_usuario || '');
