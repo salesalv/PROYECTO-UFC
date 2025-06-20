@@ -76,12 +76,12 @@ const Header = () => {
           <div className="hidden md:flex items-center space-x-2">
             {!isAuthenticated && (
               <>
-                <Button variant="ghost" size="sm" asChild>
-                  <Link to="/login">Iniciar Sesión</Link>
-                </Button>
-                <Button size="sm" className="bg-red-600 hover:bg-red-700" asChild>
-                  <Link to="/register">Registrarse</Link>
-                </Button>
+            <Button variant="ghost" size="sm" asChild>
+              <Link to="/login">Iniciar Sesión</Link>
+            </Button>
+            <Button size="sm" className="bg-red-600 hover:bg-red-700" asChild>
+              <Link to="/register">Registrarse</Link>
+            </Button>
               </>
             )}
             <UserMenu />
