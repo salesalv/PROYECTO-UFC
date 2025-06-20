@@ -11,10 +11,11 @@ import {
 import { UserCircle, LogOut, Award, BarChart2, Star, Trophy } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import supabase from "@/db";
+import { useUser } from "@/context/UserContext";
 
 const UserMenu = () => {
   const navigate = useNavigate();
-  const [userData, setUserData] = useState(null);
+  const { user: userData, loading } = useUser();
 
   useEffect(() => {
     const fetchUserData = async () => {
