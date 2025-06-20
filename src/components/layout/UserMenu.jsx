@@ -38,8 +38,9 @@ const UserMenu = () => {
     await supabase.auth.signOut();
     localStorage.removeItem('user');
     localStorage.removeItem('access_token');
+    sessionStorage.clear();
     if (refreshUser) refreshUser();
-    window.location.reload();
+    window.location.href = '/login';
   };
 
   return (
