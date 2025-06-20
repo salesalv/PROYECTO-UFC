@@ -13,13 +13,15 @@ import supabase from "@/db";
 import { useUser } from "@/context/UserContext";
 
 const UserProfilePage = () => {
-  const { user: userData, loading } = useUser();
+  const { user: userData, loading, refreshUser } = useUser();
   const [notifications, setNotifications] = useState(false);
   const [theme, setTheme] = useState('dark');
   const [privacy, setPrivacy] = useState('public');
   const [isEditing, setIsEditing] = useState(false);
   const [editableUsername, setEditableUsername] = useState('');
   const [editableEmail, setEditableEmail] = useState('');
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -42,16 +44,40 @@ const UserProfilePage = () => {
     fetchUserData();
   }, []);
 
+  useEffect(() => {
+    if (userData) {
+      setEditableUsername(userData.nombre_usuario);
+      setEditableEmail(userData.correo);
+    }
+  }, [userData]);
+
   const handleEditToggle = () => {
     setIsEditing(!isEditing);
-    if (isEditing) {
-      // Aquí iría la lógica para guardar los cambios, por ahora solo alterna
-      console.log("Guardando cambios...");
-      // En una aplicación real, enviarías editableUsername y editableEmail a una API
-    } else {
-      // Cuando entras en modo edición, inicializa los valores con los actuales
-      setEditableUsername(userData?.nombre_usuario || '');
-      setEditableEmail(userData?.correo || '');
+    setError('');
+    if (!isEditing && userData) {
+      setEditableUsername(userData.nombre_usuario);
+      setEditableEmail(userData.correo);
+    }
+  };
+
+  const handleSave = async () => {
+    setSaving(true);
+    setError('');
+    try {
+      const { error } = await supabase
+        .from('usuario')
+        .update({
+          nombre_usuario: editableUsername,
+          correo: editableEmail
+        })
+        .eq('id', userData.id);
+      if (error) throw error;
+      setIsEditing(false);
+      await refreshUser();
+    } catch (err) {
+      setError('Error al guardar los cambios');
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -78,7 +104,15 @@ const UserProfilePage = () => {
                   </Button>
                 </div>
                 <CardTitle className="text-3xl font-black uppercase tracking-wider text-red-500">
-                  {userData?.nombre_usuario || "Usuario"}
+                  {isEditing ? (
+                    <Input
+                      className="font-black text-3xl uppercase tracking-wider text-red-500 bg-gray-800 border-gray-700"
+                      value={editableUsername}
+                      onChange={e => setEditableUsername(e.target.value)}
+                    />
+                  ) : (
+                    userData?.nombre_usuario || "Usuario"
+                  )}
                 </CardTitle>
                 <CardDescription className="text-gray-300">
                   Miembro desde {userData ? new Date(userData.fecha_registro).toLocaleDateString() : "-"}
@@ -108,7 +142,7 @@ const UserProfilePage = () => {
                       <Input
                         className="font-semibold text-white bg-gray-800 border-gray-700"
                         value={editableEmail}
-                        onChange={(e) => setEditableEmail(e.target.value)}
+                        onChange={e => setEditableEmail(e.target.value)}
                       />
                     ) : (
                       <p className="font-semibold text-white">{userData?.correo}</p>
@@ -133,13 +167,33 @@ const UserProfilePage = () => {
                 </div>
               </CardContent>
               <CardFooter className="flex justify-between">
-                <Button
-                  className="bg-red-600 hover:bg-red-700 font-bold uppercase tracking-wider"
-                  onClick={handleEditToggle}
-                >
-                  {isEditing ? "Guardar Cambios" : "Editar Perfil"}
-                </Button>
+                {isEditing ? (
+                  <>
+                    <Button
+                      className="bg-green-600 hover:bg-green-700 font-bold uppercase tracking-wider"
+                      onClick={handleSave}
+                      disabled={saving}
+                    >
+                      {saving ? "Guardando..." : "Guardar Cambios"}
+                    </Button>
+                    <Button
+                      className="bg-gray-600 hover:bg-gray-700 font-bold uppercase tracking-wider"
+                      onClick={handleEditToggle}
+                      disabled={saving}
+                    >
+                      Cancelar
+                    </Button>
+                  </>
+                ) : (
+                  <Button
+                    className="bg-red-600 hover:bg-red-700 font-bold uppercase tracking-wider"
+                    onClick={handleEditToggle}
+                  >
+                    Editar Perfil
+                  </Button>
+                )}
               </CardFooter>
+              {error && <div className="text-red-500 text-center pb-4">{error}</div>}
             </Card>
           </div>
 
