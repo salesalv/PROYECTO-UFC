@@ -20,7 +20,7 @@ const LivePage = () => {
   const chatEndRef = useRef(null);
   const { addClip } = useClips();
   const { user } = useUser();
-  const streamUrl = "https://cph-p2p-msl.akamaized.net/hls/live/2000341/test/master.m3u8";
+  const streamUrl = "https://devimages.apple.com.edgekey.net/streaming/examples/bipbop_16x9/bipbop_16x9_variant.m3u8";
 
   // Simulación de usuario actual (puedes reemplazarlo por el usuario real de tu app)
   const currentUser = {
