@@ -20,7 +20,6 @@ const LivePage = () => {
   const chatEndRef = useRef(null);
   const { addClip } = useClips();
   const { user } = useUser();
-  const streamUrl = "https://devimages.apple.com.edgekey.net/streaming/examples/bipbop_16x9/bipbop_16x9_variant.m3u8";
 
   // Simulación de usuario actual (puedes reemplazarlo por el usuario real de tu app)
   const currentUser = {
@@ -28,12 +27,12 @@ const LivePage = () => {
   };
 
   useEffect(() => {
-    let hls;
+    const videoSrc = 'https://agvyby.fubohd.com/foxsports2/mono.m3u8?token=d1fc2b72eb241226d14e6f37dca36007fb8dff81-b6-1750547321-1750529321';
 
     const initPlayer = () => {
       if (Hls.isSupported()) {
         console.log('HLS es soportado en este navegador');
-        hls = new Hls({
+        const hls = new Hls({
           debug: true,
           enableWorker: true,
           lowLatencyMode: true,
@@ -44,7 +43,7 @@ const LivePage = () => {
 
         hls.on(Hls.Events.MEDIA_ATTACHED, () => {
           console.log('Video y HLS están conectados');
-          hls.loadSource(streamUrl);
+          hls.loadSource(videoSrc);
         });
 
         hls.on(Hls.Events.MANIFEST_PARSED, (event, data) => {
@@ -75,7 +74,7 @@ const LivePage = () => {
         hls.attachMedia(videoRef.current);
       } else if (videoRef.current.canPlayType('application/vnd.apple.mpegurl')) {
         console.log('Navegador soporta HLS nativamente');
-        videoRef.current.src = streamUrl;
+        videoRef.current.src = videoSrc;
         videoRef.current.addEventListener('loadedmetadata', () => {
           videoRef.current.play().catch(e => console.error('Error al reproducir:', e));
         });

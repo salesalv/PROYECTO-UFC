@@ -12,9 +12,9 @@ root.render(
   <React.StrictMode>
     <BrowserRouter>
       <UserProvider>
-        <ClipsProvider>
-          <App />
-        </ClipsProvider>
+      <ClipsProvider>
+        <App />
+      </ClipsProvider>
       </UserProvider>
     </BrowserRouter>
   </React.StrictMode>

@@ -74,34 +74,34 @@ const Sidebar = ({ trigger, navItems }) => {
           <div className="mt-auto space-y-2 border-t border-gray-700 pt-4">
             {!userData && (
               <>
-                <SheetClose asChild>
-                  <Button variant="ghost" className="w-full justify-start" asChild>
-                    <Link to="/login">Iniciar Sesión</Link>
-                  </Button>
-                </SheetClose>
-                <SheetClose asChild>
-                  <Button className="w-full bg-red-600 hover:bg-red-700" asChild>
-                    <Link to="/register">Registrarse</Link>
-                  </Button>
-                </SheetClose>
+             <SheetClose asChild>
+               <Button variant="ghost" className="w-full justify-start" asChild>
+                 <Link to="/login">Iniciar Sesión</Link>
+               </Button>
+             </SheetClose>
+             <SheetClose asChild>
+               <Button className="w-full bg-red-600 hover:bg-red-700" asChild>
+                 <Link to="/register">Registrarse</Link>
+               </Button>
+             </SheetClose>
               </>
             )}
           </div>
 
           {/* Logout Button */}
           {userData && (
-            <div className="mt-4 border-t border-gray-700 pt-4">
-              <SheetClose asChild>
-                <Button
-                  variant="ghost"
-                  className="w-full flex items-center justify-start text-red-500 hover:bg-red-900/50 hover:text-red-400"
-                  onClick={handleLogout}
-                >
-                  <LogOut className="h-5 w-5 mr-3" />
-                  <span className="font-medium">Cerrar Sesión</span>
-                </Button>
-              </SheetClose>
-            </div>
+          <div className="mt-4 border-t border-gray-700 pt-4">
+            <SheetClose asChild>
+              <Button
+                variant="ghost"
+                className="w-full flex items-center justify-start text-red-500 hover:bg-red-900/50 hover:text-red-400"
+                onClick={handleLogout}
+              >
+                <LogOut className="h-5 w-5 mr-3" />
+                <span className="font-medium">Cerrar Sesión</span>
+              </Button>
+            </SheetClose>
+          </div>
           )}
         </div>
       </SheetContent>
