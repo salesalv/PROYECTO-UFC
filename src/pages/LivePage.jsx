@@ -5,6 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Scissors, Download, Share2, Clock } from "lucide-react";
 import Hls from "hls.js";
 import { useClips } from "@/context/ClipsContext";
+import { useUser } from "@/context/UserContext";
+import supabase from "@/db";
 
 const LivePage = () => {
   const [isRecording, setIsRecording] = useState(false);
@@ -17,6 +19,7 @@ const LivePage = () => {
   const [chatInput, setChatInput] = useState("");
   const chatEndRef = useRef(null);
   const { addClip } = useClips();
+  const { user } = useUser();
 
   // Simulación de usuario actual (puedes reemplazarlo por el usuario real de tu app)
   const currentUser = {
@@ -24,7 +27,7 @@ const LivePage = () => {
   };
 
   useEffect(() => {
-    const videoSrc = 'https://x4bnd7lq.fubohd.com/foxsports2/mono.m3u8?token=eb1c7e07ae354055303a34818f4233d94fca4334-c3-1748834594-1748816594';
+    const videoSrc = 'https://agvyby.fubohd.com/foxsports2/mono.m3u8?token=d1fc2b72eb241226d14e6f37dca36007fb8dff81-b6-1750547321-1750529321';
 
     const initPlayer = () => {
       if (Hls.isSupported()) {
@@ -138,10 +141,42 @@ const LivePage = () => {
     }
   };
 
-  const stopRecording = () => {
+  const stopRecording = async () => {
     if (mediaRecorderRef.current && isRecording) {
       mediaRecorderRef.current.stop();
       setIsRecording(false);
+
+      mediaRecorderRef.current.onstop = async () => {
+        if (!user) {
+          setError("Debes iniciar sesión para guardar clips.");
+          return;
+        }
+
+        const blob = new Blob(chunksRef.current, { type: 'video/webm' });
+        const fileName = `clip_${user.auth.id}_${Date.now()}.webm`;
+
+        // Subir clip a Supabase Storage
+        const { error: uploadError } = await supabase.storage
+          .from('clips')
+          .upload(fileName, blob);
+
+        if (uploadError) {
+          setError(`Error al subir el clip: ${uploadError.message}`);
+          return;
+        }
+
+        // Obtener URL pública
+        const { data: publicUrlData } = supabase.storage
+          .from('clips')
+          .getPublicUrl(fileName);
+
+        // Insertar en la tabla 'clips'
+        await addClip({
+          video_url: publicUrlData.publicUrl,
+          title: `Clip de ${user.nombre_usuario}`,
+          start_time_seconds: videoRef.current?.currentTime || 0
+        });
+      };
     }
   };
 

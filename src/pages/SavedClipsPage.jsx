@@ -63,25 +63,25 @@ const SavedClipsPage = () => {
                     <Card className="bg-black/60 border-gray-800 shadow-lg overflow-hidden backdrop-blur-sm">
                       <div className="relative aspect-video">
                         <video
-                          src={clip.url}
+                          src={clip.video_url}
                           className="w-full h-full object-cover"
                           controls
                         />
                         <div className="absolute top-2 right-2 bg-black/50 px-2 py-1 rounded text-xs flex items-center text-gray-300">
                           <Clock className="w-3 h-3 mr-1 text-red-500" />
-                          {clip.duration}
+                          {clip.duration_seconds}s
                         </div>
                       </div>
                       <CardContent className="p-4">
                         <h3 className="text-lg font-bold mb-2 text-white">{clip.title}</h3>
                         <p className="text-sm text-gray-400 mb-4">
-                          Grabado el {new Date(clip.timestamp).toLocaleString()}
+                          Grabado el {new Date(clip.created_at).toLocaleString()}
                         </p>
                         <div className="flex gap-2">
                           <Button
                             variant="outline"
                             className="flex-1 border-red-600 text-red-500 hover:bg-red-600 hover:text-white"
-                            onClick={() => downloadClip(clip.url, clip.title)}
+                            onClick={() => downloadClip(clip.video_url, clip.title)}
                           >
                             <Download className="w-4 h-4 mr-2" />
                             Descargar
@@ -89,7 +89,7 @@ const SavedClipsPage = () => {
                           <Button
                             variant="outline"
                             className="flex-1 border-red-600 text-red-500 hover:bg-red-600 hover:text-white"
-                            onClick={() => shareClip(clip.url)}
+                            onClick={() => shareClip(clip.video_url)}
                           >
                             <Share2 className="w-4 h-4 mr-2" />
                             Compartir
