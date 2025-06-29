@@ -5,20 +5,7 @@ import { ListOrdered, ShieldCheck, BarChartHorizontalBig, Star } from "lucide-re
 import { Badge } from "@/components/ui/badge"; // Assuming Badge component exists or create it
 import ModalPeleador from "@/components/ui/ModalPeleador";
 import HoverCardPeleador from "@/components/ui/ModalPeleador";
-
-// Placeholder fighter data
-const fightersData = [
-  { rank: 1, name: "Jon Jones", division: "Peso Pesado", record: "27-1-0 (1 NC)", points: 2850, status: "Campeón", pais: "Estados Unidos", foto: "https://static.ufcstats.com/images/athlete/Jon-Jones.png", datoExtra: "Considerado uno de los mejores peleadores libra por libra de la historia." },
-  { rank: 2, name: "Islam Makhachev", division: "Peso Ligero", record: "25-1-0", points: 2780, status: "Campeón", pais: "Rusia", foto: "https://static.ufcstats.com/images/athlete/Islam-Makhachev.png", datoExtra: "Discípulo de Khabib Nurmagomedov, gran dominio en lucha y sumisiones." },
-  { rank: 3, name: "Alexander Volkanovski", division: "Peso Pluma", record: "26-4-0", points: 2750, status: "Top Contender", pais: "Australia", foto: "https://static.ufcstats.com/images/athlete/Alexander-Volkanovski.png", datoExtra: "Exjugador de rugby, famoso por su cardio y presión constante." },
-  { rank: 4, name: "Leon Edwards", division: "Peso Wélter", record: "22-3-0 (1 NC)", points: 2710, status: "Campeón", pais: "Reino Unido", foto: "https://static.ufcstats.com/images/athlete/Leon-Edwards.png", datoExtra: "Conocido por su striking técnico y defensa sólida." },
-  { rank: 5, name: "Alex Pereira", division: "Peso Semipesado", record: "10-2-0", points: 2690, status: "Campeón", pais: "Brasil", foto: "https://static.ufcstats.com/images/athlete/Alex-Pereira.png", datoExtra: "Excampeón de kickboxing, famoso por su poder de nocaut." },
-  { rank: 6, name: "Ilia Topuria", division: "Peso Pluma", record: "15-0-0", points: 2650, status: "Campeón", pais: "España / Georgia", foto: "https://static.ufcstats.com/images/athlete/Ilia-Topuria.png", datoExtra: "Invicto, gran pegada y jiu-jitsu de alto nivel." },
-  { rank: 7, name: "Sean O'Malley", division: "Peso Gallo", record: "18-1-0 (1 NC)", points: 2620, status: "Campeón", pais: "Estados Unidos", foto: "https://static.ufcstats.com/images/athlete/Sean-OMalley.png", datoExtra: "Estilo único y creativo, gran precisión en el golpeo." },
-  { rank: 8, name: "Charles Oliveira", division: "Peso Ligero", record: "34-10-0 (1 NC)", points: 2600, status: "Top Contender", pais: "Brasil", foto: "https://static.ufcstats.com/images/athlete/Charles-Oliveira.png", datoExtra: "Récord de finalizaciones en UFC, experto en sumisiones." },
-  { rank: 9, name: "Dricus du Plessis", division: "Peso Mediano", record: "21-2-0", points: 2580, status: "Campeón", pais: "Sudáfrica", foto: "https://static.ufcstats.com/images/athlete/Dricus-DuPlessis.png", datoExtra: "Gran resistencia y agresividad en el octágono." },
-  { rank: 10, name: "Alexandre Pantoja", division: "Peso Mosca", record: "27-5-0", points: 2550, status: "Campeón", pais: "Brasil", foto: "https://static.ufcstats.com/images/athlete/Alexandre-Pantoja.png", datoExtra: "Especialista en grappling y sumisiones rápidas." },
-];
+import supabase from "@/db";
 
 const getStatusBadgeVariant = (status) => {
   switch (status) {
@@ -39,6 +26,18 @@ const FightersPage = () => {
   const [hoveredFighter, setHoveredFighter] = React.useState(null);
   const [hoverPosition, setHoverPosition] = React.useState({ top: 0, left: 0 });
   const [showCard, setShowCard] = React.useState(false);
+  const [peleadores, setPeleadores] = React.useState([]);
+
+  React.useEffect(() => {
+    const fetchPeleadores = async () => {
+      const { data, error } = await supabase
+        .from('peleador')
+        .select('*')
+        .order('puntos', { ascending: false });
+      if (!error) setPeleadores(data);
+    };
+    fetchPeleadores();
+  }, []);
 
   React.useEffect(() => {
     if (!showCard) return;
@@ -95,9 +94,9 @@ const FightersPage = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {fightersData.map((fighter) => (
-                  <TableRow key={fighter.rank} className="border-gray-800 hover:bg-gray-700/50 transition-colors cursor-pointer">
-                    <TableCell className="text-center font-medium">{fighter.rank}</TableCell>
+                {peleadores.map((fighter, idx) => (
+                  <TableRow key={fighter.id || idx} className="border-gray-800 hover:bg-gray-700/50 transition-colors cursor-pointer">
+                    <TableCell className="text-center font-medium">{idx + 1}</TableCell>
                     <TableCell
                       className="font-semibold relative peleador-nombre"
                       onMouseEnter={e => handleMouseEnter(fighter, e)}
@@ -107,7 +106,7 @@ const FightersPage = () => {
                       tabIndex={0}
                       style={{ outline: 'none' }}
                     >
-                      {fighter.name}
+                      {fighter.nombre}
                     </TableCell>
                     <TableCell className="hidden md:table-cell text-gray-400">{fighter.division}</TableCell>
                     <TableCell className="hidden lg:table-cell text-gray-400">{fighter.record}</TableCell>
@@ -117,7 +116,7 @@ const FightersPage = () => {
                          {fighter.status}
                        </Badge>
                     </TableCell>
-                    <TableCell className="text-right font-bold text-yellow-300">{fighter.points.toLocaleString()}</TableCell>
+                    <TableCell className="text-right font-bold text-yellow-300">{fighter.puntos?.toLocaleString()}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>

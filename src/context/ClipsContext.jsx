@@ -58,7 +58,7 @@ export const ClipsProvider = ({ children }) => {
       .eq('user_id', user.auth.id);
 
     if (!error) {
-      setSavedClips(prev => prev.filter(clip => clip.id !== clipId));
+    setSavedClips(prev => prev.filter(clip => clip.id !== clipId));
     }
   };
 
