@@ -1,0 +1,297 @@
+{
+  "profile": {
+    "edit_profile": "Editar Perfil",
+    "member_since": "Miembro desde",
+    "username": "Nombre de Usuario",
+    "email": "Correo Electrónico",
+    "total_points": "Puntos Totales",
+    "ranking": "Ranking",
+    "language": "Idioma"
+  },
+  "main_card": "Cartelera Estelar",
+  "prelims": "Preliminares",
+  "vs": "VS",
+  "weight": {
+    "peso medio": "Peso medio",
+    "peso semipesado": "Peso semipesado",
+    "peso pesado": "Peso pesado",
+    "peso gallo": "Peso gallo",
+    "peso paja femenina": "Peso paja femenina",
+    "peso pluma": "Peso pluma",
+    "Peso ligero": "Peso ligero",
+    "peso mosca femenina": "Peso mosca femenina",
+    "peso mosca": "Peso mosca",
+    "peso welter": "Peso welter"
+  },
+  "event": {
+    "title": {
+      "sandhagen_nurmagomedov": "UFC Fight Night: Sandhagen vs. Nurmagomedov",
+      "namajunas_barber": "UFC Fight Night: Namajunas vs. Barber",
+      "edwards_muhammad": "UFC 304: Edwards vs. Muhammad 2"
+    },
+    "date_location": {
+      "sandhagen_nurmagomedov": "2 de agosto de 2025 - Abu Dhabi, UAE (Etihad Arena)",
+      "namajunas_barber": "12 de julio de 2025 - Denver, CO (Ball Arena)",
+      "edwards_muhammad": "26 de julio de 2025 - Manchester, England (Co-op Live)"
+    },
+    "time": "{{time}}",
+    "arena": "Arena de UFC"
+  },
+  "thread": {
+    "not_found": "Hilo no encontrado.",
+    "by": "por",
+    "replies": "Respuestas ({{count}})"
+  },
+  "clips": {
+    "saved_clips": "Clips Guardados",
+    "no_clips": "No tienes clips guardados aún.",
+    "hint_record": "Graba clips durante las transmisiones en vivo para verlos aquí.",
+    "download": "Descargar",
+    "share": "Compartir",
+    "clip_title": "Clip de UFC",
+    "url_copied": "URL copiada al portapapeles"
+  },
+  "prediction": {
+    "title": "Predicción y Apuesta",
+    "who_wins": "¿Quién ganará la pelea?",
+    "ko_tko": "KO/TKO",
+    "submission": "Sumisión",
+    "decision": "Decisión",
+    "round_label": "¿En qué round terminará?",
+    "round_hint": "(Solo aplica si no es decisión)",
+    "yes": "Sí",
+    "no": "No",
+    "bet_amount": "Monto de la Apuesta",
+    "coins": "Monedas",
+    "balance": "Saldo",
+    "potential_win": "Ganancia Potencial",
+    "alert_invalid_bet": "Por favor, ingresa un monto válido para apostar.",
+    "alert_no_coins": "No tienes suficientes monedas para esta apuesta.",
+    "alert_sent": "Predicciones enviadas con apuesta de {{amount}} monedas (ver consola)",
+    "send": "Enviar Predicción y Apuesta",
+    "first_strike": "¿Primer golpe significativo?",
+    "first_takedown": "¿Primer derribo?",
+    "most_significant_strikes": "¿Más golpes significativos?",
+    "additional_predictions": "Predicciones Adicionales",
+    "will_be_ko": "¿Habrá KO/TKO?",
+    "will_be_sub": "¿Habrá Sumisión?",
+    "go_to_decision": "¿Llegará a Decisión?"
+  },
+  "live": {
+    "title": "Transmisión en Vivo",
+    "error_no_hls": "Tu navegador no soporta la reproducción de video en vivo",
+    "error_record": "No se pudo iniciar la grabación",
+    "error_login": "Debes iniciar sesión para guardar clips.",
+    "error_upload": "Error al subir el clip: {{message}}",
+    "on_air": "EN VIVO",
+    "record_clip": "Grabar Clip",
+    "stop_record": "Detener Grabación",
+    "chat_title": "Chat en Vivo",
+    "no_messages": "No hay mensajes aún. ¡Sé el primero en comentar!",
+    "write_message": "Escribe tu mensaje...",
+    "send": "Enviar"
+  },
+  "nav": {
+    "home": "Inicio",
+    "forum": "Foro",
+    "fighters": "Peleadores",
+    "compare": "Comparar",
+    "highlights": "Clips Destacados",
+    "events": "Eventos",
+    "saved_clips": "Clips Guardados",
+    "live": "Ver en Vivo",
+    "profile": "Mi Perfil",
+    "my_rankings": "Mis Rankings"
+  },
+  "auth": {
+    "login": "Iniciar Sesión",
+    "register": "Registrarse",
+    "logout": "Cerrar Sesión",
+    "email": "Correo Electrónico",
+    "password": "Contraseña",
+    "remember": "Recordarme",
+    "logging_in": "Iniciando sesión...",
+    "registering": "Registrando...",
+    "username": "Nombre de Usuario",
+    "username_placeholder": "TuUsuario",
+    "email_placeholder": "tu@email.com",
+    "passwords_no_match": "Las contraseñas no coinciden",
+    "create_account": "CREAR CUENTA",
+    "complete_data_join_community": "Completa tus datos para unirte a la comunidad",
+    "confirm_password": "Confirmar Contraseña",
+    "login_here": "Inicia sesión aquí",
+    "accept_terms": "Al registrarte, aceptas nuestros ",
+    "terms_conditions": "Términos y Condiciones",
+    "login_subtitle": "Ingresa tus credenciales para acceder a tu cuenta",
+    "forgot_password": "¿Olvidaste tu contraseña?",
+    "or_continue_with": "O continúa con",
+    "continue_with_google": "Continuar con Google",
+    "no_account": "¿No tienes cuenta?",
+    "register_here": "Regístrate aquí",
+    "already_have_account": "¿Ya tienes cuenta?"
+  },
+  "sidebar": {
+    "my_points": "Mis Puntos:"
+  },
+  "stats": {
+    "accurate_predictions": "Predicciones Acertadas",
+    "coins_won": "Monedas Ganadas",
+    "global_ranking": "Ranking Global",
+    "next_level": "Siguiente Nivel"
+  },
+  "user": {
+    "default": "Usuario",
+    "points": "pts",
+    "win_rate": "Win Rate",
+    "predictions": "Predicciones",
+    "profile": "Mi Perfil",
+    "ranking": "Ranking Global"
+  },
+  "forum": {
+    "title": "Foro de la Comunidad",
+    "search_placeholder": "Buscar en el foro...",
+    "create_thread": "Crear Nuevo Hilo",
+    "categories": "Categorías",
+    "recent_threads": "Hilos Recientes",
+    "by": "por",
+    "in": "en",
+    "category_general": "Discusión General",
+    "category_general_desc": "Habla de todo sobre UFC",
+    "category_predictions": "Predicciones y Apuestas",
+    "category_predictions_desc": "Comparte tus pronósticos",
+    "category_news": "Noticias y Rumores",
+    "category_news_desc": "Últimas novedades del octágono",
+    "category_fighters": "Peleadores y Divisiones",
+    "category_fighters_desc": "Análisis por categoría"
+  },
+  "highlights": {
+    "title": "Clips Destacados",
+    "ko_epic": "KO Épico: McGregor vs. Aldo",
+    "submission_incredible": "Sumisión Increíble: Nurmagomedov",
+    "total_war": "Guerra Total: Jones vs. Gustafsson I",
+    "surprise_kick": "Patada Voladora Sorpresa",
+    "comeback": "Remontada Histórica",
+    "night_ko": "Noche de Nocauts",
+    "alt_ko": "Golpe de nocaut en el octágono",
+    "alt_submission": "Sumisión en la lona",
+    "alt_war": "Intercambio intenso de golpes",
+    "alt_kick": "Patada voladora espectacular",
+    "alt_comeback": "Celebración de remontada histórica",
+    "alt_night": "Montaje de momentos destacados",
+    "fighters": "Peleadores",
+    "watch_clip": "Ver Clip"
+  },
+  "fighters": {
+    "title": "Ranking Oficial de Peleadores (P4P)",
+    "champion": "Campeón",
+    "top_contender": "Top Contender",
+    "status": {
+      "Campeón": "Campeón",
+      "Top Contender": "Top Contender"
+    },
+    "no_table": "Componentes de Tabla o Badge no encontrados. Por favor, créalos si no existen.",
+    "note": "Ranking Libra por Libra (P4P) basado en el rendimiento y dominio divisional.",
+    "rank": "Rank",
+    "name": "Nombre",
+    "division": "División",
+    "record": "Récord",
+    "status_col": "Status",
+    "points_col": "Puntos"
+  },
+  "compare": {
+    "title": "Comparador de Peleadores",
+    "select_fighter_1": "Seleccionar Peleador 1",
+    "select_fighter_2": "Seleccionar Peleador 2",
+    "strikes_per_min": "Golpes / min",
+    "accuracy": "Precisión (%)",
+    "takedowns_per_15": "Derribos / 15min",
+    "defense": "Defensa (%)",
+    "avg_fight_time": "Tiempo Medio Pelea",
+    "no_select": "Componente Select no encontrado"
+  },
+  "events": {
+    "title": "Próximos Eventos",
+    "alt_arena": "Arena iluminada llena de espectadores para un evento de UFC",
+    "alt_octagon": "Vista lateral del octágono de UFC durante una pelea",
+    "alt_staredown": "Dos peleadores frente a frente antes de un combate",
+    "alt_celebration": "Peleador victorioso celebrando en el octágono",
+    "main_event": "Pelea Principal:",
+    "co_main_event": "Co-Estelar:",
+    "details": "Ver Detalles / Comprar"
+  },
+  "category": {
+    "not_found": "Categoría no encontrada.",
+    "search_placeholder": "Buscar en {{category}}...",
+    "threads_in": "Hilos en {{category}} ({{count}})",
+    "no_threads": "No hay hilos en esta categoría todavía."
+  },
+  "home": {
+    "featured_fight_bg": "Fondo de pelea destacada UFC con luces de octágono",
+    "event_principal": "Evento Principal",
+    "open_predictions": "Predicciones Abiertas",
+    "star_fight": "PELEA ESTELAR",
+    "star_fight_description": "Pelea estelar por el título mundial",
+    "select_fav_a": "Seleccionar a Luchador A como favorito",
+    "select_fav_b": "Seleccionar a Luchador B como favorito",
+    "fighter_a": "Retrato del Luchador A",
+    "fighter_b": "Retrato del Luchador B",
+    "see_more": "Ver en Vivo",
+    "make_prediction": "Hacer Predicción",
+    "join_community": "Ir al Foro",
+    "learn_more": "Hacer Predicción",
+    "join_title": "Únete a la Comunidad",
+    "join_desc": "Participa en los foros, compite en los rankings de predicciones y demuestra quién sabe más de MMA.",
+    "see_rankings": "Ver Rankings",
+    "upcoming_events": "Próximos Eventos",
+    "see_details": "Ver Detalles",
+    "champion": "Campeón",
+    "challenger": "Retador",
+    "vote_percent": "% de los votos",
+    "ufc_300_title": "UFC 300: PELEA ESTELAR",
+    "see_all": "Ver todos"
+  },
+  "login": {
+    "welcome": "Bienvenido a",
+    "subtitle": "Tu plataforma definitiva para el mundo del MMA"
+  },
+  "register": {
+    "title": "Únete a la Comunidad",
+    "subtitle": "Crea tu cuenta y empieza a predecir resultados de MMA"
+  },
+  "rankings": {
+    "title": "Ranking Global de Predicciones",
+    "rank": "Rank",
+    "user": "Usuario",
+    "points": "Puntos",
+    "streak": "Racha",
+    "updated": "El ranking se actualiza después de cada evento principal. ¡Sigue prediciendo!"
+  },
+  "fighter": {
+    "division": "División:",
+    "country": "País:",
+    "record": "Récord:",
+    "status": "Status:"
+  },
+  "logo": {
+    "alt": "Logo de UFC"
+  },
+  "eventosUFC303": {
+    "title": "UFC 303: McGregor vs. Chandler",
+    "date_location": "28 de junio de 2025 - Las Vegas, NV (T-Mobile Arena)",
+    "time": "7:00 PM (hora local)",
+    "main_card": "Cartelera Estelar",
+    "prelims": "Preliminares",
+    "vs": "VS",
+    "image_alt": "Arena de UFC 303",
+    "weights": {
+      "Peso ligero": "Peso ligero",
+      "Peso semipesado": "Peso semipesado",
+      "Peso medio": "Peso medio",
+      "Peso gallo femenino": "Peso gallo femenino",
+      "Peso welter": "Peso welter",
+      "Peso pluma": "Peso pluma",
+      "Peso gallo": "Peso gallo",
+      "Peso mosca": "Peso mosca"
+    }
+  }
+} 

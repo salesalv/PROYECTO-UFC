@@ -11,6 +11,7 @@ import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
 import supabase from "@/db";
 import { useUser } from "@/context/UserContext";
+import { useTranslation } from "react-i18next";
 
 const UserProfilePage = () => {
   const { user: userData, loading, refreshUser } = useUser();
@@ -22,6 +23,12 @@ const UserProfilePage = () => {
   const fileInputRef = useRef();
   const [avatarFile, setAvatarFile] = useState(null);
   const [avatarPreview, setAvatarPreview] = useState(null);
+  const { t, i18n } = useTranslation();
+  const [selectedLanguage, setSelectedLanguage] = useState(i18n.language || 'es');
+
+  useEffect(() => {
+    i18n.changeLanguage(selectedLanguage);
+  }, [selectedLanguage, i18n]);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -124,17 +131,29 @@ const UserProfilePage = () => {
                   )}
                 </div>
                 <CardTitle className="text-3xl font-black uppercase tracking-wider text-red-500">
-                  {userData?.nombre_usuario || "Usuario"}
+                  {userData?.nombre_usuario || t('profile.username')}
                 </CardTitle>
                 <CardDescription className="text-gray-300">
-                  Miembro desde {userData ? new Date(userData.fecha_registro).toLocaleDateString() : "-"}
+                  {t('profile.member_since')} {userData ? new Date(userData.fecha_registro).toLocaleDateString() : "-"}
                 </CardDescription>
+                <div className="flex justify-center mt-4">
+                  <Select value={selectedLanguage} onValueChange={setSelectedLanguage}>
+                    <SelectTrigger className="w-48 bg-gray-800 border-gray-700 text-white">
+                      <SelectValue>{t('profile.language')}</SelectValue>
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="es">Español</SelectItem>
+                      <SelectItem value="en">English</SelectItem>
+                      <SelectItem value="pt">Português</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </CardHeader>
               <CardContent className="mt-6 space-y-6">
                 <div className="flex items-center space-x-4 p-4 bg-gray-900/50 rounded-lg border border-gray-700">
                   <User className="w-6 h-6 text-red-500" />
                   <div>
-                    <p className="text-sm text-gray-300">Nombre de Usuario</p>
+                    <p className="text-sm text-gray-300">{t('profile.username')}</p>
                     {isEditing ? (
                       <Input
                         className="font-semibold text-white bg-gray-800 border-gray-700"
@@ -149,7 +168,7 @@ const UserProfilePage = () => {
                 <div className="flex items-center space-x-4 p-4 bg-gray-900/50 rounded-lg border border-gray-700">
                   <Mail className="w-6 h-6 text-red-500" />
                   <div>
-                    <p className="text-sm text-gray-300">Correo Electrónico</p>
+                    <p className="text-sm text-gray-300">{t('profile.email')}</p>
                     <p className="font-semibold text-white">{userData?.correo}</p>
                   </div>
                 </div>
@@ -157,14 +176,14 @@ const UserProfilePage = () => {
                   <div className="flex items-center space-x-4 p-4 bg-gray-900/50 rounded-lg border border-gray-700">
                     <Award className="w-6 h-6 text-yellow-500" />
                     <div>
-                      <p className="text-sm text-gray-300">Puntos Totales</p>
+                      <p className="text-sm text-gray-300">{t('profile.total_points')}</p>
                       <p className="font-semibold text-xl text-white">{userData?.puntos ?? 0}</p>
                     </div>
                   </div>
                   <div className="flex items-center space-x-4 p-4 bg-gray-900/50 rounded-lg border border-gray-700">
                     <Trophy className="w-6 h-6 text-yellow-500" />
                     <div>
-                      <p className="text-sm text-gray-300">Ranking</p>
+                      <p className="text-sm text-gray-300">{t('profile.ranking')}</p>
                       <p className="font-semibold text-xl text-white">{userData?.rango ?? '-'}</p>
                     </div>
                   </div>
@@ -175,61 +194,13 @@ const UserProfilePage = () => {
                   className="bg-red-600 hover:bg-red-700 font-bold uppercase tracking-wider"
                   onClick={handleEditToggle}
                 >
-                  {isEditing ? "Guardar Cambios" : "Editar Perfil"}
+                  {isEditing ? t('profile.edit_profile') : t('profile.edit_profile')}
                 </Button>
               </CardFooter>
             </Card>
           </div>
 
-          {/* Columna Lateral */}
-          <div className="space-y-6">
-            <Card className="bg-black/70 border border-gray-800 backdrop-blur-sm shadow-lg">
-              <CardHeader>
-                <CardTitle className="text-xl flex items-center gap-2 text-white">
-                  <Bell className="w-5 h-5 text-red-500" />
-                  Notificaciones
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <Label className="text-gray-300">Notificaciones Push</Label>
-                  <Slider
-                    defaultValue={[50]}
-                    max={100}
-                    step={1}
-                    className="w-[60%]"
-                  />
-                </div>
-                <div className="flex items-center justify-between">
-                  <Label className="text-gray-300">Correos Electrónicos</Label>
-                  <Slider
-                    defaultValue={[75]}
-                    max={100}
-                    step={1}
-                    className="w-[60%]"
-                  />
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-black/70 border border-gray-800 backdrop-blur-sm shadow-lg">
-              <CardHeader>
-                <CardTitle className="text-xl flex items-center gap-2 text-white">
-                  <Shield className="w-5 h-5 text-red-500" />
-                  Seguridad
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label className="text-gray-300">Cambiar Contraseña</Label>
-                  <Input type="password" placeholder="Nueva contraseña" className="bg-gray-900/50 border-gray-700" />
-                </div>
-                <Button variant="outline" className="w-full">
-                  Actualizar Contraseña
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
+          {/* Columna Lateral eliminada (Notificaciones y Seguridad) */}
         </div>
       </motion.div>
     </div>

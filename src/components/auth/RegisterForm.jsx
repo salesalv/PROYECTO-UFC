@@ -6,8 +6,10 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Link, useNavigate } from "react-router-dom";
 import { User, Mail, Lock, Eye, EyeOff } from "lucide-react";
 import supabase from "@/db";
+import { useTranslation } from 'react-i18next';
 
 const RegisterForm = () => {
+  const { t } = useTranslation();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -33,7 +35,7 @@ const RegisterForm = () => {
 
     // Validar que las contraseñas coincidan
     if (formData.contraseña !== formData.confirmar_contraseña) {
-      setError('Las contraseñas no coinciden');
+      setError(t('auth.passwords_no_match'));
       return;
     }
 
@@ -92,9 +94,9 @@ const RegisterForm = () => {
   return (
     <Card className="w-full max-w-md bg-black/80 border-gray-800 text-white backdrop-blur-sm shadow-xl">
       <CardHeader className="space-y-3">
-        <CardTitle className="text-3xl font-black text-red-600 tracking-wider">CREAR CUENTA</CardTitle>
+        <CardTitle className="text-3xl font-black text-red-600 tracking-wider">{t('auth.create_account')}</CardTitle>
         <CardDescription className="text-gray-400 text-base">
-          Completa tus datos para unirte a la comunidad
+          {t('auth.complete_data_join_community')}
         </CardDescription>
       </CardHeader>
       <form onSubmit={handleSubmit}>
@@ -105,13 +107,13 @@ const RegisterForm = () => {
             </div>
           )}
           <div className="space-y-2">
-            <Label htmlFor="nombre_usuario" className="text-sm font-medium text-gray-300">Nombre de Usuario</Label>
+            <Label htmlFor="nombre_usuario" className="text-sm font-medium text-gray-300">{t('auth.username')}</Label>
             <div className="relative">
               <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-500" />
               <Input 
                 id="nombre_usuario" 
                 name="nombre_usuario"
-                placeholder="TuUsuario" 
+                placeholder={t('auth.username_placeholder')} 
                 required 
                 className="pl-10 bg-gray-900/50 border-gray-700 focus:ring-red-600 focus:border-red-600" 
                 value={formData.nombre_usuario}
@@ -120,14 +122,14 @@ const RegisterForm = () => {
             </div>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="correo" className="text-sm font-medium text-gray-300">Correo Electrónico</Label>
+            <Label htmlFor="correo" className="text-sm font-medium text-gray-300">{t('auth.email')}</Label>
             <div className="relative">
               <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-500" />
               <Input 
                 id="correo" 
                 name="correo"
                 type="email" 
-                placeholder="tu@email.com" 
+                placeholder={t('auth.email_placeholder')} 
                 required 
                 className="pl-10 bg-gray-900/50 border-gray-700 focus:ring-red-600 focus:border-red-600" 
                 value={formData.correo}
@@ -136,7 +138,7 @@ const RegisterForm = () => {
             </div>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="contraseña" className="text-sm font-medium text-gray-300">Contraseña</Label>
+            <Label htmlFor="contraseña" className="text-sm font-medium text-gray-300">{t('auth.password')}</Label>
             <div className="relative">
               <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-500" />
               <Input 
@@ -158,7 +160,7 @@ const RegisterForm = () => {
             </div>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="confirmar_contraseña" className="text-sm font-medium text-gray-300">Confirmar Contraseña</Label>
+            <Label htmlFor="confirmar_contraseña" className="text-sm font-medium text-gray-300">{t('auth.confirm_password')}</Label>
             <div className="relative">
                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-500" />
               <Input 
@@ -183,22 +185,22 @@ const RegisterForm = () => {
         <CardFooter className="flex flex-col space-y-4">
            <Button 
             type="submit" 
-            className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200"
+            className="w-full bg-red-600 hover:bg-red-700 text-lg py-3 font-bold uppercase tracking-wider"
             disabled={isLoading}
           >
-            {isLoading ? "Registrando..." : "Registrarse"}
+            {isLoading ? t('auth.registering') : t('auth.register')}
           </Button>
            <div className="text-center space-y-2">
             <p className="text-sm text-gray-400">
-              ¿Ya tienes cuenta?{" "}
+              {t('auth.already_have_account')}{' '}
               <Link to="/login" className="text-red-500 hover:text-red-400 hover:underline font-medium">
-                Inicia sesión aquí
+                {t('auth.login_here')}
               </Link>
             </p>
              <p className="text-xs text-gray-500">
-              Al registrarte, aceptas nuestros{" "}
+              {t('auth.accept_terms')}
               <Link to="/terms" className="text-gray-400 hover:text-gray-300 hover:underline">
-                Términos y Condiciones
+                {t('auth.terms_conditions')}
               </Link>
             </p>
            </div>

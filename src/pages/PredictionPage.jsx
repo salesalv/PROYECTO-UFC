@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
 import { Award, Target, ChevronsDown, CheckCircle, XCircle, CalendarCheck, Users, Coins } from "lucide-react";
+import { useTranslation } from 'react-i18next';
 
 // Placeholder data - Move to context or props later if needed
 const fightDetails = {
@@ -48,82 +49,94 @@ const PredictionFighterOptions = ({ predictionKey, value, onChange, fighters, la
   </div>
 );
 
-const PredictionMethodRadio = ({ value, onChange }) => (
-  <div className="space-y-3">
-    <Label className="text-lg font-semibold text-gray-200">¿Cómo ganarás?</Label>
-    <RadioGroup value={value} onValueChange={(val) => onChange('method', val)} className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-6 pt-1">
-      <div className="flex items-center space-x-2">
-        <RadioGroupItem value="KO/TKO" id="method-KO" className="border-gray-600 text-red-500 focus:ring-red-500"/>
-        <Label htmlFor="method-KO" className="text-gray-300">KO/TKO</Label>
-      </div>
-      <div className="flex items-center space-x-2">
-        <RadioGroupItem value="Submission" id="method-Submission" className="border-gray-600 text-blue-500 focus:ring-blue-500"/>
-        <Label htmlFor="method-Submission" className="text-gray-300">Sumisión</Label>
-      </div>
-      <div className="flex items-center space-x-2">
-        <RadioGroupItem value="Decision" id="method-Decision" className="border-gray-600 text-green-500 focus:ring-green-500"/>
-        <Label htmlFor="method-Decision" className="text-gray-300">Decisión</Label>
-      </div>
-    </RadioGroup>
-  </div>
-);
-
-const PredictionRoundSlider = ({ value, onChange, maxRounds }) => (
-  <div className="space-y-4">
-    <Label htmlFor="round" className="text-lg font-semibold text-gray-200">¿En qué round terminará?</Label>
-    <div className="flex items-center space-x-4 pt-1">
-      <Slider id="round" min={1} max={maxRounds} step={1} value={value} onValueChange={onChange} className="flex-grow [&>span:first-child]:bg-red-600" />
-      <span className="font-bold text-xl text-red-400 w-8 text-center">{value[0]}</span>
+const PredictionMethodRadio = ({ value, onChange }) => {
+  const { t } = useTranslation();
+  return (
+    <div className="flex flex-col sm:flex-row items-center gap-4">
+      <RadioGroup value={value} onValueChange={(val) => onChange('method', val)} className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-6 pt-1">
+        <div className="flex items-center space-x-2">
+          <RadioGroupItem value="KO/TKO" id="method-KO/TKO" className="border-gray-600 text-red-500 focus:ring-red-500"/>
+          <Label htmlFor="method-KO/TKO" className="text-gray-300">{t('prediction.ko_tko')}</Label>
+        </div>
+        <div className="flex items-center space-x-2">
+          <RadioGroupItem value="Submission" id="method-Submission" className="border-gray-600 text-blue-500 focus:ring-blue-500"/>
+          <Label htmlFor="method-Submission" className="text-gray-300">{t('prediction.submission')}</Label>
+        </div>
+        <div className="flex items-center space-x-2">
+          <RadioGroupItem value="Decision" id="method-Decision" className="border-gray-600 text-green-500 focus:ring-green-500"/>
+          <Label htmlFor="method-Decision" className="text-gray-300">{t('prediction.decision')}</Label>
+        </div>
+      </RadioGroup>
     </div>
-    <p className="text-xs text-gray-500 text-center">(Solo aplica si no es decisión)</p>
-  </div>
-);
+  );
+};
 
-const PredictionYesNo = ({ predictionKey, value, onChange, label, icon: Icon }) => (
-  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-2 sm:space-y-0">
-    <Label className="flex items-center text-base sm:text-lg text-gray-300">
-      <Icon className="w-4 h-4 mr-2 text-gray-400" /> {label}
-    </Label>
-    <RadioGroup value={value} onValueChange={(val) => onChange(predictionKey, val)} className="flex space-x-6 shrink-0">
-      <div className="flex items-center space-x-2">
-        <RadioGroupItem value="yes" id={`${predictionKey}-yes`} className="border-gray-600 text-green-500 focus:ring-green-500"/>
-        <Label htmlFor={`${predictionKey}-yes`} className="text-green-400">Sí</Label>
+const PredictionRoundSlider = ({ value, onChange, maxRounds }) => {
+  const { t } = useTranslation();
+  return (
+    <div className="space-y-4">
+      <Label htmlFor="round" className="text-lg font-semibold text-gray-200">{t('prediction.round_label')}</Label>
+      <div className="flex items-center space-x-4 pt-1">
+        <Slider id="round" min={1} max={maxRounds} step={1} value={value} onValueChange={onChange} className="flex-grow [&>span:first-child]:bg-red-600" />
+        <span className="font-bold text-xl text-red-400 w-8 text-center">{value[0]}</span>
       </div>
-      <div className="flex items-center space-x-2">
-        <RadioGroupItem value="no" id={`${predictionKey}-no`} className="border-gray-600 text-red-500 focus:ring-red-500"/>
-        <Label htmlFor={`${predictionKey}-no`} className="text-red-500">No</Label>
-      </div>
-    </RadioGroup>
-  </div>
-);
-
-const PredictionBetAmount = ({ betAmount, balance, potentialWinnings, onBetChange }) => (
-  <div className="space-y-3">
-    <Label htmlFor="betAmount" className="text-lg font-semibold flex items-center text-gray-200">
-      <Coins className="w-5 h-5 mr-2 text-yellow-500" /> Monto de la Apuesta
-    </Label>
-    <div className="relative">
-      <Input
-        type="text"
-        id="betAmount"
-        value={betAmount}
-        onChange={onBetChange}
-        placeholder="0"
-        className="w-full bg-gray-900/50 border-gray-700 pl-4 pr-24 text-lg text-white" // Increased right padding
-        inputMode="numeric"
-      />
-      <span className="absolute right-4 top-1/2 -translate-y-1/2 text-yellow-400 font-bold">Monedas</span>
+      <p className="text-xs text-gray-500 text-center">{t('prediction.round_hint')}</p>
     </div>
-     <div className="flex justify-between items-center text-sm mt-2">
-         <p className="text-gray-400">Saldo: <span className="font-semibold text-gray-200">{balance.toLocaleString()}</span> <Coins className="inline h-3 w-3 ml-0.5 text-yellow-400" /></p>
-         <p className="text-gray-400">Ganancia Potencial: <span className="font-bold text-green-400">{potentialWinnings.toLocaleString()}</span> <Coins className="inline h-4 w-4 ml-1 text-yellow-400" /></p>
-     </div>
-  </div>
-);
+  );
+};
+
+const PredictionYesNo = ({ predictionKey, value, onChange, label, icon: Icon }) => {
+  const { t } = useTranslation();
+  return (
+    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-2 sm:space-y-0">
+      <Label className="flex items-center text-base sm:text-lg text-gray-300">
+        <Icon className="w-4 h-4 mr-2 text-gray-400" /> {label}
+      </Label>
+      <RadioGroup value={value} onValueChange={(val) => onChange(predictionKey, val)} className="flex space-x-6 shrink-0">
+        <div className="flex items-center space-x-2">
+          <RadioGroupItem value="yes" id={`${predictionKey}-yes`} className="border-gray-600 text-green-500 focus:ring-green-500"/>
+          <Label htmlFor={`${predictionKey}-yes`} className="text-green-400">{t('prediction.yes')}</Label>
+        </div>
+        <div className="flex items-center space-x-2">
+          <RadioGroupItem value="no" id={`${predictionKey}-no`} className="border-gray-600 text-red-500 focus:ring-red-500"/>
+          <Label htmlFor={`${predictionKey}-no`} className="text-red-500">{t('prediction.no')}</Label>
+        </div>
+      </RadioGroup>
+    </div>
+  );
+};
+
+const PredictionBetAmount = ({ betAmount, balance, potentialWinnings, onBetChange }) => {
+  const { t } = useTranslation();
+  return (
+    <div className="space-y-3">
+      <Label htmlFor="betAmount" className="text-lg font-semibold flex items-center text-gray-200">
+        <Coins className="w-5 h-5 mr-2 text-yellow-500" /> {t('prediction.bet_amount')}
+      </Label>
+      <div className="relative">
+        <Input
+          type="text"
+          id="betAmount"
+          value={betAmount}
+          onChange={onBetChange}
+          placeholder="0"
+          className="w-full bg-gray-900/50 border-gray-700 pl-4 pr-24 text-lg text-white"
+          inputMode="numeric"
+        />
+        <span className="absolute right-4 top-1/2 -translate-y-1/2 text-yellow-400 font-bold">{t('prediction.coins')}</span>
+      </div>
+      <div className="flex justify-between items-center text-sm mt-2">
+        <p className="text-gray-400">{t('prediction.balance')}: <span className="font-semibold text-gray-200">{balance.toLocaleString()}</span> <Coins className="inline h-3 w-3 ml-0.5 text-yellow-400" /></p>
+        <p className="text-gray-400">{t('prediction.potential_win')}: <span className="font-bold text-green-400">{potentialWinnings.toLocaleString()}</span> <Coins className="inline h-4 w-4 ml-1 text-yellow-400" /></p>
+      </div>
+    </div>
+  );
+};
 
 // --- Main Prediction Page Component ---
 
 const PredictionPage = () => {
+  const { t } = useTranslation();
   const [predictions, setPredictions] = useState({
     winner: undefined,
     method: undefined,
@@ -195,16 +208,16 @@ const PredictionPage = () => {
     e.preventDefault();
     const finalBetAmount = parseInt(betAmount, 10) || 0;
     if (finalBetAmount <= 0) {
-      alert("Por favor, ingresa un monto válido para apostar."); return;
+      alert(t('prediction.alert_invalid_bet')); return;
     }
     if (finalBetAmount > userBalance) {
-      alert("No tienes suficientes monedas para esta apuesta."); return;
+      alert(t('prediction.alert_no_coins')); return;
     }
 
     console.log("Predicciones enviadas:", predictions);
     console.log("Monto Apostado:", finalBetAmount);
     console.log("Ganancia Potencial:", potentialWinnings);
-    alert(`Predicciones enviadas con apuesta de ${finalBetAmount} monedas (ver consola)`);
+    alert(t('prediction.alert_sent', { amount: finalBetAmount }));
   };
 
   return (
@@ -218,7 +231,7 @@ const PredictionPage = () => {
         <Card className="bg-black/70 border border-gray-800 shadow-lg shadow-red-900/10 backdrop-blur-sm">
           <CardHeader className="text-center border-b border-gray-700 pb-4">
             <CardTitle className="text-2xl sm:text-3xl font-black uppercase text-red-500 tracking-wider">
-              Predicción y Apuesta
+              {t('prediction.title')}
             </CardTitle>
             <CardDescription className="text-base sm:text-lg text-gray-300 mt-1">
               {fightDetails.event}: {fightDetails.fighter1} vs. {fightDetails.fighter2}
@@ -227,7 +240,7 @@ const PredictionPage = () => {
 
           <CardContent className="pt-6 space-y-8">
             {/* Main Predictions */}
-            <PredictionFighterOptions predictionKey="winner" value={predictions.winner} onChange={updatePrediction} fighters={fightDetails} label="¿Quién ganará la pelea?" icon={Award} iconColor="text-yellow-400" />
+            <PredictionFighterOptions predictionKey="winner" value={predictions.winner} onChange={updatePrediction} fighters={fightDetails} label={t('prediction.who_wins')} icon={Award} iconColor="text-yellow-400" />
             <PredictionMethodRadio value={predictions.method} onChange={updatePrediction} />
             <PredictionRoundSlider value={predictions.round} onChange={handleSliderChange} maxRounds={fightDetails.rounds} />
 
@@ -237,9 +250,9 @@ const PredictionPage = () => {
             {/* Additional Predictions */}
             <h3 className="text-xl font-semibold text-center text-gray-300 pt-2 mb-6">Predicciones Adicionales</h3>
             <div className="space-y-6">
-              <PredictionFighterOptions predictionKey="firstStrike" value={predictions.firstStrike} onChange={updatePrediction} fighters={fightDetails} label="¿Primer golpe significativo?" icon={Target} iconColor="text-blue-400" />
-              <PredictionFighterOptions predictionKey="firstTakedown" value={predictions.firstTakedown} onChange={updatePrediction} fighters={fightDetails} label="¿Primer derribo?" icon={ChevronsDown} iconColor="text-green-400" />
-              <PredictionFighterOptions predictionKey="mostSignificantStrikes" value={predictions.mostSignificantStrikes} onChange={updatePrediction} fighters={fightDetails} label="¿Más golpes significativos?" icon={Users} iconColor="text-purple-400" />
+              <PredictionFighterOptions predictionKey="firstStrike" value={predictions.firstStrike} onChange={updatePrediction} fighters={fightDetails} label={t('prediction.first_strike')} icon={Target} iconColor="text-blue-400" />
+              <PredictionFighterOptions predictionKey="firstTakedown" value={predictions.firstTakedown} onChange={updatePrediction} fighters={fightDetails} label={t('prediction.first_takedown')} icon={ChevronsDown} iconColor="text-green-400" />
+              <PredictionFighterOptions predictionKey="mostSignificantStrikes" value={predictions.mostSignificantStrikes} onChange={updatePrediction} fighters={fightDetails} label={t('prediction.most_significant_strikes')} icon={Users} iconColor="text-purple-400" />
             </div>
 
             {/* Separator */}
@@ -256,7 +269,7 @@ const PredictionPage = () => {
 
           <CardFooter className="border-t border-gray-700 pt-6">
             <Button type="submit" onClick={handleSubmit} className="w-full bg-red-600 hover:bg-red-700 text-lg py-3 font-bold uppercase tracking-wider" disabled={!betAmount || parseInt(betAmount, 10) <= 0}>
-              Enviar Predicción y Apuesta
+              {t('prediction.send')}
             </Button>
           </CardFooter>
         </Card>

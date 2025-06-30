@@ -6,8 +6,10 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff, Mail, Lock } from "lucide-react";
 import supabase from "@/db";
+import { useTranslation } from 'react-i18next';
 
 const LoginForm = () => {
+  const { t } = useTranslation();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -76,9 +78,9 @@ const LoginForm = () => {
   return (
     <Card className="w-full max-w-md bg-black/80 border-gray-800 text-white backdrop-blur-sm shadow-xl">
       <CardHeader className="space-y-3">
-        <CardTitle className="text-3xl font-black text-red-600 tracking-wider">INICIAR SESIÓN</CardTitle>
+        <CardTitle className="text-3xl font-black text-red-600 tracking-wider">{t('auth.login')}</CardTitle>
         <CardDescription className="text-gray-400 text-base">
-          Ingresa tus credenciales para acceder a tu cuenta
+          {t('auth.login_subtitle')}
         </CardDescription>
       </CardHeader>
       <form onSubmit={handleSubmit}>
@@ -89,14 +91,14 @@ const LoginForm = () => {
         )}
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="correo" className="text-sm font-medium text-gray-300">Correo Electrónico</Label>
+            <Label htmlFor="correo" className="text-sm font-medium text-gray-300">{t('auth.email')}</Label>
             <div className="relative">
               <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-500" />
               <Input 
                 id="correo" 
                 name="correo" 
                 type="email" 
-                placeholder="tu@email.com" 
+                placeholder={t('auth.email_placeholder')} 
                 required 
                 className="pl-10 bg-gray-900/50 border-gray-700 focus:ring-red-600 focus:border-red-600" 
                 value={formData.correo}
@@ -105,7 +107,7 @@ const LoginForm = () => {
             </div>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="contraseña" className="text-sm font-medium text-gray-300">Contraseña</Label>
+            <Label htmlFor="contraseña" className="text-sm font-medium text-gray-300">{t('auth.password')}</Label>
             <div className="relative">
               <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-500" />
               <Input 
@@ -133,20 +135,20 @@ const LoginForm = () => {
                 id="remember"
                 className="rounded border-gray-700 bg-gray-900/50 text-red-600 focus:ring-red-600"
               />
-              <label htmlFor="remember" className="text-gray-400">Recordarme</label>
+              <label htmlFor="remember" className="text-gray-400">{t('auth.remember')}</label>
             </div>
             <Link to="/forgot-password" className="text-red-500 hover:text-red-400 hover:underline">
-              ¿Olvidaste tu contraseña?
+              {t('auth.forgot_password')}
             </Link>
           </div>
         </CardContent>
         <CardFooter className="flex flex-col space-y-4">
           <Button 
             type="submit" 
-            className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200"
+            className="w-full bg-red-600 hover:bg-red-700 text-lg py-3 font-bold uppercase tracking-wider"
             disabled={isLoading}
           >
-            {isLoading ? "Iniciando sesión..." : "Iniciar Sesión"}
+            {isLoading ? t('auth.logging_in') : t('auth.login')}
           </Button>
 
           <div className="relative w-full">
@@ -154,7 +156,7 @@ const LoginForm = () => {
               <span className="w-full border-t border-gray-700"></span>
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-black/80 px-2 text-gray-400">O continúa con</span>
+              <span className="bg-black/80 px-2 text-gray-400">{t('auth.or_continue_with')}</span>
             </div>
           </div>
 
@@ -182,20 +184,20 @@ const LoginForm = () => {
                 d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
               />
             </svg>
-            <span>Continuar con Google</span>
+            <span>{t('auth.continue_with_google')}</span>
           </Button>
 
           <div className="text-center space-y-2">
             <p className="text-sm text-gray-400">
-              ¿No tienes cuenta?{" "}
+              {t('auth.no_account')}{' '}
               <Link to="/register" className="text-red-500 hover:text-red-400 hover:underline font-medium">
-                Regístrate aquí
+                {t('auth.register_here')}
               </Link>
             </p>
             <p className="text-xs text-gray-500">
-              Al iniciar sesión, aceptas nuestros{" "}
+              {t('auth.accept_terms')}
               <Link to="/terms" className="text-gray-400 hover:text-gray-300 hover:underline">
-                Términos y Condiciones
+                {t('auth.terms_conditions')}
               </Link>
             </p>
           </div>

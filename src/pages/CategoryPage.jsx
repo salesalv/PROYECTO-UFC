@@ -6,18 +6,20 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, PlusCircle } from "lucide-react";
 import ThreadButton from '../components/ThreadButton';
+import { useTranslation } from 'react-i18next';
 
 // Este comentario se añade para asegurar que Vite compile el archivo de nuevo.
 
 const CategoryPage = () => {
   const { id } = useParams();
+  const { t } = useTranslation();
 
   // Placeholder data for categories (can be expanded later)
   const categoriesData = [
-    { id: '1', name: "Discusión General", description: "Habla de todo sobre UFC" },
-    { id: '2', name: "Predicciones y Apuestas", description: "Comparte tus pronósticos" },
-    { id: '3', name: "Noticias y Rumores", description: "Últimas novedades del octágono" },
-    { id: '4', name: "Peleadores y Divisiones", description: "Análisis por categoría", icon: PlusCircle  },
+    { id: '1', name: t('forum.category_general'), description: t('forum.category_general_desc') },
+    { id: '2', name: t('forum.category_predictions'), description: t('forum.category_predictions_desc') },
+    { id: '3', name: t('forum.category_news'), description: t('forum.category_news_desc') },
+    { id: '4', name: t('forum.category_fighters'), description: t('forum.category_fighters_desc'), icon: PlusCircle  },
   ];
 
   // Placeholder data for threads within each category
@@ -46,7 +48,7 @@ const CategoryPage = () => {
   if (!category) {
     return (
       <div className="min-h-screen bg-black text-white flex items-center justify-center">
-        <h1 className="text-4xl font-bold text-red-500">Categoría no encontrada.</h1>
+        <h1 className="text-4xl font-bold text-red-500">{t('category.not_found')}</h1>
       </div>
     );
   }
@@ -71,19 +73,19 @@ const CategoryPage = () => {
             {/* Search and New Post for Category */}
             <div className="flex flex-col md:flex-row gap-4 justify-center mt-4">
               <div className="relative flex-grow max-w-md">
-                <Input type="text" placeholder={`Buscar en ${category.name}...`} className="pl-10 bg-gray-800 border-gray-700 focus:border-red-500 focus:ring-red-500 text-white" />
+                <Input type="text" placeholder={t('category.search_placeholder', { category: category.name })} className="pl-10 bg-gray-800 border-gray-700 focus:border-red-500 focus:ring-red-500 text-white" />
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-500" />
               </div>
               <Button className="bg-red-600 hover:bg-red-700">
                 <PlusCircle className="w-5 h-5 mr-2" />
-                Crear Nuevo Hilo
+                {t('forum.create_thread')}
               </Button>
             </div>
           </CardHeader>
         </Card>
 
         {/* Recent Threads in this Category */}
-        <h2 className="text-2xl font-bold text-red-400 mb-4">Hilos en {category.name} ({currentThreads.length})</h2>
+        <h2 className="text-2xl font-bold text-red-400 mb-4">{t('category.threads_in', { category: category.name, count: currentThreads.length })}</h2>
         <Card className="bg-black/60 border-gray-800 shadow-lg backdrop-blur-sm">
           <CardContent className="p-0">
             <ul className="divide-y divide-gray-800">
@@ -93,7 +95,7 @@ const CategoryPage = () => {
                     <div>
                       <Link to={`/thread/${thread.id}`} className="text-lg font-semibold text-white hover:text-red-400 transition-colors">{thread.title}</Link>
                       <p className="text-sm text-gray-500">
-                        por <span className="font-medium text-gray-400">{thread.author}</span> - {thread.time}
+                        {t('forum.by')} <span className="font-medium text-gray-400">{thread.author}</span> - {thread.time}
                       </p>
                     </div>
                     <div className="text-sm text-gray-400 mt-2 sm:mt-0 text-right flex-shrink-0">
@@ -103,7 +105,7 @@ const CategoryPage = () => {
                 ))
               ) : (
                 <li className="p-4 text-center text-gray-500">
-                  No hay hilos en esta categoría todavía.
+                  {t('category.no_threads')}
                 </li>
               )}
             </ul>

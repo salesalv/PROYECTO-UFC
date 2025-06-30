@@ -3,18 +3,20 @@ import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { PlayCircle, Star, Eye } from "lucide-react";
+import { useTranslation } from 'react-i18next';
 
 // Placeholder highlight data
-const highlightsData = [
-  { id: 1, title: "KO Épico: McGregor vs. Aldo", fighters: "McGregor, Aldo", views: "1.2M", imageSlug: "fighter-knockout-punch", altText: "Fighter landing a knockout punch in the octagon" },
-  { id: 2, title: "Sumisión Increíble: Nurmagomedov", fighters: "Nurmagomedov", views: "980K", imageSlug: "fighter-submission-hold", altText: "Fighter applying a submission hold on the mat" },
-  { id: 3, title: "Guerra Total: Jones vs. Gustafsson I", fighters: "Jones, Gustafsson", views: "850K", imageSlug: "two-fighters-exchanging-blows", altText: "Two fighters intensely exchanging blows during a match" },
-  { id: 4, title: "Patada Voladora Sorpresa", fighters: "Pettis", views: "760K", imageSlug: "fighter-executing-flying-kick", altText: "Fighter executing a spectacular flying kick" },
-  { id: 5, title: "Remontada Histórica", fighters: "Silva", views: "690K", imageSlug: "fighter-celebrating-comeback-victory", altText: "Fighter celebrating an unlikely comeback victory" },
-  { id: 6, title: "Noche de Nocauts", fighters: "Varios", views: "550K", imageSlug: "multiple-fighters-highlight-reel", altText: "Montage of various fighters during exciting moments" },
-];
-
 const HighlightsPage = () => {
+  const { t } = useTranslation();
+  const highlightsData = [
+    { id: 1, title: t('highlights.ko_epic'), fighters: "McGregor, Aldo", views: "1.2M", imageSlug: "fighter-knockout-punch", altText: t('highlights.alt_ko') },
+    { id: 2, title: t('highlights.submission_incredible'), fighters: "Nurmagomedov", views: "980K", imageSlug: "fighter-submission-hold", altText: t('highlights.alt_submission') },
+    { id: 3, title: t('highlights.total_war'), fighters: "Jones, Gustafsson", views: "850K", imageSlug: "two-fighters-exchanging-blows", altText: t('highlights.alt_war') },
+    { id: 4, title: t('highlights.surprise_kick'), fighters: "Pettis", views: "760K", imageSlug: "fighter-executing-flying-kick", altText: t('highlights.alt_kick') },
+    { id: 5, title: t('highlights.comeback'), fighters: "Silva", views: "690K", imageSlug: "fighter-celebrating-comeback-victory", altText: t('highlights.alt_comeback') },
+    { id: 6, title: t('highlights.night_ko'), fighters: "Varios", views: "550K", imageSlug: "multiple-fighters-highlight-reel", altText: t('highlights.alt_night') },
+  ];
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-black via-gray-900 to-black text-white pt-24 pb-12 px-4">
       <motion.div
@@ -25,7 +27,7 @@ const HighlightsPage = () => {
       >
         <h1 className="text-4xl md:text-5xl font-black mb-10 text-center uppercase text-red-500 tracking-wider flex items-center justify-center">
           <Star className="w-10 h-10 mr-4 text-yellow-400" />
-          Clips Destacados
+          {t('highlights.title')}
         </h1>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
@@ -55,9 +57,9 @@ const HighlightsPage = () => {
                    </div>
                 </div>
                 <CardContent className="p-4 flex-grow flex flex-col">
-                  <p className="text-sm text-gray-400 mb-3 flex-grow">Peleadores: {highlight.fighters}</p>
+                  <p className="text-sm text-gray-400 mb-3 flex-grow">{t('highlights.fighters')}: {highlight.fighters}</p>
                   <Button variant="outline" className="w-full border-red-600 text-red-500 hover:bg-red-600 hover:text-white mt-auto">
-                    Ver Clip
+                    {t('highlights.watch_clip')}
                   </Button>
                 </CardContent>
               </Card>

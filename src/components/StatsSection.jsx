@@ -1,31 +1,32 @@
-
 import React from "react";
 import StatsCard from "@/components/StatsCard";
 import { Target, Coins, Trophy, Star } from "lucide-react";
+import { useTranslation } from 'react-i18next';
 
 const StatsSection = () => {
+  const { t } = useTranslation();
   const stats = [
     {
       icon: Target,
-      title: "Predicciones Acertadas",
+      title: t('stats.accurate_predictions'),
       value: "85%",
       delay: 0.1,
     },
     {
       icon: Coins,
-      title: "Monedas Ganadas",
+      title: t('stats.coins_won'),
       value: "2,500",
       delay: 0.2,
     },
     {
       icon: Trophy,
-      title: "Ranking Global",
+      title: t('stats.global_ranking'),
       value: "#156",
       delay: 0.3,
     },
     {
       icon: Star,
-      title: "Siguiente Nivel",
+      title: t('stats.next_level'),
       value: "750 pts",
       delay: 0.4,
     },

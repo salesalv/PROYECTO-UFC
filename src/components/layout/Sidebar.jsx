@@ -6,8 +6,10 @@ import Logo from "@/components/Logo";
 import { User, BarChart2, LogOut, Coins } from "lucide-react"; // Removed unused icons
 import { useUser } from "@/context/UserContext";
 import supabase from "@/db";
+import { useTranslation } from 'react-i18next';
 
 const Sidebar = ({ trigger, navItems }) => {
+  const { t } = useTranslation();
   // Placeholder user data
   const userPoints = 1250;
 
@@ -17,11 +19,11 @@ const Sidebar = ({ trigger, navItems }) => {
   const allSidebarLinks = [
     ...(navItems || []).map(item => ({
       icon: item.icon,
-      label: item.name,
+      label: item.label || item.name,
       path: item.path,
     })),
-    { icon: User, label: "Mi Perfil", path: "/profile" },
-    { icon: BarChart2, label: "Mis Rankings", path: "/rankings" },
+    { icon: User, label: t('nav.profile'), path: "/profile" },
+    { icon: BarChart2, label: t('nav.my_rankings'), path: "/rankings" },
   ];
 
   const handleLogout = async () => {
@@ -48,7 +50,7 @@ const Sidebar = ({ trigger, navItems }) => {
         <div className="flex flex-col h-full pb-10 overflow-y-auto">
           {/* User Points */}
           <div className="mb-6 px-4 py-3 bg-gray-900/50 rounded-lg border border-gray-700 flex items-center justify-between">
-            <span className="font-medium text-gray-300">Mis Puntos:</span>
+            <span className="font-medium text-gray-300">{t('sidebar.my_points')}</span>
             <div className="flex items-center text-yellow-400 font-bold text-lg">
               <Coins className="h-5 w-5 mr-2" />
               {userPoints.toLocaleString()}
@@ -76,12 +78,12 @@ const Sidebar = ({ trigger, navItems }) => {
               <>
              <SheetClose asChild>
                <Button variant="ghost" className="w-full justify-start" asChild>
-                 <Link to="/login">Iniciar Sesión</Link>
+                 <Link to="/login">{t('auth.login')}</Link>
                </Button>
              </SheetClose>
              <SheetClose asChild>
                <Button className="w-full bg-red-600 hover:bg-red-700" asChild>
-                 <Link to="/register">Registrarse</Link>
+                 <Link to="/register">{t('auth.register')}</Link>
                </Button>
              </SheetClose>
               </>
@@ -98,7 +100,7 @@ const Sidebar = ({ trigger, navItems }) => {
                 onClick={handleLogout}
               >
                 <LogOut className="h-5 w-5 mr-3" />
-                <span className="font-medium">Cerrar Sesión</span>
+                <span className="font-medium">{t('auth.logout')}</span>
               </Button>
             </SheetClose>
           </div>

@@ -1,5 +1,5 @@
-
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 const fightDetails = {
   id: 1,
@@ -29,6 +29,7 @@ const calculateWinnings = (amount, currentPredictions) => {
 
 
 export const usePredictionForm = () => {
+  const { t } = useTranslation();
   const [predictions, setPredictions] = useState({
     winner: null, method: null, round: [Math.ceil(fightDetails.rounds / 2)],
     firstStrike: null, firstTakedown: null, willBeKO: null, willBeSub: null,
@@ -64,16 +65,18 @@ export const usePredictionForm = () => {
     e.preventDefault();
     const finalBetAmount = parseInt(betAmount, 10) || 0;
     if (finalBetAmount <= 0) {
-      alert("Por favor, ingresa un monto válido para apostar."); return;
+      alert(t('prediction.alert_invalid_bet'));
+      return;
     }
     if (finalBetAmount > userBalance) {
-      alert("No tienes suficientes monedas para esta apuesta."); return;
+      alert(t('prediction.alert_no_coins'));
+      return;
     }
 
     console.log("Predicciones enviadas:", predictions);
     console.log("Monto Apostado:", finalBetAmount);
     console.log("Ganancia Potencial:", potentialWinnings);
-    alert(`Predicciones enviadas con apuesta de ${finalBetAmount} monedas (ver consola)`);
+    alert(t('prediction.alert_sent', { amount: finalBetAmount }));
   };
 
   return {

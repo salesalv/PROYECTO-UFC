@@ -2,6 +2,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"; // Assuming table exists
 import { Trophy, Star } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 // Placeholder data
 const rankingsData = [
@@ -18,6 +19,7 @@ const rankingsData = [
 ];
 
 const RankingsPage = () => {
+  const { t } = useTranslation();
   return (
     <div className="min-h-screen bg-gradient-to-b from-black via-gray-900 to-black text-white pt-24 pb-12 px-4">
       <motion.div
@@ -28,17 +30,17 @@ const RankingsPage = () => {
       >
         <h1 className="text-4xl md:text-5xl font-black mb-8 text-center uppercase text-red-500 tracking-wider flex items-center justify-center">
           <Trophy className="w-10 h-10 mr-4 text-yellow-400" />
-          Ranking Global de Predicciones
+          {t('rankings.title')}
         </h1>
 
         <div className="bg-black/70 rounded-lg border border-gray-800 shadow-lg overflow-hidden backdrop-blur-sm">
             <Table>
               <TableHeader>
                 <TableRow className="border-gray-700 hover:bg-gray-800/50">
-                  <TableHead className="w-[80px] text-center font-bold text-red-500">Rank</TableHead>
-                  <TableHead className="font-bold text-red-500">Usuario</TableHead>
-                  <TableHead className="text-right font-bold text-red-500">Puntos</TableHead>
-                  <TableHead className="text-center font-bold text-red-500">Racha <Star className="inline w-4 h-4 mb-1 ml-1 text-yellow-400"/></TableHead>
+                  <TableHead className="w-[80px] text-center font-bold text-red-500">{t('rankings.rank')}</TableHead>
+                  <TableHead className="font-bold text-red-500">{t('rankings.user')}</TableHead>
+                  <TableHead className="text-right font-bold text-red-500">{t('rankings.points')}</TableHead>
+                  <TableHead className="text-center font-bold text-red-500">{t('rankings.streak')} <Star className="inline w-4 h-4 mb-1 ml-1 text-yellow-400"/></TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -54,7 +56,7 @@ const RankingsPage = () => {
             </Table>
         </div>
          <p className="text-center text-gray-500 mt-6 text-sm">
-           El ranking se actualiza después de cada evento principal. ¡Sigue prediciendo!
+           {t('rankings.updated')}
          </p>
       </motion.div>
     </div>

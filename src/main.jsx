@@ -5,6 +5,7 @@ import { ClipsProvider } from './context/ClipsContext';
 import './index.css';
 import { BrowserRouter } from 'react-router-dom';
 import { UserProvider } from './context/UserContext';
+import './i18n';
 
 const root = createRoot(document.getElementById('root'));
 

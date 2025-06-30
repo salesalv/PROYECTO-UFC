@@ -1,5 +1,6 @@
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useTranslation } from 'react-i18next';
 
 // Imágenes de ejemplo para peleadores
 const fighterImages = {
@@ -51,6 +52,7 @@ const eventImage = "https://images.unsplash.com/photo-1696407254550-989e4543dc11
 const eventTime = "7:00 PM (hora local)";
 
 const UFCNamajunasBarberCardPage = () => {
+  const { t } = useTranslation();
   return (
     <div className="min-h-screen bg-gradient-to-b from-black via-gray-950 to-black text-white pt-24 pb-12 px-4">
       <div className="container mx-auto max-w-3xl">
@@ -59,20 +61,20 @@ const UFCNamajunasBarberCardPage = () => {
           <div className="relative h-56 md:h-72 w-full overflow-hidden rounded-t-lg">
             <img
               src={eventImage}
-              alt="UFC Fight Night Arena"
+              alt={t('event.arena')}
               className="w-full h-full object-cover object-center"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
           </div>
           <CardHeader className="text-center border-b border-gray-700 pb-4">
             <CardTitle className="text-3xl font-black uppercase text-red-500 tracking-wider">
-              UFC Fight Night: Namajunas vs. Barber
+              {t('event.title.namajunas_barber')}
             </CardTitle>
-            <div className="text-gray-300 mt-2 text-lg">12 de julio de 2025 - Denver, CO (Ball Arena)</div>
-            <div className="text-yellow-400 font-bold text-lg mt-1">{eventTime}</div>
+            <div className="text-gray-300 mt-2 text-lg">{t('event.date_location.namajunas_barber')}</div>
+            <div className="text-yellow-400 font-bold text-lg mt-1">{t('event.time', { time: eventTime })}</div>
           </CardHeader>
           <CardContent className="pt-6">
-            <h2 className="text-2xl font-bold text-yellow-400 mb-4 text-center">Cartelera Estelar</h2>
+            <h2 className="text-2xl font-bold text-yellow-400 mb-4 text-center">{t('main_card')}</h2>
             <div className="space-y-4 mb-8">
               {mainCard.map((fight, idx) => (
                 <div key={idx} className="bg-gray-900/60 rounded-lg px-4 py-3 border border-gray-700 mb-2">
@@ -85,7 +87,7 @@ const UFCNamajunasBarberCardPage = () => {
                     </div>
                     {/* VS */}
                     <div className="col-span-2 flex items-center justify-center">
-                      <span className="text-gray-200 text-lg md:text-2xl font-black tracking-wider">VS</span>
+                      <span className="text-gray-200 text-lg md:text-2xl font-black tracking-wider">{t('vs')}</span>
                     </div>
                     {/* Derecha */}
                     <div className="col-span-5 flex items-center justify-start gap-2">
@@ -95,12 +97,12 @@ const UFCNamajunasBarberCardPage = () => {
                     </div>
                   </div>
                   <div className="w-full text-center mt-2">
-                    <span className="text-xs text-blue-300 font-semibold">{fight.weight}</span>
+                    <span className="text-xs text-blue-300 font-semibold">{t('weight.fly')}</span>
                   </div>
                 </div>
               ))}
             </div>
-            <h2 className="text-xl font-bold text-blue-400 mb-4 text-center">Preliminares</h2>
+            <h2 className="text-xl font-bold text-blue-400 mb-4 text-center">{t('prelims')}</h2>
             <div className="space-y-3">
               {prelims.map((fight, idx) => (
                 <div key={idx} className="bg-gray-900/40 rounded px-4 py-2 border border-gray-800 mb-2">
@@ -113,7 +115,7 @@ const UFCNamajunasBarberCardPage = () => {
                     </div>
                     {/* VS */}
                     <div className="col-span-2 flex items-center justify-center">
-                      <span className="text-gray-200 text-base md:text-xl font-black tracking-wider">VS</span>
+                      <span className="text-gray-200 text-base md:text-xl font-black tracking-wider">{t('vs')}</span>
                     </div>
                     {/* Derecha */}
                     <div className="col-span-5 flex items-center justify-start gap-2">
@@ -123,7 +125,7 @@ const UFCNamajunasBarberCardPage = () => {
                     </div>
                   </div>
                   <div className="w-full text-center mt-2">
-                    <span className="text-xs text-yellow-300 font-semibold">{fight.weight}</span>
+                    <span className="text-xs text-yellow-300 font-semibold">{t('weight.feather')}{fight.weight === 'Peso pluma' ? '' : fight.weight === 'Peso gallo femenino' ? t('weight.bantam_female') : ''}</span>
                   </div>
                 </div>
               ))}

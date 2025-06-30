@@ -2,8 +2,10 @@ import React from "react";
 import { motion } from "framer-motion";
 import RegisterForm from "@/components/auth/RegisterForm";
 import Logo from "@/components/Logo";
+import { useTranslation } from "react-i18next";
 
 const RegisterPage = () => {
+  const { t } = useTranslation();
   return (
     <div className="min-h-screen flex items-center justify-center pt-16 relative auth-container overflow-hidden">
       {/* Background Video */}
@@ -44,8 +46,7 @@ const RegisterPage = () => {
               transition={{ delay: 0.3, duration: 0.5 }}
               className="text-4xl md:text-5xl font-black mb-4 text-white"
             >
-              Únete a la Comunidad{" "}
-              <span className="text-red-600">SMASH</span>
+              {t('register.title')} <span className="text-red-600">SMASH</span>
             </motion.h1>
             <motion.p
               initial={{ opacity: 0, y: 20 }}
@@ -53,7 +54,7 @@ const RegisterPage = () => {
               transition={{ delay: 0.4, duration: 0.5 }}
               className="text-xl text-gray-400 mb-8"
             >
-              Crea tu cuenta y empieza a predecir resultados de MMA
+              {t('register.subtitle')}
             </motion.p>
           </div>
 

@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Calendar, Users, Eye } from "lucide-react"; // Changed Trophy to Eye
 import { Link } from "react-router-dom"; // Import Link
+import { useTranslation } from 'react-i18next';
 
 // Using placeholder data similar to EventsPage for consistency
 const previewEvents = [
@@ -45,17 +46,18 @@ const previewEvents = [
 ];
 
 
-const FeaturedFightsList = () => {
+const FeaturedFightsList = (props) => {
+  const { t } = useTranslation();
   return (
     <section className="py-16 px-4 bg-gradient-to-b from-black via-gray-950 to-black"> {/* Added gradient */}
       <div className="container mx-auto">
         <div className="flex justify-between items-center mb-8">
           <h3 className="text-2xl font-bold flex items-center text-white">
             <Calendar className="mr-3 text-red-500" /> {/* Changed icon */}
-            Próximos Eventos
+            {t('home.upcoming_events')}
           </h3>
           <Button variant="link" className="text-red-400 hover:text-red-300" asChild>
-             <Link to="/events">Ver Todos &rarr;</Link>
+             <Link to="/events">{t('home.see_all')}</Link>
           </Button>
         </div>
 
@@ -71,7 +73,7 @@ const FeaturedFightsList = () => {
               <div className="relative aspect-video"> {/* Use aspect ratio */}
                 <img 
                   className="w-full h-full object-cover"
-                  alt={event.altText}
+                  alt={t('home.featured_fight_bg')}
                  src="https://images.unsplash.com/photo-1649190800807-6f1d42a4bc05" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
                 <div className="absolute bottom-2 left-3">
@@ -89,7 +91,7 @@ const FeaturedFightsList = () => {
                 <div className="flex justify-end">
                   <Button variant="ghost" size="sm" className="text-red-500 hover:text-red-400 hover:bg-red-900/30" asChild>
                      <Link to={event.link}> {/* Link to events page */}
-                       Ver Detalles
+                       {t('home.see_details')}
                      </Link>
                   </Button>
                 </div>

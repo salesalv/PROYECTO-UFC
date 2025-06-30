@@ -6,13 +6,14 @@ import { Badge } from "@/components/ui/badge"; // Assuming Badge component exist
 import ModalPeleador from "@/components/ui/ModalPeleador";
 import HoverCardPeleador from "@/components/ui/ModalPeleador";
 import supabase from "@/db";
+import { useTranslation } from 'react-i18next';
 
 const getStatusBadgeVariant = (status) => {
   switch (status) {
     case "Campeón":
-      return "destructive"; // Red for champion
+      return "destructive";
     case "Top Contender":
-      return "secondary"; // Greyish for contender
+      return "secondary";
     default:
       return "outline";
   }
@@ -22,11 +23,13 @@ const CARD_HEIGHT = 340; // px, altura estimada del hover card
 const HOVERCARD_FIXED_POSITION = { top: 40, left: 40 };
 
 const FightersPage = () => {
+  const { t } = useTranslation();
   const [peleadorSeleccionado, setPeleadorSeleccionado] = React.useState(null);
   const [hoveredFighter, setHoveredFighter] = React.useState(null);
   const [hoverPosition, setHoverPosition] = React.useState({ top: 0, left: 0 });
   const [showCard, setShowCard] = React.useState(false);
   const [peleadores, setPeleadores] = React.useState([]);
+  const [error, setError] = React.useState(null);
 
   React.useEffect(() => {
     const fetchPeleadores = async () => {
@@ -34,7 +37,12 @@ const FightersPage = () => {
         .from('peleador')
         .select('*')
         .order('puntos', { ascending: false });
-      if (!error) setPeleadores(data);
+      if (error) {
+        setError(error.message || 'Error al cargar peleadores');
+        setPeleadores([]);
+      } else {
+        setPeleadores(data);
+      }
     };
     fetchPeleadores();
   }, []);
@@ -77,20 +85,24 @@ const FightersPage = () => {
       >
         <h1 className="text-4xl md:text-5xl font-black mb-8 text-center uppercase text-red-500 tracking-wider flex items-center justify-center">
           <ListOrdered className="w-10 h-10 mr-4 text-yellow-400" />
-          Ranking Oficial de Peleadores (P4P)
+          {t('fighters.title')}
         </h1>
 
         <div className="bg-black/70 rounded-lg border border-gray-800 shadow-lg overflow-hidden backdrop-blur-sm">
-           {typeof Table !== 'undefined' && typeof Badge !== 'undefined' ? (
+           {error ? (
+             <p className="p-6 text-center text-red-500">{error}</p>
+           ) : peleadores.length === 0 ? (
+             <p className="p-6 text-center text-gray-400">{t('fighters.no_table')}</p>
+           ) : (
             <Table>
               <TableHeader>
                 <TableRow className="border-gray-700 hover:bg-gray-800/50">
-                  <TableHead className="w-[80px] text-center font-bold text-red-500">Rank</TableHead>
-                  <TableHead className="font-bold text-red-500">Nombre</TableHead>
-                  <TableHead className="font-bold text-red-500 hidden md:table-cell">División</TableHead>
-                  <TableHead className="font-bold text-red-500 hidden lg:table-cell">Récord</TableHead>
-                  <TableHead className="text-center font-bold text-red-500">Status</TableHead>
-                  <TableHead className="text-right font-bold text-red-500">Puntos <Star className="inline w-4 h-4 mb-1 ml-1 text-yellow-400"/></TableHead>
+                  <TableHead className="w-[80px] text-center font-bold text-red-500">{t('fighters.rank')}</TableHead>
+                  <TableHead className="font-bold text-red-500">{t('fighters.name')}</TableHead>
+                  <TableHead className="font-bold text-red-500 hidden md:table-cell">{t('fighters.division')}</TableHead>
+                  <TableHead className="font-bold text-red-500 hidden lg:table-cell">{t('fighters.record')}</TableHead>
+                  <TableHead className="text-center font-bold text-red-500">{t('fighters.status_col')}</TableHead>
+                  <TableHead className="text-right font-bold text-red-500">{t('fighters.points_col')} <Star className="inline w-4 h-4 mb-1 ml-1 text-yellow-400"/></TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -108,12 +120,12 @@ const FightersPage = () => {
                     >
                       {fighter.nombre}
                     </TableCell>
-                    <TableCell className="hidden md:table-cell text-gray-400">{fighter.division}</TableCell>
+                    <TableCell className="hidden md:table-cell text-gray-400">{t(`weight.${fighter.division}`)}</TableCell>
                     <TableCell className="hidden lg:table-cell text-gray-400">{fighter.record}</TableCell>
                     <TableCell className="text-center">
                        <Badge variant={getStatusBadgeVariant(fighter.status)} className="uppercase text-xs px-2 py-0.5">
                          {fighter.status === "Campeón" && <ShieldCheck className="w-3 h-3 mr-1 inline"/>}
-                         {fighter.status}
+                         {t(`fighters.status.${fighter.status}`)}
                        </Badge>
                     </TableCell>
                     <TableCell className="text-right font-bold text-yellow-300">{fighter.puntos?.toLocaleString()}</TableCell>
@@ -121,15 +133,12 @@ const FightersPage = () => {
                 ))}
               </TableBody>
             </Table>
-           ) : (
-             <p className="p-6 text-center text-gray-400">Componentes de Tabla o Badge no encontrados. Por favor, créalos si no existen.</p>
            )}
         </div>
          <p className="text-center text-gray-500 mt-6 text-sm">
-           Ranking Libra por Libra (P4P) basado en el rendimiento y dominio divisional.
+           {t('fighters.note')}
          </p>
       </motion.div>
-      <ModalPeleador peleador={peleadorSeleccionado} onClose={() => setPeleadorSeleccionado(null)} />
       <HoverCardPeleador peleador={hoveredFighter} visible={showCard && !!hoveredFighter} position={HOVERCARD_FIXED_POSITION} className="hovercard-peleador" />
     </div>
   );

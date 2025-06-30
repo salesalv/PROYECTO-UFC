@@ -7,17 +7,19 @@ import Sidebar from "@/components/layout/Sidebar";
 import { Coins, BarChart2, UserCircle, Calendar, Star, MessageSquare, PlayCircle, Users, GitCompare, User, Mail, Award, Trophy, Edit, Scissors } from "lucide-react";
 import UserMenu from "./UserMenu";
 import { useUser } from "@/context/UserContext";
+import { useTranslation } from 'react-i18next';
 
 const Header = () => {
+  const { t } = useTranslation();
   const navItems = [
-    { name: "Inicio", path: "/", icon: null },
-    { name: "Foro", path: "/forum", icon: MessageSquare },
-    { name: "Peleadores", path: "/fighters", icon: Users },
-    { name: "Comparar", path: "/compare", icon: GitCompare },
-    { name: "Clips Destacados", path: "/highlights", icon: Star },
-    { name: "Eventos", path: "/events", icon: Calendar },
-    { name: "Clips Guardados", path: "/clips", icon: Scissors },
-    { name: "Ver en Vivo", path: "/live", icon: PlayCircle },
+    { name: t('nav.home'), path: "/", icon: null },
+    { name: t('nav.forum'), path: "/forum", icon: MessageSquare },
+    { name: t('nav.fighters'), path: "/fighters", icon: Users },
+    { name: t('nav.compare'), path: "/compare", icon: GitCompare },
+    { name: t('nav.highlights'), path: "/highlights", icon: Star },
+    { name: t('nav.events'), path: "/events", icon: Calendar },
+    { name: t('nav.saved_clips'), path: "/clips", icon: Scissors },
+    { name: t('nav.live'), path: "/live", icon: PlayCircle },
   ];
 
   const userPoints = 1500;
@@ -70,10 +72,10 @@ const Header = () => {
             {!userData && (
               <>
             <Button variant="ghost" size="sm" asChild>
-              <Link to="/login">Iniciar Sesión</Link>
+              <Link to="/login">{t('auth.login')}</Link>
             </Button>
             <Button size="sm" className="bg-red-600 hover:bg-red-700" asChild>
-              <Link to="/register">Registrarse</Link>
+              <Link to="/register">{t('auth.register')}</Link>
             </Button>
               </>
             )}

@@ -1,12 +1,15 @@
-
 import React from "react";
 import { motion } from "framer-motion";
+import { useTranslation } from 'react-i18next';
 
 const VSBadge = () => {
+  const { t, i18n } = useTranslation();
   // Get current year and add one for a future date example
   const currentYear = new Date().getFullYear();
   const futureYear = currentYear + 1;
-  const fightDate = `JUNIO 29, ${futureYear}`; // Example date
+  // Usar Intl.DateTimeFormat para traducir el mes
+  const fightDate = new Date(`${futureYear}-06-29`);
+  const formattedDate = fightDate.toLocaleDateString(i18n.language, { month: 'long', day: 'numeric', year: 'numeric' });
 
   return (
     <motion.div
@@ -20,7 +23,7 @@ const VSBadge = () => {
         <div className="bg-gradient-to-r from-red-700 via-red-600 to-red-700 rounded-full p-1">
           <div className="bg-black rounded-full p-4">
             <span className="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-red-700 filter drop-shadow-lg">
-              VS
+              {t('vs')}
             </span>
           </div>
         </div>
@@ -43,7 +46,7 @@ const VSBadge = () => {
 
       {/* Date Added */}
        <p className="mt-3 text-sm font-semibold text-gray-400 uppercase tracking-wider z-10">
-         {fightDate}
+         {formattedDate}
        </p>
     </motion.div>
   );

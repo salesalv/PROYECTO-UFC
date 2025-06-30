@@ -5,11 +5,13 @@ import VSBadge from "@/components/VSBadge";
 import { Trophy, TrendingUp, Award, Users } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
+import { useTranslation } from 'react-i18next';
 
 // Simulate fetching initial vote percentages (replace with actual API call later)
 const initialVotes = { A: 62, B: 38 };
 
 const FeaturedFight = () => {
+  const { t } = useTranslation();
   const [selectedFighter, setSelectedFighter] = useState(null); // null, 'A', or 'B'
   const [votePercentage, setVotePercentage] = useState(initialVotes);
   const [showVotes, setShowVotes] = useState(false);
@@ -47,7 +49,7 @@ const FeaturedFight = () => {
       <div className="absolute inset-0">
         <img 
           className="w-full h-full object-cover"
-          alt="UFC featured fight background octagon lights"
+          alt={t('home.featured_fight_bg')}
          src="https://images.unsplash.com/photo-1687519930490-db2e9a2efa03" />
         <div className="absolute inset-0 bg-gradient-to-r from-black via-black/60 to-transparent" />
       </div>
@@ -61,18 +63,18 @@ const FeaturedFight = () => {
             <div className="flex flex-col sm:flex-row items-center justify-between mb-6 gap-4">
               <div className="flex items-center space-x-2">
                 <Trophy className="h-6 w-6 text-red-500" />
-                <span className="text-lg font-bold tracking-wide uppercase">Evento Principal</span>
+                <span className="text-lg font-bold tracking-wide uppercase">{t('home.event_principal')}</span>
               </div>
               <div className="flex items-center space-x-2 text-yellow-400 animate-pulse">
                 <TrendingUp className="h-5 w-5" />
-                <span className="font-semibold">Predicciones Abiertas</span>
+                <span className="font-semibold">{t('home.open_predictions')}</span>
               </div>
             </div>
 
             <h2 className="text-3xl md:text-5xl font-black mb-2 text-center uppercase tracking-wider">
-              UFC 300: PELEA ESTELAR
+              {t('home.ufc_300_title')}
             </h2>
-            <p className="text-lg md:text-xl mb-8 text-center text-gray-300 font-light">Pelea estelar por el título mundial</p>
+            <p className="text-lg md:text-xl mb-8 text-center text-gray-300 font-light">{t('home.star_fight_description')}</p>
 
             <div className="grid grid-cols-[1fr_auto_1fr] gap-4 md:gap-8 mb-8 items-center">
               {/* Fighter A */}
@@ -84,17 +86,17 @@ const FeaturedFight = () => {
                       "absolute -top-2 -left-2 z-20 p-1.5 rounded-full bg-gray-800/70 hover:bg-yellow-500/90 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-yellow-400 ring-offset-2 ring-offset-black/60",
                       selectedFighter === "A" && "medal-selected"
                     )}
-                    aria-label="Seleccionar a Luchador A como favorito"
+                    aria-label={t('home.select_fav_a')}
                   >
                     <Award className="h-7 w-7 md:h-8 md:w-8 text-yellow-500 transition-colors duration-300" />
                   </button>
                   <img 
                     className="w-28 h-28 md:w-60 md:h-40 mx-auto object-contain shadow-md filter drop-shadow-[0_5px_5px_rgba(0,0,0,0.4)]" // Changed to object-contain, added drop-shadow
-                    alt="Fighter A portrait"
+                    alt={t('home.fighter_a')}
                    src="/foto_jon.png" />
                 </div>
                 <p className="font-bold text-lg md:text-2xl uppercase">Jon </p>
-                <p className="text-gray-400 text-sm mb-2">Campeón | 28-0-0</p>
+                <p className="text-gray-400 text-sm mb-2">{t('home.champion')} | 28-0-0</p>
                 {/* Vote Percentage Display */}
                 <AnimatePresence>
                  {showVotes && (
@@ -106,7 +108,7 @@ const FeaturedFight = () => {
                       className="flex items-center justify-center text-sm text-yellow-400 font-semibold mt-1"
                     >
                       <Users className="w-4 h-4 mr-1.5"/>
-                      {votePercentage.A}% de los votos
+                      {votePercentage.A}{t('home.vote_percent')}
                     </motion.div>
                   )}
                 </AnimatePresence>
@@ -126,17 +128,17 @@ const FeaturedFight = () => {
                       "absolute -top-2 -right-2 z-20 p-1.5 rounded-full bg-gray-800/70 hover:bg-yellow-500/90 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-yellow-400 ring-offset-2 ring-offset-black/60",
                       selectedFighter === "B" && "medal-selected"
                     )}
-                    aria-label="Seleccionar a Luchador B como favorito"
+                    aria-label={t('home.select_fav_b')}
                   >
                     <Award className="h-7 w-7 md:h-8 md:w-8 text-yellow-500 transition-colors duration-300" />
                    </button>
                   <img 
                     className="w-28 h-28 md:w-60 md:h-40 mx-auto object-contain shadow-md filter drop-shadow-[0_5px_5px_rgba(0,0,0,0.4)]" // Changed to object-contain, added drop-shadow
-                    alt="Fighter B portrait"
+                    alt={t('home.fighter_b')}
                    src="/foto_khabib.png" />
                 </div>
                 <p className="font-bold text-lg md:text-2xl uppercase">khabib </p>
-                <p className="text-gray-400 text-sm mb-2">Retador | 25-2-0</p>
+                <p className="text-gray-400 text-sm mb-2">{t('home.challenger')} | 25-2-0</p>
                  {/* Vote Percentage Display */}
                  <AnimatePresence>
                   {showVotes && (
@@ -148,7 +150,7 @@ const FeaturedFight = () => {
                       className="flex items-center justify-center text-sm text-yellow-400 font-semibold mt-1"
                     >
                        <Users className="w-4 h-4 mr-1.5"/>
-                       {votePercentage.B}% de los votos
+                       {votePercentage.B}{t('home.vote_percent')}
                     </motion.div>
                   )}
                  </AnimatePresence>
@@ -158,12 +160,12 @@ const FeaturedFight = () => {
             <div className="flex flex-wrap gap-3 md:gap-4 justify-center mt-6">
               <Button size="lg" className="bg-red-600 hover:bg-red-700 text-base md:text-lg px-6 md:px-8 font-bold uppercase tracking-wider flex-grow sm:flex-grow-0" asChild>
                 <Link to="/live">
-                  Ver en Vivo
+                  {t('home.see_more')}
                 </Link>
               </Button>
               <Button size="lg" variant="outline" className="border-red-600 text-red-600 hover:bg-red-600 hover:text-white text-base md:text-lg px-6 md:px-8 font-bold uppercase tracking-wider flex-grow sm:flex-grow-0" asChild>
                 <Link to="/predict">
-                    Hacer Predicción
+                    {t('home.make_prediction')}
                 </Link>
               </Button>
             </div>

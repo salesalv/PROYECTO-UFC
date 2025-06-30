@@ -5,6 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { BarChart, Target, Zap, Shield, Clock, TrendingUp, TrendingDown, Minus } from "lucide-react";
 import VSBadge from "@/components/VSBadge";
+import { useTranslation } from 'react-i18next';
 
 // Placeholder fighter data - replace with actual data fetching later
 const allFighters = [
@@ -34,6 +35,7 @@ const StatDisplay = ({ icon: Icon, label, value, unit = '', highlight = 'none' }
 
 
 const FighterComparisonPage = () => {
+  const { t } = useTranslation();
   const [fighter1, setFighter1] = useState(allFighters[0]); // Default Jon Jones
   const [fighter2, setFighter2] = useState(allFighters[1]); // Default Khabib
 
@@ -70,7 +72,7 @@ const FighterComparisonPage = () => {
         className="container mx-auto max-w-5xl"
       >
         <h1 className="text-4xl md:text-5xl font-black mb-8 text-center uppercase text-red-500 tracking-wider">
-          Comparador de Peleadores
+          {t('compare.title')}
         </h1>
 
         <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-6 md:gap-10 items-start">
@@ -81,7 +83,7 @@ const FighterComparisonPage = () => {
                 {typeof Select !== 'undefined' ? (
                   <Select key={fighter1?.id} onValueChange={(value) => handleSelectFighter(value, 1)} value={fighter1?.id}>
                     <SelectTrigger className="w-full bg-gray-800 border-gray-600 text-white font-bold text-lg">
-                      <SelectValue placeholder="Seleccionar Peleador 1" />
+                      <SelectValue placeholder={t('compare.select_fighter_1')} />
                     </SelectTrigger>
                     <SelectContent className="bg-black border-gray-700 text-white">
                       {allFighters.map((f) => (
@@ -89,18 +91,18 @@ const FighterComparisonPage = () => {
                       ))}
                     </SelectContent>
                   </Select>
-                ) : <p className="text-center text-gray-400">Componente Select no encontrado</p> }
+                ) : <p className="text-center text-gray-400">{t('compare.no_select')}</p> }
               </CardHeader>
               <CardContent className="p-4 text-center">
                 {fighter1 && (
                   <>
                     <img  src={fighter1.image} alt={fighter1.name} className="w-48 h-48 mx-auto mb-4 object-cover" /> {/* Removed rounded-full and border */}
                     <h3 className="text-2xl font-bold mb-4">{fighter1.name}</h3>
-                    <StatDisplay icon={BarChart} label="Golpes / min" value={fighter1.stats.strikesLanded.toFixed(1)} highlight={compareStats('strikesLanded')} />
-                    <StatDisplay icon={Target} label="Precisión (%)" value={fighter1.stats.accuracy} unit="%" highlight={compareStats('accuracy')} />
-                    <StatDisplay icon={Zap} label="Derribos / 15min" value={fighter1.stats.takedowns.toFixed(1)} highlight={compareStats('takedowns')} />
-                    <StatDisplay icon={Shield} label="Defensa (%)" value={fighter1.stats.defense} unit="%" highlight={compareStats('defense')} />
-                    <StatDisplay icon={Clock} label="Tiempo Medio Pelea" value={fighter1.stats.avgFightTime.toFixed(1)} unit="min" highlight={compareStatsInv('avgFightTime')} />
+                    <StatDisplay icon={BarChart} label={t('compare.strikes_per_min')} value={fighter1.stats.strikesLanded.toFixed(1)} highlight={compareStats('strikesLanded')} />
+                    <StatDisplay icon={Target} label={t('compare.accuracy')} value={fighter1.stats.accuracy} unit="%" highlight={compareStats('accuracy')} />
+                    <StatDisplay icon={Zap} label={t('compare.takedowns_per_15')} value={fighter1.stats.takedowns.toFixed(1)} highlight={compareStats('takedowns')} />
+                    <StatDisplay icon={Shield} label={t('compare.defense')} value={fighter1.stats.defense} unit="%" highlight={compareStats('defense')} />
+                    <StatDisplay icon={Clock} label={t('compare.avg_fight_time')} value={fighter1.stats.avgFightTime.toFixed(1)} unit="min" highlight={compareStatsInv('avgFightTime')} />
                   </>
                 )}
               </CardContent>
@@ -119,7 +121,7 @@ const FighterComparisonPage = () => {
                  {typeof Select !== 'undefined' ? (
                    <Select key={fighter2?.id} onValueChange={(value) => handleSelectFighter(value, 2)} value={fighter2?.id}>
                      <SelectTrigger className="w-full bg-gray-800 border-gray-600 text-white font-bold text-lg">
-                       <SelectValue placeholder="Seleccionar Peleador 2" />
+                       <SelectValue placeholder={t('compare.select_fighter_2')} />
                      </SelectTrigger>
                      <SelectContent className="bg-black border-gray-700 text-white">
                        {allFighters.map((f) => (
@@ -127,18 +129,18 @@ const FighterComparisonPage = () => {
                        ))}
                      </SelectContent>
                    </Select>
-                 ) : <p className="text-center text-gray-400">Componente Select no encontrado</p> }
+                 ) : <p className="text-center text-gray-400">{t('compare.no_select')}</p> }
               </CardHeader>
               <CardContent className="p-4 text-center">
                  {fighter2 && (
                   <>
                     <img  src={fighter2.image} alt={fighter2.name} className="w-48 h-48 mx-auto mb-4 object-cover" /> {/* Removed rounded-full and border */}
                     <h3 className="text-2xl font-bold mb-4">{fighter2.name}</h3>
-                     <StatDisplay icon={BarChart} label="Golpes / min" value={fighter2.stats.strikesLanded.toFixed(1)} highlight={compareStats('strikesLanded') === 'better' ? 'worse' : compareStats('strikesLanded') === 'worse' ? 'better' : 'none'} />
-                    <StatDisplay icon={Target} label="Precisión (%)" value={fighter2.stats.accuracy} unit="%" highlight={compareStats('accuracy') === 'better' ? 'worse' : compareStats('accuracy') === 'worse' ? 'better' : 'none'} />
-                    <StatDisplay icon={Zap} label="Derribos / 15min" value={fighter2.stats.takedowns.toFixed(1)} highlight={compareStats('takedowns') === 'better' ? 'worse' : compareStats('takedowns') === 'worse' ? 'better' : 'none'} />
-                    <StatDisplay icon={Shield} label="Defensa (%)" value={fighter2.stats.defense} unit="%" highlight={compareStats('defense') === 'better' ? 'worse' : compareStats('defense') === 'worse' ? 'better' : 'none'} />
-                    <StatDisplay icon={Clock} label="Tiempo Medio Pelea" value={fighter2.stats.avgFightTime.toFixed(1)} unit="min" highlight={compareStatsInv('avgFightTime') === 'better' ? 'worse' : compareStatsInv('avgFightTime') === 'worse' ? 'better' : 'none'} />
+                     <StatDisplay icon={BarChart} label={t('compare.strikes_per_min')} value={fighter2.stats.strikesLanded.toFixed(1)} highlight={compareStats('strikesLanded') === 'better' ? 'worse' : compareStats('strikesLanded') === 'worse' ? 'better' : 'none'} />
+                    <StatDisplay icon={Target} label={t('compare.accuracy')} value={fighter2.stats.accuracy} unit="%" highlight={compareStats('accuracy') === 'better' ? 'worse' : compareStats('accuracy') === 'worse' ? 'better' : 'none'} />
+                    <StatDisplay icon={Zap} label={t('compare.takedowns_per_15')} value={fighter2.stats.takedowns.toFixed(1)} highlight={compareStats('takedowns') === 'better' ? 'worse' : compareStats('takedowns') === 'worse' ? 'better' : 'none'} />
+                    <StatDisplay icon={Shield} label={t('compare.defense')} value={fighter2.stats.defense} unit="%" highlight={compareStats('defense') === 'better' ? 'worse' : compareStats('defense') === 'worse' ? 'better' : 'none'} />
+                    <StatDisplay icon={Clock} label={t('compare.avg_fight_time')} value={fighter2.stats.avgFightTime.toFixed(1)} unit="min" highlight={compareStatsInv('avgFightTime') === 'better' ? 'worse' : compareStatsInv('avgFightTime') === 'worse' ? 'better' : 'none'} />
                   </>
                 )}
               </CardContent>

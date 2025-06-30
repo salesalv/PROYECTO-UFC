@@ -7,6 +7,7 @@ import Hls from "hls.js";
 import { useClips } from "@/context/ClipsContext";
 import { useUser } from "@/context/UserContext";
 import supabase from "@/db";
+import { useTranslation } from 'react-i18next';
 
 const LivePage = () => {
   const [isRecording, setIsRecording] = useState(false);
@@ -20,6 +21,7 @@ const LivePage = () => {
   const chatEndRef = useRef(null);
   const { addClip } = useClips();
   const { user } = useUser();
+  const { t } = useTranslation();
 
   // Simulación de usuario actual (puedes reemplazarlo por el usuario real de tu app)
   const currentUser = {
@@ -80,7 +82,7 @@ const LivePage = () => {
         });
       } else {
         console.error('HLS no es soportado en este navegador');
-        setError('Tu navegador no soporta la reproducción de video en vivo');
+        setError(t('live.error_no_hls'));
       }
     };
 
@@ -136,7 +138,7 @@ const LivePage = () => {
         setIsRecording(true);
       } catch (error) {
         console.error('Error al iniciar la grabación:', error);
-        setError('No se pudo iniciar la grabación');
+        setError(t('live.error_record'));
       }
     }
   };
@@ -148,7 +150,7 @@ const LivePage = () => {
 
       mediaRecorderRef.current.onstop = async () => {
         if (!user) {
-          setError("Debes iniciar sesión para guardar clips.");
+          setError(t('live.error_login'));
           return;
         }
 
@@ -161,7 +163,7 @@ const LivePage = () => {
           .upload(fileName, blob);
 
         if (uploadError) {
-          setError(`Error al subir el clip: ${uploadError.message}`);
+          setError(t('live.error_upload', { message: uploadError.message }));
           return;
         }
 
@@ -201,7 +203,7 @@ const LivePage = () => {
         <Card className="bg-black/70 border border-gray-800 shadow-lg shadow-red-900/10 backdrop-blur-sm">
           <CardHeader className="text-center border-b border-gray-700 pb-4">
             <CardTitle className="text-2xl sm:text-3xl font-black uppercase text-red-500 tracking-wider">
-              Transmisión en Vivo
+              {t('live.title')}
             </CardTitle>
           </CardHeader>
 
@@ -224,7 +226,7 @@ const LivePage = () => {
                   />
                   <div className="absolute top-4 right-4 bg-red-600 text-white px-3 py-1 rounded-full text-sm font-bold flex items-center">
                     <Clock className="w-4 h-4 mr-2 animate-pulse" />
-                    EN VIVO
+                    {t('live.on_air')}
                   </div>
                 </div>
 
@@ -235,17 +237,17 @@ const LivePage = () => {
                     className={"bg-red-600 hover:bg-red-700 text-white"}
                   >
                     <Scissors className="w-5 h-5 mr-2" />
-                    {isRecording ? "Detener Grabación" : "Grabar Clip"}
+                    {isRecording ? t('live.stop_record') : t('live.record_clip')}
                   </Button>
                 </div>
               </div>
 
               {/* Panel de Chat en Vivo */}
               <div className="lg:col-span-1 flex flex-col h-full">
-                <h3 className="text-xl font-semibold mb-4 text-gray-200">Chat en Vivo</h3>
+                <h3 className="text-xl font-semibold mb-4 text-gray-200">{t('live.chat_title')}</h3>
                 <div className="flex-1 overflow-y-auto bg-gray-900/50 rounded-lg p-3 border border-gray-800 mb-2 max-h-96">
                   {chatMessages.length === 0 && (
-                    <p className="text-center text-gray-500 py-8">No hay mensajes aún. ¡Sé el primero en comentar!</p>
+                    <p className="text-center text-gray-500 py-8">{t('live.no_messages')}</p>
                   )}
                   {chatMessages.map((msg, idx) => (
                     <div key={idx} className="mb-2">
@@ -261,11 +263,11 @@ const LivePage = () => {
                     type="text"
                     value={chatInput}
                     onChange={e => setChatInput(e.target.value)}
-                    placeholder="Escribe tu mensaje..."
+                    placeholder={t('live.write_message')}
                     className="flex-1 rounded-md bg-gray-800 text-white px-3 py-2 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-red-500"
                   />
                   <Button type="submit" className="bg-red-600 hover:bg-red-700 text-white font-bold px-4 py-2 rounded-md">
-                    Enviar
+                    {t('live.send')}
                   </Button>
                 </form>
               </div>

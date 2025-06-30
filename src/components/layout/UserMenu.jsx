@@ -12,10 +12,14 @@ import { UserCircle, LogOut, Award, BarChart2, Star, Trophy } from "lucide-react
 import { Link, useNavigate } from "react-router-dom";
 import supabase from "@/db";
 import { useUser } from "@/context/UserContext";
+import { useTranslation } from 'react-i18next';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const UserMenu = () => {
   const navigate = useNavigate();
   const { user: userData, loading, refreshUser } = useUser();
+  const { t, i18n } = useTranslation();
+  const [selectedLanguage, setSelectedLanguage] = useState(i18n.language || 'es');
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -33,6 +37,10 @@ const UserMenu = () => {
     window.addEventListener('storage', onStorage);
     return () => window.removeEventListener('storage', onStorage);
   }, []);
+
+  useEffect(() => {
+    i18n.changeLanguage(selectedLanguage);
+  }, [selectedLanguage, i18n]);
 
   const handleLogout = async () => {
     await supabase.auth.signOut({ redirectTo: window.location.origin + '/login' });
@@ -55,7 +63,7 @@ const UserMenu = () => {
             <div className="relative">
               <img
                 src={userData?.avatar || "/pain.png"}
-                alt={userData?.nombre_usuario || "Usuario"}
+                alt={userData?.nombre_usuario || t('user.default')}
                 className="h-20 w-20 rounded-full object-cover ring-2 ring-red-600"
               />
               <div className="absolute -bottom-1 -right-1 bg-yellow-500 text-black text-xs rounded-full w-6 h-6 flex items-center justify-center font-bold">
@@ -63,11 +71,11 @@ const UserMenu = () => {
               </div>
             </div>
             <div className="flex flex-col space-y-1">
-              <p className="text-lg font-bold text-white">{userData?.nombre_usuario || "Usuario"}</p>
+              <p className="text-lg font-bold text-white">{userData?.nombre_usuario || t('user.default')}</p>
               <p className="text-xs text-gray-400">{userData?.correo || "-"}</p>
               <div className="flex items-center space-x-2">
                 <Award className="h-4 w-4 text-yellow-500" />
-                <span className="text-sm font-medium text-yellow-500">{userData?.puntos?.toLocaleString() || 0} pts</span>
+                <span className="text-sm font-medium text-yellow-500">{userData?.puntos?.toLocaleString() || 0} {t('user.points')}</span>
               </div>
             </div>
           </div>
@@ -77,14 +85,14 @@ const UserMenu = () => {
           <div className="flex items-center space-x-2 p-2 rounded-lg bg-gray-800/50">
             <BarChart2 className="h-4 w-4 text-green-500" />
             <div>
-              <p className="text-xs text-gray-400">Win Rate</p>
+              <p className="text-xs text-gray-400">{t('user.win_rate')}</p>
               <p className="text-sm font-medium text-white">{userData?.winRate || "-"}</p>
             </div>
           </div>
           <div className="flex items-center space-x-2 p-2 rounded-lg bg-gray-800/50">
             <Star className="h-4 w-4 text-blue-500" />
             <div>
-              <p className="text-xs text-gray-400">Predicciones</p>
+              <p className="text-xs text-gray-400">{t('user.predictions')}</p>
               <p className="text-sm font-medium text-white">{userData?.predictions || "-"}</p>
             </div>
           </div>
@@ -94,15 +102,27 @@ const UserMenu = () => {
           <DropdownMenuItem asChild>
             <Link to="/profile" className="flex items-center text-gray-300 hover:text-white hover:bg-gray-800/50 rounded-md">
               <UserCircle className="mr-2 h-4 w-4" />
-              <span>Mi Perfil</span>
+              <span>{t('user.profile')}</span>
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
             <Link to="/rankings" className="flex items-center text-gray-300 hover:text-white hover:bg-gray-800/50 rounded-md">
               <Trophy className="mr-2 h-4 w-4 text-gray-300" />
-              <span>Ranking Global</span>
+              <span>{t('user.ranking')}</span>
             </Link>
           </DropdownMenuItem>
+          <div className="mt-3 px-2">
+            <Select value={selectedLanguage} onValueChange={setSelectedLanguage}>
+              <SelectTrigger className="w-full bg-gray-800 border-gray-700 text-white">
+                <SelectValue>{t('profile.language')}</SelectValue>
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="es">Español</SelectItem>
+                <SelectItem value="en">English</SelectItem>
+                <SelectItem value="pt">Português</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
 
         <DropdownMenuSeparator />
@@ -110,7 +130,7 @@ const UserMenu = () => {
         <div className="p-2">
           <DropdownMenuItem className="text-red-500 hover:text-red-400 hover:bg-red-900/20 rounded-md" onClick={handleLogout}>
             <LogOut className="mr-2 h-4 w-4" />
-            <span>Cerrar Sesión</span>
+            <span>{t('auth.logout')}</span>
           </DropdownMenuItem>
         </div>
       </DropdownMenuContent>

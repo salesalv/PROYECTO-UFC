@@ -3,6 +3,8 @@ import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Calendar, MapPin, Users, Ticket } from "lucide-react";
+import { useTranslation } from 'react-i18next';
+import { Link } from "react-router-dom";
 
 // Placeholder event data
 const upcomingEvents = [
@@ -53,6 +55,7 @@ const upcomingEvents = [
 ];
 
 const EventsPage = () => {
+  const { t } = useTranslation();
   return (
     <div className="min-h-screen bg-gradient-to-b from-black via-gray-900 to-black text-white pt-24 pb-12 px-4">
       <motion.div
@@ -63,7 +66,7 @@ const EventsPage = () => {
       >
         <h1 className="text-4xl md:text-5xl font-black mb-10 text-center uppercase text-red-500 tracking-wider flex items-center justify-center">
           <Calendar className="w-10 h-10 mr-4 text-yellow-400" />
-          Próximos Eventos
+          {t('events.title')}
         </h1>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
@@ -89,8 +92,8 @@ const EventsPage = () => {
                   <div className="space-y-3 text-gray-300 mb-5 flex-grow">
                     <p className="flex items-center"><Calendar className="w-4 h-4 mr-2 text-red-500" /> {new Date(event.date).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
                     <p className="flex items-center"><MapPin className="w-4 h-4 mr-2 text-red-500" /> {event.location} ({event.venue})</p>
-                    <p className="flex items-start"><Users className="w-4 h-4 mr-2 mt-1 text-red-500 flex-shrink-0" /> <span className="font-semibold">Pelea Principal:</span>&nbsp;{event.mainEvent}</p>
-                    {event.coMainEvent !== "TBD" && <p className="flex items-start"><Users className="w-4 h-4 mr-2 mt-1 text-red-500 flex-shrink-0" /> <span className="font-semibold">Co-Estelar:</span>&nbsp;{event.coMainEvent}</p>}
+                    <p className="flex items-start"><Users className="w-4 h-4 mr-2 mt-1 text-red-500 flex-shrink-0" /> <span className="font-semibold">{t('events.main_event')}</span>&nbsp;{event.mainEvent}</p>
+                    {event.coMainEvent !== "TBD" && <p className="flex items-start"><Users className="w-4 h-4 mr-2 mt-1 text-red-500 flex-shrink-0" /> <span className="font-semibold">{t('events.co_main_event')}</span>&nbsp;{event.coMainEvent}</p>}
                   </div>
                   <div className="mt-auto flex justify-end">
                     {event.title === "UFC 303: McGregor vs. Chandler" ||
@@ -98,15 +101,15 @@ const EventsPage = () => {
                      event.title === "UFC 304: Edwards vs. Muhammad 2" ||
                      event.title === "UFC Fight Night: Sandhagen vs. Nurmagomedov" ? (
                       <Button className="bg-red-600 hover:bg-red-700" asChild>
-                        <a href={
+                        <Link to={
                           event.title === "UFC 303: McGregor vs. Chandler" ? "/ufc303" :
                           event.title === "UFC Fight Night: Namajunas vs. Barber" ? "/ufcnamajunasbarber" :
                           event.title === "UFC 304: Edwards vs. Muhammad 2" ? "/ufc304" :
                           "/ufcsandhagennurmagomedov"
                         }>
                           <Ticket className="w-4 h-4 mr-2" />
-                          Ver Detalles / Comprar
-                        </a>
+                          {t('events.details')}
+                        </Link>
                       </Button>
                     ) : (
                       <Button className="bg-red-600 hover:bg-red-700">

@@ -4,9 +4,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Download, Share2, Clock, Trash2 } from "lucide-react";
 import { useClips } from "@/context/ClipsContext";
+import { useTranslation } from 'react-i18next';
 
 const SavedClipsPage = () => {
   const { savedClips, deleteClip } = useClips();
+  const { t } = useTranslation();
 
   const downloadClip = (url, title) => {
     const a = document.createElement('a');
@@ -20,13 +22,13 @@ const SavedClipsPage = () => {
   const shareClip = (url) => {
     if (navigator.share) {
       navigator.share({
-        title: 'Clip de UFC',
+        title: t('clips.clip_title'),
         url: url
       });
     } else {
       // Fallback para navegadores que no soportan Web Share API
       navigator.clipboard.writeText(url);
-      alert('URL copiada al portapapeles');
+      alert(t('clips.url_copied'));
     }
   };
 
@@ -41,15 +43,15 @@ const SavedClipsPage = () => {
         <Card className="bg-black/70 border border-gray-800 shadow-lg shadow-red-900/10 backdrop-blur-sm">
           <CardHeader className="text-center border-b border-gray-700 pb-4">
             <CardTitle className="text-2xl sm:text-3xl font-black uppercase text-red-500 tracking-wider">
-              Clips Guardados
+              {t('clips.saved_clips')}
             </CardTitle>
           </CardHeader>
 
           <CardContent className="pt-6">
             {savedClips.length === 0 ? (
               <div className="text-center py-12">
-                <p className="text-gray-400 text-lg">No tienes clips guardados aún.</p>
-                <p className="text-gray-500 mt-2">Graba clips durante las transmisiones en vivo para verlos aquí.</p>
+                <p className="text-gray-400 text-lg">{t('clips.no_clips')}</p>
+                <p className="text-gray-500 mt-2">{t('clips.hint_record')}</p>
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -84,7 +86,7 @@ const SavedClipsPage = () => {
                             onClick={() => downloadClip(clip.video_url, clip.title)}
                           >
                             <Download className="w-4 h-4 mr-2" />
-                            Descargar
+                            {t('clips.download')}
                           </Button>
                           <Button
                             variant="outline"
@@ -92,7 +94,7 @@ const SavedClipsPage = () => {
                             onClick={() => shareClip(clip.video_url)}
                           >
                             <Share2 className="w-4 h-4 mr-2" />
-                            Compartir
+                            {t('clips.share')}
                           </Button>
                           <Button
                             variant="outline"

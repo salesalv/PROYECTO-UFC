@@ -5,11 +5,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import { useTranslation } from 'react-i18next';
 
 // Este comentario se añade para asegurar que Vite compile el archivo de nuevo.
 
 const ThreadPage = () => {
   const { id } = useParams();
+  const { t } = useTranslation();
 
   // Placeholder data for all threads
   const allThreads = [
@@ -160,7 +162,7 @@ const ThreadPage = () => {
   if (!thread) {
     return (
       <div className="min-h-screen bg-black text-white flex items-center justify-center">
-        <h1 className="text-4xl font-bold text-red-500">Hilo no encontrado.</h1>
+        <h1 className="text-4xl font-bold text-red-500">{t('thread.not_found')}</h1>
       </div>
     );
   }
@@ -178,7 +180,7 @@ const ThreadPage = () => {
           <CardHeader>
             <CardTitle className="text-3xl font-bold text-red-500 mb-2">{thread.title}</CardTitle>
             <p className="text-sm text-gray-400">
-              por <span className="font-medium text-red-400">{thread.author}</span> - {thread.time}
+              {t('thread.by')} <span className="font-medium text-red-400">{thread.author}</span> - {thread.time}
             </p>
           </CardHeader>
         </Card>
@@ -201,7 +203,7 @@ const ThreadPage = () => {
         </Card>
 
         {/* Replies Section */}
-        <h2 className="text-2xl font-bold text-red-400 mb-4">Respuestas ({thread.replies.length})</h2>
+        <h2 className="text-2xl font-bold text-red-400 mb-4">{t('thread.replies', { count: thread.replies.length })}</h2>
         <div className="space-y-4 mb-6">
           {thread.replies.map((reply) => (
             <Card key={reply.id} className="bg-gray-900 border-gray-800">

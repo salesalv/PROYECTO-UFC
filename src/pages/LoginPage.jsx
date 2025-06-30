@@ -2,8 +2,10 @@ import React from "react";
 import { motion } from "framer-motion";
 import LoginForm from "@/components/auth/LoginForm";
 import Logo from "@/components/Logo";
+import { useTranslation } from "react-i18next";
 
 const LoginPage = () => {
+  const { t } = useTranslation();
   return (
     <div className="min-h-screen flex items-center justify-center pt-16 relative auth-container overflow-hidden">
       {/* Background Video */}
@@ -44,8 +46,7 @@ const LoginPage = () => {
               transition={{ delay: 0.3, duration: 0.5 }}
               className="text-4xl md:text-5xl font-black mb-4 text-white"
             >
-              Bienvenido a{" "}
-              <span className="text-red-600">SMASH</span>
+              {t('login.welcome')} <span className="text-red-600">SMASH</span>
             </motion.h1>
             <motion.p
               initial={{ opacity: 0, y: 20 }}
@@ -53,7 +54,7 @@ const LoginPage = () => {
               transition={{ delay: 0.4, duration: 0.5 }}
               className="text-xl text-gray-400 mb-8"
             >
-              Tu plataforma definitiva para el mundo del MMA
+              {t('login.subtitle')}
             </motion.p>
           </div>
 
