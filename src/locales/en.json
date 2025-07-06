@@ -173,7 +173,21 @@
     "alt_comeback": "Celebrating a comeback victory",
     "alt_night": "Montage of highlight moments",
     "fighters": "Fighters",
-    "watch_clip": "Watch Clip"
+    "watch_clip": "Watch Clip",
+    "loading": "Loading highlights...",
+    "retry": "Retry",
+    "refresh": "Refresh",
+    "no_clips": "No featured clips available at the moment.",
+    "upload_clip": "Upload Clip",
+    "upload_title": "Upload New Clip",
+    "title_label": "Title",
+    "description_label": "Description",
+    "fighters_label": "Fighters (comma separated)",
+    "fighters_placeholder": "McGregor, Aldo",
+    "video_label": "Video File",
+    "cancel": "Cancel",
+    "uploading": "Uploading...",
+    "close": "Close"
   },
   "fighters": {
     "title": "Official Fighter Rankings (P4P)",

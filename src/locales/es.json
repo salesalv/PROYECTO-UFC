@@ -179,7 +179,21 @@
     "alt_comeback": "Celebración de remontada histórica",
     "alt_night": "Montaje de momentos destacados",
     "fighters": "Peleadores",
-    "watch_clip": "Ver Clip"
+    "watch_clip": "Ver Clip",
+    "loading": "Cargando clips destacados...",
+    "retry": "Reintentar",
+    "refresh": "Actualizar",
+    "no_clips": "No hay clips destacados disponibles en este momento.",
+    "upload_clip": "Subir Clip",
+    "upload_title": "Subir Nuevo Clip",
+    "title_label": "Título",
+    "description_label": "Descripción",
+    "fighters_label": "Peleadores (separados por comas)",
+    "fighters_placeholder": "McGregor, Aldo",
+    "video_label": "Archivo de Video",
+    "cancel": "Cancelar",
+    "uploading": "Subiendo...",
+    "close": "Cerrar"
   },
   "fighters": {
     "title": "Ranking Oficial de Peleadores (P4P)",
