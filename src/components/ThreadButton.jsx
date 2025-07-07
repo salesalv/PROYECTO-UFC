@@ -12,7 +12,7 @@ const ThreadButton = ({ categories = [], onThreadCreated }) => {
   const [loading, setLoading] = useState(false);
   const { user } = useUser();
   const user_id = user?.auth?.id;
-  const username = user?.nombre;
+  const username = user?.nombre_usuario;
 
   useEffect(() => {
     // Si cambian las categorías, selecciona la primera por defecto
