@@ -13,6 +13,7 @@ const ThreadButton = ({ categories, categoryId, onThreadCreated }) => {
   const { user } = useUser();
   const user_id = user?.auth?.id;
   const username = user?.nombre_usuario;
+  const avatar = user?.avatar;
 
   useEffect(() => {
     if (categories && categories.length > 0) {
@@ -36,6 +37,7 @@ const ThreadButton = ({ categories, categoryId, onThreadCreated }) => {
         content,
         user_id,
         username,
+        avatar,
         category_id: categories ? selectedCategoryId : categoryId
       });
       setTitle("");

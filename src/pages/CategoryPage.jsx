@@ -8,6 +8,7 @@ import { Search, PlusCircle, MessageSquare } from "lucide-react";
 import ThreadButton from '../components/ThreadButton';
 import { useTranslation } from 'react-i18next';
 import { getCategories, getThreadsByCategory } from '../services/forumService';
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 // Este comentario se añade para asegurar que Vite compile el archivo de nuevo.
 
@@ -69,11 +70,17 @@ const CategoryPage = () => {
               {threads.length > 0 ? (
                 threads.map(thread => (
                   <li key={thread.id} className="p-4 hover:bg-gray-800/50 transition-colors duration-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
-                    <div>
-                      <Link to={`/thread/${thread.id}`} className="text-lg font-semibold text-white hover:text-red-400 transition-colors">{thread.title}</Link>
-                      <p className="text-sm text-gray-500">
-                        {t('forum.by')} <span className="font-medium text-gray-400">{thread.username}</span> - {new Date(thread.created_at).toLocaleString()}
-                      </p>
+                    <div className="flex items-center gap-3">
+                      <Avatar className="h-8 w-8">
+                        <AvatarImage src={thread.avatar || 'https://github.com/shadcn.png'} alt={thread.username} />
+                        <AvatarFallback>{thread.username?.charAt(0)}</AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <Link to={`/thread/${thread.id}`} className="text-lg font-semibold text-white hover:text-red-400 transition-colors">{thread.title}</Link>
+                        <p className="text-sm text-gray-500">
+                          {t('forum.by')} <span className="font-medium text-gray-400">{thread.username}</span> {"-"} {new Date(thread.created_at).toLocaleString()}
+                        </p>
+                      </div>
                     </div>
                     <div className="text-sm text-gray-400 mt-2 sm:mt-0 text-right flex-shrink-0">
                       <Link to={`/thread/${thread.id}`}>

@@ -22,10 +22,10 @@ export async function getThreadsByCategory(category_id) {
 }
 
 // Crear hilo
-export async function createThread({ title, content, user_id, username, category_id }) {
+export async function createThread({ title, content, user_id, username, avatar, category_id }) {
   const { data, error } = await supabase
     .from('forum_threads')
-    .insert([{ title, content, user_id, username, category_id }])
+    .insert([{ title, content, user_id, username, avatar, category_id }])
     .select()
     .single();
   if (error) throw error;
@@ -55,10 +55,10 @@ export async function getRepliesByThread(thread_id) {
 }
 
 // Crear respuesta
-export async function createReply({ thread_id, content, user_id, username }) {
+export async function createReply({ thread_id, content, user_id, username, avatar }) {
   const { data, error } = await supabase
     .from('forum_replies')
-    .insert([{ thread_id, content, user_id, username }])
+    .insert([{ thread_id, content, user_id, username, avatar }])
     .select()
     .single();
   if (error) throw error;

@@ -20,6 +20,7 @@ const ThreadPage = () => {
   const { user } = useUser();
   const user_id = user?.auth?.id;
   const username = user?.nombre_usuario;
+  const avatar = user?.avatar;
 
   useEffect(() => {
     getThreadById(id).then(setThread);
@@ -37,7 +38,7 @@ const ThreadPage = () => {
   const handleReply = async (e) => {
     e.preventDefault();
     if (!replyContent.trim()) return;
-    const newReply = await createReply({ thread_id: id, content: replyContent, user_id, username });
+    const newReply = await createReply({ thread_id: id, content: replyContent, user_id, username, avatar });
     setReplies([...replies, newReply]);
     setReplyContent("");
   };
@@ -65,7 +66,7 @@ const ThreadPage = () => {
           <CardContent className="p-6">
             <div className="flex items-center mb-4">
               <Avatar className="h-10 w-10 mr-4">
-                <AvatarImage src={"https://github.com/shadcn.png"} alt={thread.username} />
+                <AvatarImage src={thread.avatar || 'https://github.com/shadcn.png'} alt={thread.username} />
                 <AvatarFallback>{thread.username?.charAt(0)}</AvatarFallback>
               </Avatar>
               <div>
@@ -90,7 +91,7 @@ const ThreadPage = () => {
                     <Card className="bg-gray-900 border-gray-800 mb-2">
                       <CardContent className="flex items-start gap-4 p-4">
                         <Avatar className="h-8 w-8">
-                          <AvatarImage src={"https://github.com/shadcn.png"} alt={reply.username} />
+                          <AvatarImage src={reply.avatar || 'https://github.com/shadcn.png'} alt={reply.username} />
                           <AvatarFallback>{reply.username?.charAt(0)}</AvatarFallback>
                         </Avatar>
                         <div>
