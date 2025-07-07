@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, PlusCircle } from "lucide-react";
+import { Search, PlusCircle, MessageSquare } from "lucide-react";
 import ThreadButton from '../components/ThreadButton';
 import { useTranslation } from 'react-i18next';
 import { getCategories, getThreadsByCategory } from '../services/forumService';
@@ -76,7 +76,12 @@ const CategoryPage = () => {
                       </p>
                     </div>
                     <div className="text-sm text-gray-400 mt-2 sm:mt-0 text-right flex-shrink-0">
-                      <ThreadButton threadId={thread.id} />
+                      <Link to={`/thread/${thread.id}`}>
+                        <button className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded flex items-center">
+                          <MessageSquare className="w-4 h-4 mr-1" />
+                          Ver hilo
+                        </button>
+                      </Link>
                     </div>
                   </li>
                 ))
