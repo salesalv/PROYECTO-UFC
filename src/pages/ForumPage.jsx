@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -8,23 +8,19 @@ import { MessageSquare, Search, PlusCircle, Users, TrendingUp, Rss } from "lucid
 import ThreadButton from '../components/ThreadButton'; // Import ThreadButton
 import { Link } from 'react-router-dom'; // Import Link
 import { useTranslation } from 'react-i18next';
+import { getCategories, getThreadsByCategory } from '../services/forumService';
 
-// Placeholder forum data
 const ForumPage = () => {
   const { t } = useTranslation();
-  const categories = [
-    { id: 1, name: t('forum.category_general'), description: t('forum.category_general_desc'), icon: MessageSquare },
-    { id: 2, name: t('forum.category_predictions'), description: t('forum.category_predictions_desc'), icon: TrendingUp },
-    { id: 3, name: t('forum.category_news'), description: t('forum.category_news_desc'), icon: Rss },
-    { id: 4, name: t('forum.category_fighters'), description: t('forum.category_fighters_desc'), icon: Users },
-  ];
+  const [categories, setCategories] = useState([]);
+  const [recentThreads, setRecentThreads] = useState([]);
 
-  const recentThreads = [
-    { id: '1', title: "¿Quién gana en UFC 303?", author: "FanUFC_123", replies: 45, category: "Predicciones", time: "hace 2 horas" },
-    { id: '2', title: "El legado de Khabib", author: "MMA_Guru", replies: 102, category: "General", time: "hace 5 horas" },
-    { id: '3', title: "Posible regreso de GSP", author: "NostalgicFan", replies: 30, category: "Rumores", time: "hace 1 día" },
-    { id: '4', title: "Top 5 Peso Pluma Actual", author: "AnalistaX", replies: 67, category: "Peleadores", time: "hace 1 día" },
-  ];
+  useEffect(() => {
+    getCategories().then(setCategories);
+    // Obtener hilos recientes de todas las categorías (ejemplo: últimos 10)
+    // Aquí podrías crear un endpoint específico para hilos recientes, pero por ahora traemos de la primera categoría
+    getThreadsByCategory(1).then(setRecentThreads); // Ajusta según lógica real
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-black via-gray-900 to-black text-white pt-24 pb-12 px-4">
@@ -45,10 +41,7 @@ const ForumPage = () => {
             <Input type="text" placeholder={t('forum.search_placeholder')} className="pl-10 bg-gray-900/50 border-gray-700 focus:border-red-500 focus:ring-red-500" />
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-500" />
           </div>
-            <Button className="bg-red-600 hover:bg-red-700">
-              <PlusCircle className="w-5 h-5 mr-2" />
-              {t('forum.create_thread')}
-            </Button>
+          <ThreadButton categoryId={categories[0]?.id} onThreadCreated={thread => setRecentThreads([thread, ...recentThreads])} />
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -64,7 +57,7 @@ const ForumPage = () => {
                 <Link to={`/category/${category.id}`}> {/* Link to category page */}
                   <Card className="bg-black/60 border-gray-800 hover:border-red-600/50 transition-colors duration-200 cursor-pointer">
                     <CardHeader className="flex flex-row items-center gap-4 pb-2">
-                      <category.icon className="w-6 h-6 text-red-500" />
+                      <MessageSquare className="w-6 h-6 text-red-500" />
                       <CardTitle className="text-lg text-white">{category.name}</CardTitle>
                     </CardHeader>
                     <CardContent>
@@ -87,7 +80,7 @@ const ForumPage = () => {
                       <div>
                         <Link to={`/thread/${thread.id}`} className="text-lg font-semibold text-white hover:text-red-400 transition-colors">{thread.title}</Link>
                         <p className="text-sm text-gray-500">
-                          {t('forum.by')} <span className="font-medium text-gray-400">{thread.author}</span> {t('forum.in')} <span className="text-red-400">{thread.category}</span> - {thread.time}
+                          {t('forum.by')} <span className="font-medium text-gray-400">{thread.username}</span> - {new Date(thread.created_at).toLocaleString()}
                         </p>
                       </div>
                       <div className="text-sm text-gray-400 mt-2 sm:mt-0 text-right flex-shrink-0">

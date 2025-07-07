@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -7,43 +7,23 @@ import { Input } from "@/components/ui/input";
 import { Search, PlusCircle } from "lucide-react";
 import ThreadButton from '../components/ThreadButton';
 import { useTranslation } from 'react-i18next';
+import { getCategories, getThreadsByCategory } from '../services/forumService';
 
 // Este comentario se añade para asegurar que Vite compile el archivo de nuevo.
 
 const CategoryPage = () => {
   const { id } = useParams();
   const { t } = useTranslation();
+  const [category, setCategory] = useState(null);
+  const [threads, setThreads] = useState([]);
 
-  // Placeholder data for categories (can be expanded later)
-  const categoriesData = [
-    { id: '1', name: t('forum.category_general'), description: t('forum.category_general_desc') },
-    { id: '2', name: t('forum.category_predictions'), description: t('forum.category_predictions_desc') },
-    { id: '3', name: t('forum.category_news'), description: t('forum.category_news_desc') },
-    { id: '4', name: t('forum.category_fighters'), description: t('forum.category_fighters_desc'), icon: PlusCircle  },
-  ];
-
-  // Placeholder data for threads within each category
-  const threadsByCategory = {
-    '1': [
-      { id: '101', title: "¿Opiniones sobre el último evento?", author: "UFC_Fanatic", replies: 25, time: "hace 3 horas" },
-      { id: '102', title: "Debate: ¿Es Jon Jones el GOAT?", author: "MMA_Historian", replies: 80, time: "hace 1 día" },
-    ],
-    '2': [
-      { id: '201', title: "Mis picks para el UFC 303", author: "BettingGuru", replies: 15, time: "hace 1 hora" },
-      { id: '202', title: "Análisis de cuotas para la pelea estelar", author: "OddsMaster", replies: 35, time: "hace 6 horas" },
-    ],
-    '3': [
-      { id: '301', title: "Últimos rumores de lesiones", author: "Insider_Info", replies: 10, time: "hace 2 horas" },
-      { id: '302', title: "Posibles peleas para fin de año", author: "FightNews", replies: 40, time: "hace 1 día" },
-    ],
-    '4': [
-      { id: '401', title: "Mejores strikers en Peso Ligero", author: "StrikingFan", replies: 50, time: "hace 4 horas" },
-      { id: '402', title: "Comparativa de grappling en Peso Welter", author: "GrapplingKing", replies: 20, time: "hace 1 día" },
-    ],
-  };
-
-  const category = categoriesData.find(cat => cat.id === id);
-  const currentThreads = threadsByCategory[id] || [];
+  useEffect(() => {
+    getCategories().then(cats => {
+      const cat = cats.find(c => String(c.id) === String(id));
+      setCategory(cat);
+    });
+    getThreadsByCategory(id).then(setThreads);
+  }, [id]);
 
   if (!category) {
     return (
@@ -76,26 +56,23 @@ const CategoryPage = () => {
                 <Input type="text" placeholder={t('category.search_placeholder', { category: category.name })} className="pl-10 bg-gray-800 border-gray-700 focus:border-red-500 focus:ring-red-500 text-white" />
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-500" />
               </div>
-              <Button className="bg-red-600 hover:bg-red-700">
-                <PlusCircle className="w-5 h-5 mr-2" />
-                {t('forum.create_thread')}
-              </Button>
+              <ThreadButton categoryId={category.id} onThreadCreated={thread => setThreads([thread, ...threads])} />
             </div>
           </CardHeader>
         </Card>
 
         {/* Recent Threads in this Category */}
-        <h2 className="text-2xl font-bold text-red-400 mb-4">{t('category.threads_in', { category: category.name, count: currentThreads.length })}</h2>
+        <h2 className="text-2xl font-bold text-red-400 mb-4">{t('category.threads_in', { category: category.name, count: threads.length })}</h2>
         <Card className="bg-black/60 border-gray-800 shadow-lg backdrop-blur-sm">
           <CardContent className="p-0">
             <ul className="divide-y divide-gray-800">
-              {currentThreads.length > 0 ? (
-                currentThreads.map(thread => (
+              {threads.length > 0 ? (
+                threads.map(thread => (
                   <li key={thread.id} className="p-4 hover:bg-gray-800/50 transition-colors duration-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
                     <div>
                       <Link to={`/thread/${thread.id}`} className="text-lg font-semibold text-white hover:text-red-400 transition-colors">{thread.title}</Link>
                       <p className="text-sm text-gray-500">
-                        {t('forum.by')} <span className="font-medium text-gray-400">{thread.author}</span> - {thread.time}
+                        {t('forum.by')} <span className="font-medium text-gray-400">{thread.username}</span> - {new Date(thread.created_at).toLocaleString()}
                       </p>
                     </div>
                     <div className="text-sm text-gray-400 mt-2 sm:mt-0 text-right flex-shrink-0">
