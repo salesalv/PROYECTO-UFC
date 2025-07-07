@@ -59,7 +59,9 @@ const ThreadButton = ({ categories = [], onThreadCreated }) => {
                 value={categoryId}
                 onChange={e => setCategoryId(e.target.value)}
                 required
+                disabled={categories.length === 0}
               >
+                <option value="" disabled selected={categoryId === ""}>Selecciona una categoría</option>
                 {categories.map(cat => (
                   <option key={cat.id} value={cat.id}>{cat.name}</option>
                 ))}
