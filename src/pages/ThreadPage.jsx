@@ -78,22 +78,28 @@ const ThreadPage = () => {
         </Card>
 
         {/* Replies */}
-        <h2 className="text-2xl font-bold text-red-400 mb-4">{t('thread.replies')}</h2>
+        <h2 className="text-2xl font-bold text-red-400 mb-4">
+          {t('thread.replies', { count: replies.length })}
+        </h2>
         <Card className="bg-black/60 border-gray-800 shadow-lg backdrop-blur-sm mb-6">
           <CardContent className="p-0">
             <ul className="divide-y divide-gray-800">
               {replies.length > 0 ? (
                 replies.map(reply => (
-                  <li key={reply.id} className="p-4 flex items-start gap-4">
-                    <Avatar className="h-8 w-8">
-                      <AvatarImage src={"https://github.com/shadcn.png"} alt={reply.username} />
-                      <AvatarFallback>{reply.username?.charAt(0)}</AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <p className="font-semibold text-white">{reply.username}</p>
-                      <p className="text-xs text-gray-500">{new Date(reply.created_at).toLocaleString()}</p>
-                      <div className="whitespace-pre-line text-white mt-1">{reply.content}</div>
-                    </div>
+                  <li key={reply.id} className="p-4">
+                    <Card className="bg-gray-900 border-gray-800 mb-2">
+                      <CardContent className="flex items-start gap-4 p-4">
+                        <Avatar className="h-8 w-8">
+                          <AvatarImage src={"https://github.com/shadcn.png"} alt={reply.username} />
+                          <AvatarFallback>{reply.username?.charAt(0)}</AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <p className="font-semibold text-white">{reply.username}</p>
+                          <p className="text-xs text-gray-500">{new Date(reply.created_at).toLocaleString()}</p>
+                          <div className="whitespace-pre-line text-white mt-1">{reply.content}</div>
+                        </div>
+                      </CardContent>
+                    </Card>
                   </li>
                 ))
               ) : (
@@ -114,7 +120,9 @@ const ThreadPage = () => {
             required
             disabled={!user}
           />
-          <Button type="submit" className="bg-red-600 hover:bg-red-700" disabled={!user}>{t('thread.reply_button')}</Button>
+          <Button type="submit" className="bg-red-600 hover:bg-red-700" disabled={!user}>
+            {t('thread.reply_button')}
+          </Button>
         </form>
       </div>
     </motion.div>
