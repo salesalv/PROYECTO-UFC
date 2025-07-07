@@ -63,4 +63,15 @@ export async function createReply({ thread_id, content, user_id, username }) {
     .single();
   if (error) throw error;
   return data;
+}
+
+// Obtener los hilos más recientes de todas las categorías, incluyendo el nombre de la categoría
+export async function getRecentThreads(limit = 10) {
+  const { data, error } = await supabase
+    .from('forum_threads')
+    .select('*, forum_categories(name)')
+    .order('created_at', { ascending: false })
+    .limit(limit);
+  if (error) throw error;
+  return data || [];
 } 

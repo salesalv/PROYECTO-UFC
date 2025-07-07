@@ -19,7 +19,7 @@ const ThreadPage = () => {
   const [replyContent, setReplyContent] = useState("");
   const { user } = useUser();
   const user_id = user?.auth?.id;
-  const username = user?.nombre || user?.auth?.email;
+  const username = user?.nombre;
 
   useEffect(() => {
     getThreadById(id).then(setThread);

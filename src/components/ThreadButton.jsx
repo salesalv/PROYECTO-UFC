@@ -1,17 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { PlusCircle } from "lucide-react";
 import { createThread } from '../services/forumService';
 import { useUser } from '@/context/UserContext';
 
-const ThreadButton = ({ categoryId, onThreadCreated }) => {
+const ThreadButton = ({ categories = [], onThreadCreated }) => {
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [categoryId, setCategoryId] = useState(categories[0]?.id || "");
   const [loading, setLoading] = useState(false);
   const { user } = useUser();
   const user_id = user?.auth?.id;
-  const username = user?.nombre || user?.auth?.email;
+  const username = user?.nombre;
+
+  useEffect(() => {
+    // Si cambian las categorías, selecciona la primera por defecto
+    if (categories.length > 0) {
+      setCategoryId(categories[0].id);
+    }
+  }, [categories]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -46,6 +54,16 @@ const ThreadButton = ({ categoryId, onThreadCreated }) => {
           <div className="bg-gray-900 p-6 rounded-lg shadow-lg w-full max-w-md">
             <h2 className="text-2xl font-bold text-red-500 mb-4">Crear Nuevo Hilo</h2>
             <form onSubmit={handleSubmit}>
+              <select
+                className="w-full mb-3 p-2 rounded bg-gray-800 border border-gray-700 text-white"
+                value={categoryId}
+                onChange={e => setCategoryId(e.target.value)}
+                required
+              >
+                {categories.map(cat => (
+                  <option key={cat.id} value={cat.id}>{cat.name}</option>
+                ))}
+              </select>
               <input
                 className="w-full mb-3 p-2 rounded bg-gray-800 border border-gray-700 text-white"
                 placeholder="Título del hilo"

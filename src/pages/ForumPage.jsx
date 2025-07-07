@@ -8,7 +8,7 @@ import { MessageSquare, Search, PlusCircle, Users, TrendingUp, Rss } from "lucid
 import ThreadButton from '../components/ThreadButton'; // Import ThreadButton
 import { Link } from 'react-router-dom'; // Import Link
 import { useTranslation } from 'react-i18next';
-import { getCategories, getThreadsByCategory } from '../services/forumService';
+import { getCategories, getRecentThreads } from '../services/forumService';
 
 const ForumPage = () => {
   const { t } = useTranslation();
@@ -17,9 +17,7 @@ const ForumPage = () => {
 
   useEffect(() => {
     getCategories().then(setCategories);
-    // Obtener hilos recientes de todas las categorías (ejemplo: últimos 10)
-    // Aquí podrías crear un endpoint específico para hilos recientes, pero por ahora traemos de la primera categoría
-    getThreadsByCategory(1).then(setRecentThreads); // Ajusta según lógica real
+    getRecentThreads(10).then(setRecentThreads); // Trae los 10 hilos más recientes de todas las categorías
   }, []);
 
   return (
@@ -80,11 +78,21 @@ const ForumPage = () => {
                       <div>
                         <Link to={`/thread/${thread.id}`} className="text-lg font-semibold text-white hover:text-red-400 transition-colors">{thread.title}</Link>
                         <p className="text-sm text-gray-500">
-                          {t('forum.by')} <span className="font-medium text-gray-400">{thread.username}</span> - {new Date(thread.created_at).toLocaleString()}
+                          {t('forum.by')} <span className="font-medium text-gray-400">{thread.username}</span>
+                          {thread.forum_categories?.name && (
+                            <>
+                              {" "}{t('forum.in')} <span className="text-red-400">{thread.forum_categories.name}</span>
+                            </>
+                          )}
+                          {" - "}{new Date(thread.created_at).toLocaleString()}
                         </p>
                       </div>
                       <div className="text-sm text-gray-400 mt-2 sm:mt-0 text-right flex-shrink-0">
-                        <ThreadButton threadId={thread.id} />
+                        <Link to={`/thread/${thread.id}`}>
+                          <button className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded flex items-center">
+                            Ver Hilo
+                          </button>
+                        </Link>
                       </div>
                     </li>
                   ))}
