@@ -40,7 +40,10 @@
   "thread": {
     "not_found": "Hilo no encontrado.",
     "by": "por",
-    "replies": "Respuestas ({{count}})"
+    "replies": "Respuestas ({{count}})",
+    "reply_placeholder": "Escribe tu respuesta aquí...",
+    "reply_button": "Responder",
+    "no_replies": "Aún no hay respuestas."
   },
   "clips": {
     "saved_clips": "Clips Guardados",
