@@ -156,7 +156,9 @@ const PredictionPage = () => {
   const [localBalance, setLocalBalance] = useState(userBalance);
   const [loading, setLoading] = useState(false);
   const [userPredictions, setUserPredictions] = useState([]);
+  const [eventPrediction, setEventPrediction] = useState(null); // NUEVO: predicción para este evento
 
+  // Buscar predicción del usuario para este evento
   useEffect(() => {
     const fetchUserPredictions = async () => {
       if (!user) return;
@@ -165,7 +167,13 @@ const PredictionPage = () => {
         .select('*')
         .eq('user_id', user.auth.id)
         .order('created_at', { ascending: false });
-      if (!error && data) setUserPredictions(data);
+      if (!error && data) {
+        setUserPredictions(data);
+        // Buscar predicción para este evento
+        const eventoActual = `${fightDetails.event}: ${fightDetails.fighter1} vs. ${fightDetails.fighter2}`;
+        const pred = data.find(p => p.evento === eventoActual);
+        setEventPrediction(pred || null);
+      }
     };
     fetchUserPredictions();
   }, [user, loading]);
@@ -225,6 +233,11 @@ const PredictionPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    // Validar si ya existe apuesta para este evento
+    if (eventPrediction) {
+      alert('Ya tienes una apuesta para este evento. Elimínala si quieres cambiarla.');
+      return;
+    }
     const finalBetAmount = parseInt(betAmount, 10) || 0;
     if (finalBetAmount <= 0) {
       alert(t('prediction.alert_invalid_bet')); return;
@@ -270,6 +283,29 @@ const PredictionPage = () => {
     setPotentialWinnings(0);
   };
 
+  // NUEVO: función para borrar la predicción del evento actual
+  const handleDeletePrediction = async () => {
+    if (!eventPrediction) return;
+    setLoading(true);
+    const { error } = await supabase
+      .from('predicciones')
+      .delete()
+      .eq('id', eventPrediction.id);
+    setLoading(false);
+    if (error) {
+      alert('Error al borrar la apuesta: ' + error.message);
+      return;
+    }
+    // Devolver monedas apostadas
+    setLocalBalance(prev => prev + (eventPrediction.monto_apuesta || 0));
+    setEventPrediction(null);
+    setBetAmount('');
+    setPotentialWinnings(0);
+    setLoading(false);
+    // Forzar recarga de predicciones
+    setUserPredictions(prev => prev.filter(p => p.id !== eventPrediction.id));
+  };
+
   // Icono de resultado individual
   const ResultIcon = ({ value }) => {
     if (value === true) return <CheckCircle className="inline w-5 h-5 text-green-500 ml-1" title="¡Acertaste!" />;
@@ -296,39 +332,64 @@ const PredictionPage = () => {
           </CardHeader>
 
           <CardContent className="pt-6 space-y-8">
-            {/* Main Predictions */}
-            <PredictionFighterOptions predictionKey="winner" value={predictions.winner} onChange={updatePrediction} fighters={fightDetails} label={t('prediction.who_wins')} icon={Award} iconColor="text-yellow-400" />
-            <PredictionMethodRadio value={predictions.method} onChange={updatePrediction} />
-            <PredictionRoundSlider value={predictions.round} onChange={handleSliderChange} maxRounds={fightDetails.rounds} />
-
-            {/* Separator */}
-            <hr className="border-gray-700" />
-
-            {/* Additional Predictions */}
-            <h3 className="text-xl font-semibold text-center text-gray-300 pt-2 mb-6">Predicciones Adicionales</h3>
-            <div className="space-y-6">
-              <PredictionFighterOptions predictionKey="firstStrike" value={predictions.firstStrike} onChange={updatePrediction} fighters={fightDetails} label={t('prediction.first_strike')} icon={Target} iconColor="text-blue-400" />
-              <PredictionFighterOptions predictionKey="firstTakedown" value={predictions.firstTakedown} onChange={updatePrediction} fighters={fightDetails} label={t('prediction.first_takedown')} icon={ChevronsDown} iconColor="text-green-400" />
-              <PredictionFighterOptions predictionKey="mostSignificantStrikes" value={predictions.mostSignificantStrikes} onChange={updatePrediction} fighters={fightDetails} label={t('prediction.most_significant_strikes')} icon={Users} iconColor="text-purple-400" />
-            </div>
-
-            {/* Separator */}
-            <hr className="border-gray-700 mt-8" />
-
-            {/* Bet Amount */}
-            <PredictionBetAmount
-              betAmount={betAmount}
-              balance={localBalance}
-              potentialWinnings={potentialWinnings}
-              onBetChange={handleBetChange}
-            />
+            {/* Si ya hay apuesta para este evento, mostrarla y botón de borrar */}
+            {eventPrediction ? (
+              <div className="bg-gray-900/60 rounded-lg p-4 border border-gray-800 mb-2">
+                <div className="font-semibold text-white mb-1">{eventPrediction.evento}</div>
+                <div className="text-gray-400 text-sm mb-1">Apuesta: <span className="text-yellow-400 font-bold">{eventPrediction.monto_apuesta}</span> | Ganancia: <span className="text-green-400 font-bold">{eventPrediction.ganancia_potencial}</span></div>
+                <div className="text-gray-500 text-xs mb-2">{new Date(eventPrediction.created_at).toLocaleString()}</div>
+                <div className="flex flex-wrap gap-3 items-center text-sm mb-4">
+                  {eventPrediction.prediccion?.winner && (
+                    <span className="flex items-center"><span className="text-white">Ganador:</span> <span className="ml-1 font-bold text-white">{eventPrediction.prediccion.winner}</span></span>
+                  )}
+                  {eventPrediction.prediccion?.method && (
+                    <span className="flex items-center"><span className="text-white">Método:</span> <span className="ml-1 font-bold text-white">{eventPrediction.prediccion.method}</span></span>
+                  )}
+                  {eventPrediction.prediccion?.round && (
+                    <span className="flex items-center"><span className="text-white">Round:</span> <span className="ml-1 font-bold text-white">{Array.isArray(eventPrediction.prediccion.round) ? eventPrediction.prediccion.round[0] : eventPrediction.prediccion.round}</span></span>
+                  )}
+                  {eventPrediction.prediccion?.firstStrike && (
+                    <span className="flex items-center"><span className="text-white">1er Golpe:</span> <span className="ml-1 font-bold text-white">{eventPrediction.prediccion.firstStrike}</span></span>
+                  )}
+                  {eventPrediction.prediccion?.firstTakedown && (
+                    <span className="flex items-center"><span className="text-white">1er Derribo:</span> <span className="ml-1 font-bold text-white">{eventPrediction.prediccion.firstTakedown}</span></span>
+                  )}
+                  {eventPrediction.prediccion?.mostSignificantStrikes && (
+                    <span className="flex items-center"><span className="text-white">Más Golpes:</span> <span className="ml-1 font-bold text-white">{eventPrediction.prediccion.mostSignificantStrikes}</span></span>
+                  )}
+                </div>
+                <Button onClick={handleDeletePrediction} className="bg-red-700 hover:bg-red-800 w-full" disabled={loading}>
+                  {loading ? 'Eliminando...' : 'Eliminar apuesta y volver a apostar'}
+                </Button>
+              </div>
+            ) : (
+              <>
+                {/* Main Predictions */}
+                <PredictionFighterOptions predictionKey="winner" value={predictions.winner} onChange={updatePrediction} fighters={fightDetails} label={t('prediction.who_wins')} icon={Award} iconColor="text-yellow-400" />
+                <PredictionMethodRadio value={predictions.method} onChange={updatePrediction} />
+                <PredictionRoundSlider value={predictions.round} onChange={handleSliderChange} maxRounds={fightDetails.rounds} />
+                <hr className="border-gray-700" />
+                <h3 className="text-xl font-semibold text-center text-gray-300 pt-2 mb-6">Predicciones Adicionales</h3>
+                <div className="space-y-6">
+                  <PredictionFighterOptions predictionKey="firstStrike" value={predictions.firstStrike} onChange={updatePrediction} fighters={fightDetails} label={t('prediction.first_strike')} icon={Target} iconColor="text-blue-400" />
+                  <PredictionFighterOptions predictionKey="firstTakedown" value={predictions.firstTakedown} onChange={updatePrediction} fighters={fightDetails} label={t('prediction.first_takedown')} icon={ChevronsDown} iconColor="text-green-400" />
+                  <PredictionFighterOptions predictionKey="mostSignificantStrikes" value={predictions.mostSignificantStrikes} onChange={updatePrediction} fighters={fightDetails} label={t('prediction.most_significant_strikes')} icon={Users} iconColor="text-purple-400" />
+                </div>
+                <hr className="border-gray-700 mt-8" />
+                <PredictionBetAmount
+                  betAmount={betAmount}
+                  balance={localBalance}
+                  potentialWinnings={potentialWinnings}
+                  onBetChange={handleBetChange}
+                />
+                <CardFooter className="border-t border-gray-700 pt-6">
+                  <Button type="submit" onClick={handleSubmit} className="w-full bg-red-600 hover:bg-red-700 text-lg py-3 font-bold uppercase tracking-wider" disabled={!betAmount || parseInt(betAmount, 10) <= 0 || loading}>
+                    {loading ? t('prediction.sending') || 'Enviando...' : t('prediction.send')}
+                  </Button>
+                </CardFooter>
+              </>
+            )}
           </CardContent>
-
-          <CardFooter className="border-t border-gray-700 pt-6">
-            <Button type="submit" onClick={handleSubmit} className="w-full bg-red-600 hover:bg-red-700 text-lg py-3 font-bold uppercase tracking-wider" disabled={!betAmount || parseInt(betAmount, 10) <= 0 || loading}>
-              {loading ? t('prediction.sending') || 'Enviando...' : t('prediction.send')}
-            </Button>
-          </CardFooter>
 
           {/* Historial de predicciones */}
           {userPredictions.length > 0 && (
