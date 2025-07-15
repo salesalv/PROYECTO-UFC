@@ -4,7 +4,7 @@ serve(async (req) => {
   const { evento_id } = await req.json();
 
   // Conexión a la base de datos usando Deno Postgres
-  const connectionString = Deno.env.get('SUPABASE_DB_URL');
+  const connectionString = Deno.env.get('DATABASE_URL');
   const { Client } = await import("npm:pg");
   const client = new Client({ connectionString, ssl: { rejectUnauthorized: false } });
   await client.connect();

@@ -270,6 +270,13 @@ const PredictionPage = () => {
     setPotentialWinnings(0);
   };
 
+  // Icono de resultado individual
+  const ResultIcon = ({ value }) => {
+    if (value === true) return <CheckCircle className="inline w-5 h-5 text-green-500 ml-1" title="¡Acertaste!" />;
+    if (value === false) return <XCircle className="inline w-5 h-5 text-red-500 ml-1" title="No acertaste" />;
+    return <span className="inline text-gray-400 text-xs ml-1">Pendiente</span>;
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-black via-gray-950 to-black text-white pt-24 pb-12 px-4">
       <motion.div
@@ -329,17 +336,30 @@ const PredictionPage = () => {
               <h3 className="text-xl font-bold text-gray-200 mb-4">Historial de Predicciones</h3>
               <div className="space-y-4">
                 {userPredictions.map(pred => (
-                  <div key={pred.id} className="flex items-center justify-between bg-gray-900/60 rounded-lg p-4 border border-gray-800">
-                    <div>
-                      <div className="font-semibold text-white">{pred.evento}</div>
-                      <div className="text-gray-400 text-sm">Apuesta: <span className="text-yellow-400 font-bold">{pred.monto_apuesta}</span> | Ganancia: <span className="text-green-400 font-bold">{pred.ganancia_potencial}</span></div>
-                      <div className="text-gray-400 text-xs mt-1">Predicción: {Object.entries(pred.prediccion).map(([k,v]) => v ? `${k}: ${Array.isArray(v) ? v[0] : v}` : null).filter(Boolean).join(' | ')}</div>
-                      <div className="text-gray-500 text-xs">{new Date(pred.created_at).toLocaleString()}</div>
-                    </div>
-                    <div className="ml-4 flex items-center">
-                      {pred.acertada === true && <CheckCircle className="w-7 h-7 text-green-500" title="¡Acertaste!" />}
-                      {pred.acertada === false && <XCircle className="w-7 h-7 text-red-500" title="No acertaste" />}
-                      {pred.acertada === null && <span className="text-gray-400 text-xs">Pendiente</span>}
+                  <div key={pred.id} className="bg-gray-900/60 rounded-lg p-4 border border-gray-800 mb-2">
+                    <div className="font-semibold text-white mb-1">{pred.evento}</div>
+                    <div className="text-gray-400 text-sm mb-1">Apuesta: <span className="text-yellow-400 font-bold">{pred.monto_apuesta}</span> | Ganancia: <span className="text-green-400 font-bold">{pred.ganancia_potencial}</span></div>
+                    <div className="text-gray-500 text-xs mb-2">{new Date(pred.created_at).toLocaleString()}</div>
+                    <div className="flex flex-wrap gap-3 items-center text-sm">
+                      {/* Mostrar cada predicción y su resultado */}
+                      {pred.prediccion?.winner && (
+                        <span className="flex items-center">Ganador: <span className="ml-1 font-bold">{pred.prediccion.winner}</span> <ResultIcon value={pred.resultados_prediccion?.winner} /></span>
+                      )}
+                      {pred.prediccion?.method && (
+                        <span className="flex items-center">Método: <span className="ml-1 font-bold">{pred.prediccion.method}</span> <ResultIcon value={pred.resultados_prediccion?.method} /></span>
+                      )}
+                      {pred.prediccion?.round && (
+                        <span className="flex items-center">Round: <span className="ml-1 font-bold">{Array.isArray(pred.prediccion.round) ? pred.prediccion.round[0] : pred.prediccion.round}</span> <ResultIcon value={pred.resultados_prediccion?.round} /></span>
+                      )}
+                      {pred.prediccion?.firstStrike && (
+                        <span className="flex items-center">1er Golpe: <span className="ml-1 font-bold">{pred.prediccion.firstStrike}</span> <ResultIcon value={pred.resultados_prediccion?.firstStrike} /></span>
+                      )}
+                      {pred.prediccion?.firstTakedown && (
+                        <span className="flex items-center">1er Derribo: <span className="ml-1 font-bold">{pred.prediccion.firstTakedown}</span> <ResultIcon value={pred.resultados_prediccion?.firstTakedown} /></span>
+                      )}
+                      {pred.prediccion?.mostSignificantStrikes && (
+                        <span className="flex items-center">Más Golpes: <span className="ml-1 font-bold">{pred.prediccion.mostSignificantStrikes}</span> <ResultIcon value={pred.resultados_prediccion?.mostSignificantStrikes} /></span>
+                      )}
                     </div>
                   </div>
                 ))}
