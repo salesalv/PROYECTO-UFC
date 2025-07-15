@@ -11,8 +11,6 @@ import { Award, Target, ChevronsDown, CheckCircle, XCircle, CalendarCheck, Users
 import { useTranslation } from 'react-i18next';
 import supabase from "@/db";
 import { useUser } from "@/context/UserContext";
-import { useToast } from "@/components/ui/use-toast";
-import { Toaster } from "@/components/ui/toaster";
 
 // Placeholder data - Move to context or props later if needed
 const fightDetails = {
@@ -159,7 +157,6 @@ const PredictionPage = () => {
   const [loading, setLoading] = useState(false);
   const [userPredictions, setUserPredictions] = useState([]);
   const [eventPrediction, setEventPrediction] = useState(null); // NUEVO: predicción para este evento
-  const { toast } = useToast();
 
   // Buscar predicción del usuario para este evento
   useEffect(() => {
@@ -236,42 +233,19 @@ const PredictionPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Validar si ya existe apuesta para este evento
     if (eventPrediction) {
-      toast({
-        title: "Ya tienes una apuesta para este evento",
-        description: "Elimínala si quieres cambiarla.",
-        status: "warning",
-        duration: 4000
-      });
+      alert('Ya tienes una apuesta para este evento. Elimínala si quieres cambiarla.');
       return;
     }
     const finalBetAmount = parseInt(betAmount, 10) || 0;
     if (finalBetAmount <= 0) {
-      toast({
-        title: "Monto inválido",
-        description: "Ingresa una cantidad válida de monedas.",
-        status: "error",
-        duration: 4000
-      });
-      return;
+      alert(t('prediction.alert_invalid_bet')); return;
     }
     if (finalBetAmount > localBalance) {
-      toast({
-        title: "Saldo insuficiente",
-        description: "No tienes suficientes monedas para apostar.",
-        status: "error",
-        duration: 4000
-      });
-      return;
+      alert(t('prediction.alert_no_coins')); return;
     }
     if (!user) {
-      toast({
-        title: "Debes iniciar sesión",
-        description: "Inicia sesión para poder apostar.",
-        status: "error",
-        duration: 4000
-      });
+      alert('Debes iniciar sesión para apostar.');
       return;
     }
     setLoading(true);
@@ -285,7 +259,6 @@ const PredictionPage = () => {
       firstStrike: predictions.firstStrike,
       firstTakedown: predictions.firstTakedown,
       mostSignificantStrikes: predictions.mostSignificantStrikes,
-      // Puedes agregar más campos si lo deseas
     };
     const { error } = await supabase.from('predicciones').insert([
       {
@@ -299,23 +272,27 @@ const PredictionPage = () => {
     ]);
     setLoading(false);
     if (error) {
-      toast({
-        title: "Error al enviar la apuesta",
-        description: error.message,
-        status: "error",
-        duration: 4000
-      });
+      alert('Error al guardar la predicción: ' + error.message);
       return;
     }
     setLocalBalance(prev => prev - finalBetAmount);
     setBetAmount('');
     setPotentialWinnings(0);
-    toast({
-      title: "¡Apuesta enviada!",
-      description: `Tus predicciones fueron registradas con éxito por ${finalBetAmount} monedas.`,
-      status: "success",
-      duration: 4000
-    });
+
+    // Vuelve a consultar las predicciones para mostrar la apuesta recién hecha
+    if (user) {
+      const { data, error: fetchError } = await supabase
+        .from('predicciones')
+        .select('*')
+        .eq('user_id', user.auth.id)
+        .order('created_at', { ascending: false });
+      if (!fetchError && data) {
+        setUserPredictions(data);
+        const eventoActual = `${fightDetails.event}: ${fightDetails.fighter1} vs. ${fightDetails.fighter2}`;
+        const pred = data.find(p => p.evento === eventoActual);
+        setEventPrediction(pred || null);
+      }
+    }
   };
 
   // NUEVO: función para borrar la predicción del evento actual
@@ -328,12 +305,7 @@ const PredictionPage = () => {
       .eq('id', eventPrediction.id);
     setLoading(false);
     if (error) {
-      toast({
-        title: "Error al borrar la apuesta",
-        description: error.message,
-        status: "error",
-        duration: 4000
-      });
+      alert('Error al borrar la apuesta: ' + error.message);
       return;
     }
     setLocalBalance(prev => prev + (eventPrediction.monto_apuesta || 0));
@@ -366,7 +338,6 @@ const PredictionPage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-black via-gray-950 to-black text-white pt-24 pb-12 px-4">
-      <Toaster />
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
