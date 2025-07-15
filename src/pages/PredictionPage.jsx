@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -9,6 +9,8 @@ import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
 import { Award, Target, ChevronsDown, CheckCircle, XCircle, CalendarCheck, Users, Coins } from "lucide-react";
 import { useTranslation } from 'react-i18next';
+import supabase from "@/db";
+import { useUser } from "@/context/UserContext";
 
 // Placeholder data - Move to context or props later if needed
 const fightDetails = {
@@ -137,6 +139,7 @@ const PredictionBetAmount = ({ betAmount, balance, potentialWinnings, onBetChang
 
 const PredictionPage = () => {
   const { t } = useTranslation();
+  const { user } = useUser();
   const [predictions, setPredictions] = useState({
     winner: undefined,
     method: undefined,
@@ -150,16 +153,36 @@ const PredictionPage = () => {
   });
   const [betAmount, setBetAmount] = useState('');
   const [potentialWinnings, setPotentialWinnings] = useState(0);
+  const [localBalance, setLocalBalance] = useState(userBalance);
+  const [loading, setLoading] = useState(false);
+  const [userPredictions, setUserPredictions] = useState([]);
+
+  useEffect(() => {
+    const fetchUserPredictions = async () => {
+      if (!user) return;
+      const { data, error } = await supabase
+        .from('predicciones')
+        .select('*')
+        .eq('user_id', user.auth.id)
+        .order('created_at', { ascending: false });
+      if (!error && data) setUserPredictions(data);
+    };
+    fetchUserPredictions();
+  }, [user, loading]);
+
+  // Determina la cuota principal según la predicción principal seleccionada
+  const getMainPredictionType = () => {
+    if (predictions.winner) return 'winner';
+    if (predictions.method) return 'method';
+    if (predictions.round) return 'round';
+    return 'winner';
+  };
 
   const calculateWinnings = (amount, currentPredictions) => {
-    const selectedCount = Object.values(currentPredictions).filter(p => p !== null && !Array.isArray(p)).length + (currentPredictions.round ? 1 : 0);
-    if (selectedCount === 0 || !amount || amount <= 0) return 0;
-
-    const avgOdds = Object.entries(predictionOdds)
-      .filter(([key]) => currentPredictions[key] !== null && currentPredictions[key] !== undefined)
-      .reduce((sum, [, odd]) => sum + odd, 0) / selectedCount;
-
-    return (amount * (avgOdds || 1)).toFixed(0);
+    const mainType = getMainPredictionType();
+    const odds = predictionOdds[mainType] || 1;
+    if (!amount || amount <= 0) return 0;
+    return Math.floor(amount * odds);
   };
 
   const updatePrediction = (key, value) => {
@@ -169,12 +192,10 @@ const PredictionPage = () => {
         safeValue = undefined;
         console.warn('Valor de método no válido:', value);
       }
-      
       if (key === 'round' && (!Array.isArray(value) || value.length === 0)) {
         safeValue = [Math.ceil(fightDetails.rounds / 2)];
         console.warn('Valor de ronda no válido, usando valor por defecto');
       }
-
       setPredictions(prev => {
         const newState = { ...prev, [key]: safeValue };
         const betAmountNum = parseInt(betAmount, 10) || 0;
@@ -183,41 +204,70 @@ const PredictionPage = () => {
       });
     } catch (error) {
       console.error('Error al actualizar predicción:', error);
-      // Mantener el estado anterior en caso de error
       return;
     }
   };
 
-   const handleSliderChange = (value) => {
+  const handleSliderChange = (value) => {
     updatePrediction('round', value);
-   };
-
+  };
 
   const handleBetChange = (e) => {
     const amount = e.target.value;
     if (/^\d*$/.test(amount)) {
       const numericAmount = parseInt(amount, 10) || 0;
-      const validAmount = Math.min(numericAmount, userBalance);
+      const validAmount = Math.min(numericAmount, localBalance);
       const betValue = validAmount > 0 ? validAmount.toString() : '';
       setBetAmount(betValue);
       setPotentialWinnings(calculateWinnings(validAmount, predictions));
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const finalBetAmount = parseInt(betAmount, 10) || 0;
     if (finalBetAmount <= 0) {
       alert(t('prediction.alert_invalid_bet')); return;
     }
-    if (finalBetAmount > userBalance) {
+    if (finalBetAmount > localBalance) {
       alert(t('prediction.alert_no_coins')); return;
     }
-
-    console.log("Predicciones enviadas:", predictions);
-    console.log("Monto Apostado:", finalBetAmount);
-    console.log("Ganancia Potencial:", potentialWinnings);
+    if (!user) {
+      alert('Debes iniciar sesión para apostar.');
+      return;
+    }
+    setLoading(true);
+    const mainType = getMainPredictionType();
+    const odds = predictionOdds[mainType] || 1;
+    const gananciaPotencial = calculateWinnings(finalBetAmount, predictions);
+    const prediccionData = {
+      winner: predictions.winner,
+      method: predictions.method,
+      round: predictions.round,
+      firstStrike: predictions.firstStrike,
+      firstTakedown: predictions.firstTakedown,
+      mostSignificantStrikes: predictions.mostSignificantStrikes,
+      // Puedes agregar más campos si lo deseas
+    };
+    const { error } = await supabase.from('predicciones').insert([
+      {
+        user_id: user.auth.id,
+        evento: `${fightDetails.event}: ${fightDetails.fighter1} vs. ${fightDetails.fighter2}`,
+        prediccion: prediccionData,
+        monto_apuesta: finalBetAmount,
+        cuota: odds,
+        ganancia_potencial: gananciaPotencial,
+      }
+    ]);
+    setLoading(false);
+    if (error) {
+      alert('Error al guardar la predicción: ' + error.message);
+      return;
+    }
+    setLocalBalance(prev => prev - finalBetAmount);
     alert(t('prediction.alert_sent', { amount: finalBetAmount }));
+    setBetAmount('');
+    setPotentialWinnings(0);
   };
 
   return (
@@ -261,17 +311,41 @@ const PredictionPage = () => {
             {/* Bet Amount */}
             <PredictionBetAmount
               betAmount={betAmount}
-              balance={userBalance}
+              balance={localBalance}
               potentialWinnings={potentialWinnings}
               onBetChange={handleBetChange}
             />
           </CardContent>
 
           <CardFooter className="border-t border-gray-700 pt-6">
-            <Button type="submit" onClick={handleSubmit} className="w-full bg-red-600 hover:bg-red-700 text-lg py-3 font-bold uppercase tracking-wider" disabled={!betAmount || parseInt(betAmount, 10) <= 0}>
-              {t('prediction.send')}
+            <Button type="submit" onClick={handleSubmit} className="w-full bg-red-600 hover:bg-red-700 text-lg py-3 font-bold uppercase tracking-wider" disabled={!betAmount || parseInt(betAmount, 10) <= 0 || loading}>
+              {loading ? t('prediction.sending') || 'Enviando...' : t('prediction.send')}
             </Button>
           </CardFooter>
+
+          {/* Historial de predicciones */}
+          {userPredictions.length > 0 && (
+            <div className="mt-10">
+              <h3 className="text-xl font-bold text-gray-200 mb-4">Historial de Predicciones</h3>
+              <div className="space-y-4">
+                {userPredictions.map(pred => (
+                  <div key={pred.id} className="flex items-center justify-between bg-gray-900/60 rounded-lg p-4 border border-gray-800">
+                    <div>
+                      <div className="font-semibold text-white">{pred.evento}</div>
+                      <div className="text-gray-400 text-sm">Apuesta: <span className="text-yellow-400 font-bold">{pred.monto_apuesta}</span> | Ganancia: <span className="text-green-400 font-bold">{pred.ganancia_potencial}</span></div>
+                      <div className="text-gray-400 text-xs mt-1">Predicción: {Object.entries(pred.prediccion).map(([k,v]) => v ? `${k}: ${Array.isArray(v) ? v[0] : v}` : null).filter(Boolean).join(' | ')}</div>
+                      <div className="text-gray-500 text-xs">{new Date(pred.created_at).toLocaleString()}</div>
+                    </div>
+                    <div className="ml-4 flex items-center">
+                      {pred.acertada === true && <CheckCircle className="w-7 h-7 text-green-500" title="¡Acertaste!" />}
+                      {pred.acertada === false && <XCircle className="w-7 h-7 text-red-500" title="No acertaste" />}
+                      {pred.acertada === null && <span className="text-gray-400 text-xs">Pendiente</span>}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </Card>
       </motion.div>
     </div>
