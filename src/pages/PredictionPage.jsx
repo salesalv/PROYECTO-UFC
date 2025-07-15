@@ -343,22 +343,22 @@ const PredictionPage = () => {
                     <div className="flex flex-wrap gap-3 items-center text-sm">
                       {/* Mostrar cada predicción y su resultado */}
                       {pred.prediccion?.winner && (
-                        <span className="flex items-center">Ganador: <span className="ml-1 font-bold text-white">{pred.prediccion.winner}</span> <ResultIcon value={pred.resultados_prediccion?.winner} /></span>
+                        <span className="flex items-center"><span className="text-white">Ganador:</span> <span className="ml-1 font-bold text-white">{pred.prediccion.winner}</span> <ResultIcon value={pred.resultados_prediccion?.winner} /></span>
                       )}
                       {pred.prediccion?.method && (
-                        <span className="flex items-center">Método: <span className="ml-1 font-bold text-white">{pred.prediccion.method}</span> <ResultIcon value={pred.resultados_prediccion?.method} /></span>
+                        <span className="flex items-center"><span className="text-white">Método:</span> <span className="ml-1 font-bold text-white">{pred.prediccion.method}</span> <ResultIcon value={pred.resultados_prediccion?.method} /></span>
                       )}
                       {pred.prediccion?.round && (
-                        <span className="flex items-center">Round: <span className="ml-1 font-bold text-white">{Array.isArray(pred.prediccion.round) ? pred.prediccion.round[0] : pred.prediccion.round}</span> <ResultIcon value={pred.resultados_prediccion?.round} /></span>
+                        <span className="flex items-center"><span className="text-white">Round:</span> <span className="ml-1 font-bold text-white">{Array.isArray(pred.prediccion.round) ? pred.prediccion.round[0] : pred.prediccion.round}</span> <ResultIcon value={pred.resultados_prediccion?.round} /></span>
                       )}
                       {pred.prediccion?.firstStrike && (
-                        <span className="flex items-center">1er Golpe: <span className="ml-1 font-bold text-white">{pred.prediccion.firstStrike}</span> <ResultIcon value={pred.resultados_prediccion?.firstStrike} /></span>
+                        <span className="flex items-center"><span className="text-white">1er Golpe:</span> <span className="ml-1 font-bold text-white">{pred.prediccion.firstStrike}</span> <ResultIcon value={pred.resultados_prediccion?.firstStrike} /></span>
                       )}
                       {pred.prediccion?.firstTakedown && (
-                        <span className="flex items-center">1er Derribo: <span className="ml-1 font-bold text-white">{pred.prediccion.firstTakedown}</span> <ResultIcon value={pred.resultados_prediccion?.firstTakedown} /></span>
+                        <span className="flex items-center"><span className="text-white">1er Derribo:</span> <span className="ml-1 font-bold text-white">{pred.prediccion.firstTakedown}</span> <ResultIcon value={pred.resultados_prediccion?.firstTakedown} /></span>
                       )}
                       {pred.prediccion?.mostSignificantStrikes && (
-                        <span className="flex items-center">Más Golpes: <span className="ml-1 font-bold text-white">{pred.prediccion.mostSignificantStrikes}</span> <ResultIcon value={pred.resultados_prediccion?.mostSignificantStrikes} /></span>
+                        <span className="flex items-center"><span className="text-white">Más Golpes:</span> <span className="ml-1 font-bold text-white">{pred.prediccion.mostSignificantStrikes}</span> <ResultIcon value={pred.resultados_prediccion?.mostSignificantStrikes} /></span>
                       )}
                     </div>
                   </div>
