@@ -296,14 +296,25 @@ const PredictionPage = () => {
       alert('Error al borrar la apuesta: ' + error.message);
       return;
     }
-    // Devolver monedas apostadas
     setLocalBalance(prev => prev + (eventPrediction.monto_apuesta || 0));
     setEventPrediction(null);
     setBetAmount('');
     setPotentialWinnings(0);
-    setLoading(false);
-    // Forzar recarga de predicciones
-    setUserPredictions(prev => prev.filter(p => p.id !== eventPrediction.id));
+
+    // Vuelve a consultar las predicciones desde Supabase para evitar que reaparezca
+    if (user) {
+      const { data, error: fetchError } = await supabase
+        .from('predicciones')
+        .select('*')
+        .eq('user_id', user.auth.id)
+        .order('created_at', { ascending: false });
+      if (!fetchError && data) {
+        setUserPredictions(data);
+        const eventoActual = `${fightDetails.event}: ${fightDetails.fighter1} vs. ${fightDetails.fighter2}`;
+        const pred = data.find(p => p.evento === eventoActual);
+        setEventPrediction(pred || null);
+      }
+    }
   };
 
   // Icono de resultado individual
