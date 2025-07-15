@@ -11,6 +11,8 @@ import { Award, Target, ChevronsDown, CheckCircle, XCircle, CalendarCheck, Users
 import { useTranslation } from 'react-i18next';
 import supabase from "@/db";
 import { useUser } from "@/context/UserContext";
+import { useToast } from "@/components/ui/use-toast";
+import { Toaster } from "@/components/ui/toaster";
 
 // Placeholder data - Move to context or props later if needed
 const fightDetails = {
@@ -157,6 +159,7 @@ const PredictionPage = () => {
   const [loading, setLoading] = useState(false);
   const [userPredictions, setUserPredictions] = useState([]);
   const [eventPrediction, setEventPrediction] = useState(null); // NUEVO: predicción para este evento
+  const { toast } = useToast();
 
   // Buscar predicción del usuario para este evento
   useEffect(() => {
@@ -235,18 +238,40 @@ const PredictionPage = () => {
     e.preventDefault();
     // Validar si ya existe apuesta para este evento
     if (eventPrediction) {
-      alert('Ya tienes una apuesta para este evento. Elimínala si quieres cambiarla.');
+      toast({
+        title: "Ya tienes una apuesta para este evento",
+        description: "Elimínala si quieres cambiarla.",
+        status: "warning",
+        duration: 4000
+      });
       return;
     }
     const finalBetAmount = parseInt(betAmount, 10) || 0;
     if (finalBetAmount <= 0) {
-      alert(t('prediction.alert_invalid_bet')); return;
+      toast({
+        title: "Monto inválido",
+        description: "Ingresa una cantidad válida de monedas.",
+        status: "error",
+        duration: 4000
+      });
+      return;
     }
     if (finalBetAmount > localBalance) {
-      alert(t('prediction.alert_no_coins')); return;
+      toast({
+        title: "Saldo insuficiente",
+        description: "No tienes suficientes monedas para apostar.",
+        status: "error",
+        duration: 4000
+      });
+      return;
     }
     if (!user) {
-      alert('Debes iniciar sesión para apostar.');
+      toast({
+        title: "Debes iniciar sesión",
+        description: "Inicia sesión para poder apostar.",
+        status: "error",
+        duration: 4000
+      });
       return;
     }
     setLoading(true);
@@ -274,13 +299,23 @@ const PredictionPage = () => {
     ]);
     setLoading(false);
     if (error) {
-      alert('Error al guardar la predicción: ' + error.message);
+      toast({
+        title: "Error al enviar la apuesta",
+        description: error.message,
+        status: "error",
+        duration: 4000
+      });
       return;
     }
     setLocalBalance(prev => prev - finalBetAmount);
-    alert(t('prediction.alert_sent', { amount: finalBetAmount }));
     setBetAmount('');
     setPotentialWinnings(0);
+    toast({
+      title: "¡Apuesta enviada!",
+      description: `Tus predicciones fueron registradas con éxito por ${finalBetAmount} monedas.`,
+      status: "success",
+      duration: 4000
+    });
   };
 
   // NUEVO: función para borrar la predicción del evento actual
@@ -293,7 +328,12 @@ const PredictionPage = () => {
       .eq('id', eventPrediction.id);
     setLoading(false);
     if (error) {
-      alert('Error al borrar la apuesta: ' + error.message);
+      toast({
+        title: "Error al borrar la apuesta",
+        description: error.message,
+        status: "error",
+        duration: 4000
+      });
       return;
     }
     setLocalBalance(prev => prev + (eventPrediction.monto_apuesta || 0));
@@ -326,6 +366,7 @@ const PredictionPage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-black via-gray-950 to-black text-white pt-24 pb-12 px-4">
+      <Toaster />
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
