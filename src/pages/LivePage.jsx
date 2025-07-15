@@ -98,6 +98,34 @@ const LivePage = () => {
     };
   }, []);
 
+  useEffect(() => {
+    // Cargar mensajes iniciales
+    const fetchMessages = async () => {
+      const { data, error } = await supabase
+        .from("live_chat")
+        .select("*")
+        .order("created_at", { ascending: true });
+      if (!error) setChatMessages(data);
+    };
+    fetchMessages();
+
+    // Suscribirse a nuevos mensajes en tiempo real
+    const channel = supabase
+      .channel("public:live_chat")
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "live_chat" },
+        (payload) => {
+          setChatMessages((msgs) => [...msgs, payload.new]);
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
+
   // Scroll automático al enviar mensaje
   useEffect(() => {
     if (chatEndRef.current) {
@@ -182,12 +210,15 @@ const LivePage = () => {
     }
   };
 
-  const handleSendMessage = (e) => {
+  const handleSendMessage = async (e) => {
     e.preventDefault();
-    if (chatInput.trim() === "") return;
-    setChatMessages(prev => [
-      ...prev,
-      { user: currentUser.name, text: chatInput, time: new Date().toLocaleTimeString() }
+    if (!chatInput.trim() || !user) return;
+    await supabase.from("live_chat").insert([
+      {
+        user_id: user.auth.id,
+        username: user.nombre_usuario,
+        message: chatInput,
+      },
     ]);
     setChatInput("");
   };
@@ -249,11 +280,11 @@ const LivePage = () => {
                   {chatMessages.length === 0 && (
                     <p className="text-center text-gray-500 py-8">{t('live.no_messages')}</p>
                   )}
-                  {chatMessages.map((msg, idx) => (
-                    <div key={idx} className="mb-2">
-                      <span className="font-bold text-red-400 mr-2">{msg.user}</span>
-                      <span className="text-gray-300">{msg.text}</span>
-                      <span className="text-xs text-gray-500 ml-2">{msg.time}</span>
+                  {chatMessages.map((msg) => (
+                    <div key={msg.id} className="mb-2">
+                      <span className="font-bold text-red-400 mr-2">{msg.username}</span>
+                      <span className="text-gray-300">{msg.message}</span>
+                      <span className="text-xs text-gray-500 ml-2">{new Date(msg.created_at).toLocaleTimeString()}</span>
                     </div>
                   ))}
                   <div ref={chatEndRef} />
@@ -265,8 +296,9 @@ const LivePage = () => {
                     onChange={e => setChatInput(e.target.value)}
                     placeholder={t('live.write_message')}
                     className="flex-1 rounded-md bg-gray-800 text-white px-3 py-2 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-red-500"
+                    disabled={!user}
                   />
-                  <Button type="submit" className="bg-red-600 hover:bg-red-700 text-white font-bold px-4 py-2 rounded-md">
+                  <Button type="submit" className="bg-red-600 hover:bg-red-700 text-white font-bold px-4 py-2 rounded-md" disabled={!user}>
                     {t('live.send')}
                   </Button>
                 </form>
