@@ -11,7 +11,7 @@ import { Award, Target, ChevronsDown, CheckCircle, XCircle, CalendarCheck, Users
 import { useTranslation } from 'react-i18next';
 import supabase from "@/db";
 import { useUser } from "@/context/UserContext";
-import { gastarMonedas } from "@/services/coinService";
+import { gastarMonedas, agregarMonedas } from "@/services/coinService";
 
 // Placeholder data - Move to context or props later if needed
 const fightDetails = {
@@ -158,6 +158,12 @@ const PredictionPage = () => {
   const [userPredictions, setUserPredictions] = useState([]);
   const [eventPrediction, setEventPrediction] = useState(null); // NUEVO: predicción para este evento
 
+  // Estado para marcar si la apuesta fue finalizada
+  const [apuestaFinalizada, setApuestaFinalizada] = useState(false);
+  const [confirmando, setConfirmando] = useState(false);
+  // Estado para bloquear el formulario si la apuesta ya fue pagada para el evento actual
+  const [apuestaPagada, setApuestaPagada] = useState(false);
+
   // Sincroniza el saldo local con el usuario
   useEffect(() => {
     setBetAmount('');
@@ -183,6 +189,53 @@ const PredictionPage = () => {
     };
     fetchUserPredictions();
   }, [user, loading]);
+
+  // Al inicio:
+  useEffect(() => {
+    // Cuando se actualizan las predicciones del usuario, verifica si hay alguna ganadora no pagada
+    const pagarApuestasGanadoras = async () => {
+      if (!userPredictions || !user) return;
+      for (const pred of userPredictions) {
+        // Si ya está pagada, no hacer nada
+        if (pred.pagada) {
+          // Si la apuesta pagada es del evento actual, bloquear el formulario
+          if (pred.evento === `${fightDetails.event}: ${fightDetails.fighter1} vs. ${fightDetails.fighter2}`) {
+            setApuestaPagada(true);
+          }
+          continue;
+        }
+        // Si no hay resultados, no hacer nada
+        if (!pred.resultados_prediccion) continue;
+        // Si alguna predicción no es true, no pagar
+        const resultados = Object.values(pred.resultados_prediccion);
+        if (resultados.length === 0) continue;
+        const todasAcertadas = resultados.every(r => r === true);
+        try {
+          if (todasAcertadas) {
+            await agregarMonedas(user.id, pred.ganancia_potencial, "ganancia_apuesta");
+            await supabase.from('predicciones').update({ pagada: true }).eq('id', pred.id);
+            await refreshUser();
+            window.alert(`¡Felicidades! Acertaste la apuesta y ganaste ${pred.ganancia_potencial} monedas.`);
+            // Bloquear el formulario para este evento
+            if (pred.evento === `${fightDetails.event}: ${fightDetails.fighter1} vs. ${fightDetails.fighter2}`) {
+              setApuestaPagada(true);
+            }
+          } else {
+            await supabase.from('predicciones').update({ pagada: true }).eq('id', pred.id);
+            window.alert('No acertaste la apuesta. ¡Suerte para la próxima!');
+            // Bloquear el formulario para este evento
+            if (pred.evento === `${fightDetails.event}: ${fightDetails.fighter1} vs. ${fightDetails.fighter2}`) {
+              setApuestaPagada(true);
+            }
+          }
+        } catch (err) {
+          console.error('Error al pagar apuesta:', err);
+        }
+      }
+    };
+    pagarApuestasGanadoras();
+    // eslint-disable-next-line
+  }, [userPredictions, user]);
 
   // Determina la cuota principal según la predicción principal seleccionada
   const getMainPredictionType = () => {
@@ -298,34 +351,53 @@ const PredictionPage = () => {
   const handleDeletePrediction = async () => {
     if (!eventPrediction) return;
     setLoading(true);
-    const { error } = await supabase
-      .from('predicciones')
-      .delete()
-      .eq('id', eventPrediction.id);
-    setLoading(false);
-    if (error) {
-      alert('Error al borrar la apuesta: ' + error.message);
-      return;
-    }
-    await refreshUser(); // Refresca el usuario y el saldo
-    setEventPrediction(null);
-    setBetAmount('');
-    setPotentialWinnings(0);
-
-    // Vuelve a consultar las predicciones desde Supabase para evitar que reaparezca
-    if (user) {
-      const { data, error: fetchError } = await supabase
+    try {
+      // Devolver monedas apostadas
+      await agregarMonedas(user.id, eventPrediction.monto_apuesta, "cancelacion_apuesta");
+      const { error } = await supabase
         .from('predicciones')
-        .select('*')
-        .eq('user_id', user.auth.id)
-        .order('created_at', { ascending: false });
-      if (!fetchError && data) {
-        setUserPredictions(data);
-        const eventoActual = `${fightDetails.event}: ${fightDetails.fighter1} vs. ${fightDetails.fighter2}`;
-        const pred = data.find(p => p.evento === eventoActual);
-        setEventPrediction(pred || null);
+        .delete()
+        .eq('id', eventPrediction.id);
+      setLoading(false);
+      if (error) {
+        alert('Error al borrar la apuesta: ' + error.message);
+        return;
       }
+      await refreshUser();
+      setEventPrediction(null);
+      setBetAmount('');
+      setPotentialWinnings(0);
+      setApuestaFinalizada(false);
+      setApuestaPagada(false); // Desbloquear si se elimina la apuesta anterior
+    } catch (err) {
+      setLoading(false);
+      alert('Error al cancelar la apuesta: ' + err.message);
     }
+  };
+
+  // Simulación: función para determinar si la apuesta fue acertada
+  const esApuestaGanada = () => {
+    // Aquí deberías poner la lógica real de validación
+    // Por ahora, simula que siempre se acierta si el método es 'Submission'
+    return eventPrediction?.prediccion?.method === 'Submission';
+  };
+
+  const handleConfirmarApuesta = async () => {
+    if (!eventPrediction || apuestaFinalizada) return;
+    setConfirmando(true);
+    try {
+      if (esApuestaGanada()) {
+        await agregarMonedas(user.id, eventPrediction.ganancia_potencial, "ganancia_apuesta");
+        alert('¡Apuesta acertada! Ganaste ' + eventPrediction.ganancia_potencial + ' monedas.');
+      } else {
+        alert('No acertaste la apuesta. ¡Suerte para la próxima!');
+      }
+      setApuestaFinalizada(true);
+      await refreshUser();
+    } catch (err) {
+      alert('Error al confirmar apuesta: ' + err.message);
+    }
+    setConfirmando(false);
   };
 
   // Icono de resultado individual
@@ -354,35 +426,38 @@ const PredictionPage = () => {
           </CardHeader>
 
           <CardContent className="pt-6 space-y-8">
-            {/* Si ya hay apuesta para este evento, mostrarla y botón de borrar */}
-            {eventPrediction ? (
-              <div className="bg-gray-900/60 rounded-lg p-4 border border-gray-800 mb-2">
-                <div className="font-semibold text-white mb-1">{eventPrediction.evento}</div>
-                <div className="text-gray-400 text-sm mb-1">Apuesta: <span className="text-yellow-400 font-bold">{eventPrediction.monto_apuesta}</span> | Ganancia: <span className="text-green-400 font-bold">{eventPrediction.ganancia_potencial}</span></div>
-                <div className="text-gray-500 text-xs mb-2">{new Date(eventPrediction.created_at).toLocaleString()}</div>
-                <div className="flex flex-wrap gap-3 items-center text-sm mb-4">
-                  {eventPrediction.prediccion?.winner && (
-                    <span className="flex items-center"><span className="text-white">Ganador:</span> <span className="ml-1 font-bold text-white">{eventPrediction.prediccion.winner}</span></span>
-                  )}
-                  {eventPrediction.prediccion?.method && (
-                    <span className="flex items-center"><span className="text-white">Método:</span> <span className="ml-1 font-bold text-white">{eventPrediction.prediccion.method}</span></span>
-                  )}
-                  {eventPrediction.prediccion?.round && (
-                    <span className="flex items-center"><span className="text-white">Round:</span> <span className="ml-1 font-bold text-white">{Array.isArray(eventPrediction.prediccion.round) ? eventPrediction.prediccion.round[0] : eventPrediction.prediccion.round}</span></span>
-                  )}
-                  {eventPrediction.prediccion?.firstStrike && (
-                    <span className="flex items-center"><span className="text-white">1er Golpe:</span> <span className="ml-1 font-bold text-white">{eventPrediction.prediccion.firstStrike}</span></span>
-                  )}
-                  {eventPrediction.prediccion?.firstTakedown && (
-                    <span className="flex items-center"><span className="text-white">1er Derribo:</span> <span className="ml-1 font-bold text-white">{eventPrediction.prediccion.firstTakedown}</span></span>
-                  )}
-                  {eventPrediction.prediccion?.mostSignificantStrikes && (
-                    <span className="flex items-center"><span className="text-white">Más Golpes:</span> <span className="ml-1 font-bold text-white">{eventPrediction.prediccion.mostSignificantStrikes}</span></span>
-                  )}
-                </div>
-                <Button onClick={handleDeletePrediction} className="bg-red-700 hover:bg-red-800 w-full" disabled={loading}>
-                  {loading ? 'Eliminando...' : 'Eliminar apuesta y volver a apostar'}
-                </Button>
+            {apuestaPagada ? (
+              <div className="bg-gray-900/60 rounded-lg p-4 border border-gray-800 mb-2 text-center">
+                <div className="text-lg font-bold text-yellow-400 mb-2">Ya participaste en este evento</div>
+                <div className="text-gray-300 mb-2">No puedes realizar otra apuesta para este evento.</div>
+                {/* Mostrar la apuesta anterior */}
+                {eventPrediction && (
+                  <div>
+                    <div className="font-semibold text-white mb-1">{eventPrediction.evento}</div>
+                    <div className="text-gray-400 text-sm mb-1">Apuesta: <span className="text-yellow-400 font-bold">{eventPrediction.monto_apuesta}</span> | Ganancia: <span className="text-green-400 font-bold">{eventPrediction.ganancia_potencial}</span></div>
+                    <div className="text-gray-500 text-xs mb-2">{new Date(eventPrediction.created_at).toLocaleString()}</div>
+                    <div className="flex flex-wrap gap-3 items-center text-sm mb-4">
+                      {eventPrediction.prediccion?.winner && (
+                        <span className="flex items-center"><span className="text-white">Ganador:</span> <span className="ml-1 font-bold text-white">{eventPrediction.prediccion.winner}</span></span>
+                      )}
+                      {eventPrediction.prediccion?.method && (
+                        <span className="flex items-center"><span className="text-white">Método:</span> <span className="ml-1 font-bold text-white">{eventPrediction.prediccion.method}</span></span>
+                      )}
+                      {eventPrediction.prediccion?.round && (
+                        <span className="flex items-center"><span className="text-white">Round:</span> <span className="ml-1 font-bold text-white">{Array.isArray(eventPrediction.prediccion.round) ? eventPrediction.prediccion.round[0] : eventPrediction.prediccion.round}</span></span>
+                      )}
+                      {eventPrediction.prediccion?.firstStrike && (
+                        <span className="flex items-center"><span className="text-white">1er Golpe:</span> <span className="ml-1 font-bold text-white">{eventPrediction.prediccion.firstStrike}</span></span>
+                      )}
+                      {eventPrediction.prediccion?.firstTakedown && (
+                        <span className="flex items-center"><span className="text-white">1er Derribo:</span> <span className="ml-1 font-bold text-white">{eventPrediction.prediccion.firstTakedown}</span></span>
+                      )}
+                      {eventPrediction.prediccion?.mostSignificantStrikes && (
+                        <span className="flex items-center"><span className="text-white">Más Golpes:</span> <span className="ml-1 font-bold text-white">{eventPrediction.prediccion.mostSignificantStrikes}</span></span>
+                      )}
+                    </div>
+                  </div>
+                )}
               </div>
             ) : (
               <>
