@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { User, Mail, Calendar, Award, Edit, Trophy, Bell, Shield } from "lucide-react";
+import { User, Mail, Calendar, Award, Edit, Trophy, Bell, Shield, Coins } from "lucide-react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -174,10 +174,10 @@ const UserProfilePage = () => {
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="flex items-center space-x-4 p-4 bg-gray-900/50 rounded-lg border border-gray-700">
-                    <Award className="w-6 h-6 text-yellow-500" />
+                    <Coins className="w-6 h-6 text-yellow-400" />
                     <div>
-                      <p className="text-sm text-gray-300">{t('profile.total_points')}</p>
-                      <p className="font-semibold text-xl text-white">{userData?.puntos ?? 0}</p>
+                      <p className="text-sm text-gray-300">Monedas</p>
+                      <p className="font-semibold text-xl text-white">{userData?.saldo?.toLocaleString() ?? 0}</p>
                     </div>
                   </div>
                   <div className="flex items-center space-x-4 p-4 bg-gray-900/50 rounded-lg border border-gray-700">

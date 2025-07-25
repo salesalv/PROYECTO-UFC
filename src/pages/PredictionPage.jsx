@@ -11,6 +11,7 @@ import { Award, Target, ChevronsDown, CheckCircle, XCircle, CalendarCheck, Users
 import { useTranslation } from 'react-i18next';
 import supabase from "@/db";
 import { useUser } from "@/context/UserContext";
+import { gastarMonedas } from "@/services/coinService";
 
 // Placeholder data - Move to context or props later if needed
 const fightDetails = {
@@ -139,7 +140,7 @@ const PredictionBetAmount = ({ betAmount, balance, potentialWinnings, onBetChang
 
 const PredictionPage = () => {
   const { t } = useTranslation();
-  const { user } = useUser();
+  const { user, refreshUser } = useUser();
   const [predictions, setPredictions] = useState({
     winner: undefined,
     method: undefined,
@@ -153,10 +154,15 @@ const PredictionPage = () => {
   });
   const [betAmount, setBetAmount] = useState('');
   const [potentialWinnings, setPotentialWinnings] = useState(0);
-  const [localBalance, setLocalBalance] = useState(userBalance);
   const [loading, setLoading] = useState(false);
   const [userPredictions, setUserPredictions] = useState([]);
   const [eventPrediction, setEventPrediction] = useState(null); // NUEVO: predicción para este evento
+
+  // Sincroniza el saldo local con el usuario
+  useEffect(() => {
+    setBetAmount('');
+    setPotentialWinnings(0);
+  }, [user]);
 
   // Buscar predicción del usuario para este evento
   useEffect(() => {
@@ -224,7 +230,7 @@ const PredictionPage = () => {
     const amount = e.target.value;
     if (/^\d*$/.test(amount)) {
       const numericAmount = parseInt(amount, 10) || 0;
-      const validAmount = Math.min(numericAmount, localBalance);
+      const validAmount = Math.min(numericAmount, user?.saldo ?? 0);
       const betValue = validAmount > 0 ? validAmount.toString() : '';
       setBetAmount(betValue);
       setPotentialWinnings(calculateWinnings(validAmount, predictions));
@@ -239,60 +245,53 @@ const PredictionPage = () => {
     }
     const finalBetAmount = parseInt(betAmount, 10) || 0;
     if (finalBetAmount <= 0) {
-      alert(t('prediction.alert_invalid_bet')); return;
+      alert(t('prediction.alert_invalid_bet'));
+      return;
     }
-    if (finalBetAmount > localBalance) {
-      alert(t('prediction.alert_no_coins')); return;
+    if (finalBetAmount > (user?.saldo ?? 0)) {
+      alert(t('prediction.alert_no_coins'));
+      return;
     }
     if (!user) {
       alert('Debes iniciar sesión para apostar.');
       return;
     }
     setLoading(true);
-    const mainType = getMainPredictionType();
-    const odds = predictionOdds[mainType] || 1;
-    const gananciaPotencial = calculateWinnings(finalBetAmount, predictions);
-    const prediccionData = {
-      winner: predictions.winner,
-      method: predictions.method,
-      round: predictions.round,
-      firstStrike: predictions.firstStrike,
-      firstTakedown: predictions.firstTakedown,
-      mostSignificantStrikes: predictions.mostSignificantStrikes,
-    };
-    const { error } = await supabase.from('predicciones').insert([
-      {
-        user_id: user.auth.id,
-        evento: `${fightDetails.event}: ${fightDetails.fighter1} vs. ${fightDetails.fighter2}`,
-        prediccion: prediccionData,
-        monto_apuesta: finalBetAmount,
-        cuota: odds,
-        ganancia_potencial: gananciaPotencial,
+    try {
+      await gastarMonedas(user.id, finalBetAmount, "apuesta");
+      const mainType = getMainPredictionType();
+      const odds = predictionOdds[mainType] || 1;
+      const gananciaPotencial = calculateWinnings(finalBetAmount, predictions);
+      const prediccionData = {
+        winner: predictions.winner,
+        method: predictions.method,
+        round: predictions.round,
+        firstStrike: predictions.firstStrike,
+        firstTakedown: predictions.firstTakedown,
+        mostSignificantStrikes: predictions.mostSignificantStrikes,
+      };
+      const { error } = await supabase.from('predicciones').insert([
+        {
+          user_id: user.auth.id,
+          evento: `${fightDetails.event}: ${fightDetails.fighter1} vs. ${fightDetails.fighter2}`,
+          prediccion: prediccionData,
+          monto_apuesta: finalBetAmount,
+          cuota: odds,
+          ganancia_potencial: gananciaPotencial,
+        }
+      ]);
+      if (error) {
+        alert('Error al guardar la predicción: ' + error.message);
+        setLoading(false);
+        return;
       }
-    ]);
+      await refreshUser(); // Refresca el usuario y el saldo
+      setBetAmount('');
+      setPotentialWinnings(0);
+    } catch (err) {
+      alert('Error al apostar: ' + err.message);
+    }
     setLoading(false);
-    if (error) {
-      alert('Error al guardar la predicción: ' + error.message);
-      return;
-    }
-    setLocalBalance(prev => prev - finalBetAmount);
-    setBetAmount('');
-    setPotentialWinnings(0);
-
-    // Vuelve a consultar las predicciones para mostrar la apuesta recién hecha
-    if (user) {
-      const { data, error: fetchError } = await supabase
-        .from('predicciones')
-        .select('*')
-        .eq('user_id', user.auth.id)
-        .order('created_at', { ascending: false });
-      if (!fetchError && data) {
-        setUserPredictions(data);
-        const eventoActual = `${fightDetails.event}: ${fightDetails.fighter1} vs. ${fightDetails.fighter2}`;
-        const pred = data.find(p => p.evento === eventoActual);
-        setEventPrediction(pred || null);
-      }
-    }
   };
 
   // NUEVO: función para borrar la predicción del evento actual
@@ -308,7 +307,7 @@ const PredictionPage = () => {
       alert('Error al borrar la apuesta: ' + error.message);
       return;
     }
-    setLocalBalance(prev => prev + (eventPrediction.monto_apuesta || 0));
+    await refreshUser(); // Refresca el usuario y el saldo
     setEventPrediction(null);
     setBetAmount('');
     setPotentialWinnings(0);
@@ -401,7 +400,7 @@ const PredictionPage = () => {
                 <hr className="border-gray-700 mt-8" />
                 <PredictionBetAmount
                   betAmount={betAmount}
-                  balance={localBalance}
+                  balance={user?.saldo ?? 0}
                   potentialWinnings={potentialWinnings}
                   onBetChange={handleBetChange}
                 />

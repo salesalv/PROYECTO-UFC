@@ -12,7 +12,7 @@ export const UserProvider = ({ children }) => {
     setLoading(true);
     const { data: { user: authUser } } = await supabase.auth.getUser();
     if (authUser) {
-      const { data } = await supabase
+      const { data } = await supabase 
         .from('usuario')
         .select('*')
         .eq('correo', authUser.email)

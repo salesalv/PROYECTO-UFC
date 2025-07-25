@@ -11,3 +11,13 @@ CREATE TABLE IF NOT EXISTS usuario (
     contraseña VARCHAR(255) NOT NULL,
     saldo DECIMAL(10,2) DEFAULT 0.00
 ); 
+
+-- Tabla para registrar movimientos de monedas virtuales
+CREATE TABLE IF NOT EXISTS transacciones_moneda (
+    id SERIAL PRIMARY KEY,
+    usuario_id INTEGER REFERENCES usuario(id),
+    tipo VARCHAR(20), -- 'ingreso' o 'egreso'
+    cantidad DECIMAL(10,2) NOT NULL,
+    motivo VARCHAR(255), -- ejemplo: 'registro', 'apuesta', 'voto', etc.
+    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+); 

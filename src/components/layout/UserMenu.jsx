@@ -8,7 +8,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { UserCircle, LogOut, Award, BarChart2, Star, Trophy } from "lucide-react";
+import { UserCircle, LogOut, Award, BarChart2, Star, Trophy, Coins } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import supabase from "@/db";
 import { useUser } from "@/context/UserContext";
@@ -74,8 +74,8 @@ const UserMenu = () => {
               <p className="text-lg font-bold text-white">{userData?.nombre_usuario || t('user.default')}</p>
               <p className="text-xs text-gray-400">{userData?.correo || "-"}</p>
               <div className="flex items-center space-x-2">
-                <Award className="h-4 w-4 text-yellow-500" />
-                <span className="text-sm font-medium text-yellow-500">{userData?.puntos?.toLocaleString() || 0} {t('user.points')}</span>
+                <Coins className="h-4 w-4 text-yellow-400" />
+                <span className="text-sm font-medium text-yellow-400">{userData?.saldo?.toLocaleString() || 0} Monedas</span>
               </div>
             </div>
           </div>
