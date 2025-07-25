@@ -369,17 +369,16 @@ const PredictionPage = () => {
     setLoading(false);
   };
 
-  // NUEVO: función para borrar la predicción del evento actual
-  const handleDeletePrediction = async () => {
-    if (!eventPrediction) return;
+  // Elimina la función handleDeletePrediction anterior y reemplázala por una versión que reciba el id de la predicción
+  const handleDeletePrediction = async (prediccionId, montoApuesta) => {
     setLoading(true);
     try {
       // Devolver monedas apostadas
-      await agregarMonedas(user.id, eventPrediction.monto_apuesta, "cancelacion_apuesta");
+      await agregarMonedas(user.id, montoApuesta, "cancelacion_apuesta");
       const { error } = await supabase
         .from('predicciones')
         .delete()
-        .eq('id', eventPrediction.id);
+        .eq('id', prediccionId);
       setLoading(false);
       if (error) {
         alert('Error al borrar la apuesta: ' + error.message);
@@ -480,7 +479,7 @@ const PredictionPage = () => {
                     </div>
                     {/* Botón de cancelar apuesta solo si la apuesta NO está pagada */}
                     {eventPrediction && eventPrediction.pagada !== true && !eventPrediction.resultados_prediccion && (
-                      <Button onClick={handleDeletePrediction} className="bg-red-700 hover:bg-red-800 w-full" disabled={loading}>
+                      <Button onClick={() => handleDeletePrediction(eventPrediction.id, eventPrediction.monto_apuesta)} className="bg-red-700 hover:bg-red-800 w-full" disabled={loading}>
                         {loading ? 'Eliminando...' : 'Cancelar apuesta'}
                       </Button>
                     )}
@@ -522,31 +521,39 @@ const PredictionPage = () => {
               <h3 className="text-xl font-bold text-gray-200 mb-4">Historial de Predicciones</h3>
               <div className="space-y-4">
                 {userPredictions.map(pred => (
-                  <div key={pred.id} className="bg-gray-900/60 rounded-lg p-4 border border-gray-800 mb-2">
-                    <div className="font-semibold text-white mb-1">{pred.evento}</div>
-                    <div className="text-gray-400 text-sm mb-1">Apuesta: <span className="text-yellow-400 font-bold">{pred.monto_apuesta}</span> | Ganancia: <span className="text-green-400 font-bold">{pred.ganancia_potencial}</span></div>
-                    <div className="text-gray-500 text-xs mb-2">{new Date(pred.created_at).toLocaleString()}</div>
-                    <div className="flex flex-wrap gap-3 items-center text-sm">
-                      {/* Mostrar cada predicción y su resultado */}
-                      {pred.prediccion?.winner && (
-                        <span className="flex items-center"><span className="text-white">Ganador:</span> <span className="ml-1 font-bold text-white">{pred.prediccion.winner}</span> <ResultIcon value={pred.resultados_prediccion?.winner} /></span>
-                      )}
-                      {pred.prediccion?.method && (
-                        <span className="flex items-center"><span className="text-white">Método:</span> <span className="ml-1 font-bold text-white">{pred.prediccion.method}</span> <ResultIcon value={pred.resultados_prediccion?.method} /></span>
-                      )}
-                      {pred.prediccion?.round && (
-                        <span className="flex items-center"><span className="text-white">Round:</span> <span className="ml-1 font-bold text-white">{Array.isArray(pred.prediccion.round) ? pred.prediccion.round[0] : pred.prediccion.round}</span> <ResultIcon value={pred.resultados_prediccion?.round} /></span>
-                      )}
-                      {pred.prediccion?.firstStrike && (
-                        <span className="flex items-center"><span className="text-white">1er Golpe:</span> <span className="ml-1 font-bold text-white">{pred.prediccion.firstStrike}</span> <ResultIcon value={pred.resultados_prediccion?.firstStrike} /></span>
-                      )}
-                      {pred.prediccion?.firstTakedown && (
-                        <span className="flex items-center"><span className="text-white">1er Derribo:</span> <span className="ml-1 font-bold text-white">{pred.prediccion.firstTakedown}</span> <ResultIcon value={pred.resultados_prediccion?.firstTakedown} /></span>
-                      )}
-                      {pred.prediccion?.mostSignificantStrikes && (
-                        <span className="flex items-center"><span className="text-white">Más Golpes:</span> <span className="ml-1 font-bold text-white">{pred.prediccion.mostSignificantStrikes}</span> <ResultIcon value={pred.resultados_prediccion?.mostSignificantStrikes} /></span>
-                      )}
+                  <div key={pred.id} className="bg-gray-900/60 rounded-lg p-4 border border-gray-800 mb-2 flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                      <div className="font-semibold text-white mb-1">{pred.evento}</div>
+                      <div className="text-gray-400 text-sm mb-1">Apuesta: <span className="text-yellow-400 font-bold">{pred.monto_apuesta}</span> | Ganancia: <span className="text-green-400 font-bold">{pred.ganancia_potencial}</span></div>
+                      <div className="text-gray-500 text-xs mb-2">{new Date(pred.created_at).toLocaleString()}</div>
+                      <div className="flex flex-wrap gap-3 items-center text-sm">
+                        {/* Mostrar cada predicción y su resultado */}
+                        {pred.prediccion?.winner && (
+                          <span className="flex items-center"><span className="text-white">Ganador:</span> <span className="ml-1 font-bold text-white">{pred.prediccion.winner}</span> <ResultIcon value={pred.resultados_prediccion?.winner} /></span>
+                        )}
+                        {pred.prediccion?.method && (
+                          <span className="flex items-center"><span className="text-white">Método:</span> <span className="ml-1 font-bold text-white">{pred.prediccion.method}</span> <ResultIcon value={pred.resultados_prediccion?.method} /></span>
+                        )}
+                        {pred.prediccion?.round && (
+                          <span className="flex items-center"><span className="text-white">Round:</span> <span className="ml-1 font-bold text-white">{Array.isArray(pred.prediccion.round) ? pred.prediccion.round[0] : pred.prediccion.round}</span> <ResultIcon value={pred.resultados_prediccion?.round} /></span>
+                        )}
+                        {pred.prediccion?.firstStrike && (
+                          <span className="flex items-center"><span className="text-white">1er Golpe:</span> <span className="ml-1 font-bold text-white">{pred.prediccion.firstStrike}</span> <ResultIcon value={pred.resultados_prediccion?.firstStrike} /></span>
+                        )}
+                        {pred.prediccion?.firstTakedown && (
+                          <span className="flex items-center"><span className="text-white">1er Derribo:</span> <span className="ml-1 font-bold text-white">{pred.prediccion.firstTakedown}</span> <ResultIcon value={pred.resultados_prediccion?.firstTakedown} /></span>
+                        )}
+                        {pred.prediccion?.mostSignificantStrikes && (
+                          <span className="flex items-center"><span className="text-white">Más Golpes:</span> <span className="ml-1 font-bold text-white">{pred.prediccion.mostSignificantStrikes}</span> <ResultIcon value={pred.resultados_prediccion?.mostSignificantStrikes} /></span>
+                        )}
+                      </div>
                     </div>
+                    {/* Botón de cancelar apuesta solo si la apuesta NO está pagada y no tiene resultados */}
+                    {pred.pagada !== true && !pred.resultados_prediccion && (
+                      <Button onClick={() => handleDeletePrediction(pred.id, pred.monto_apuesta)} className="bg-red-700 hover:bg-red-800 w-full sm:w-auto mt-4 sm:mt-0">
+                        {loading ? 'Eliminando...' : 'Cancelar apuesta'}
+                      </Button>
+                    )}
                   </div>
                 ))}
               </div>
