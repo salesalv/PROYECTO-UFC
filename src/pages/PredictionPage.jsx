@@ -342,6 +342,7 @@ const PredictionPage = () => {
           monto_apuesta: finalBetAmount,
           cuota: odds,
           ganancia_potencial: gananciaPotencial,
+          pagada: false // <-- importante
         }
       ]);
       if (error) {
