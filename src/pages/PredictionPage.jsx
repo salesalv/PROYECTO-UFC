@@ -12,6 +12,7 @@ import { useTranslation } from 'react-i18next';
 import supabase from "@/db";
 import { useUser } from "@/context/UserContext";
 import { gastarMonedas, agregarMonedas } from "@/services/coinService";
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
 // Placeholder data - Move to context or props later if needed
 const fightDetails = {
@@ -164,6 +165,12 @@ const PredictionPage = () => {
   // Estado para bloquear el formulario si la apuesta ya fue pagada para el evento actual
   const [apuestaPagada, setApuestaPagada] = useState(false);
 
+  // Estado para mostrar el modal de resultado solo una vez
+  const [showResultModal, setShowResultModal] = useState(false);
+  const [resultMessage, setResultMessage] = useState("");
+  const [resultType, setResultType] = useState(""); // "success" o "fail"
+  const [ultimaApuestaPagada, setUltimaApuestaPagada] = useState(null); // id de la última apuesta pagada
+
   // Sincroniza el saldo local con el usuario
   useEffect(() => {
     setBetAmount('');
@@ -215,15 +222,19 @@ const PredictionPage = () => {
             await agregarMonedas(user.id, pred.ganancia_potencial, "ganancia_apuesta");
             await supabase.from('predicciones').update({ pagada: true }).eq('id', pred.id);
             await refreshUser();
-            window.alert(`¡Felicidades! Acertaste la apuesta y ganaste ${pred.ganancia_potencial} monedas.`);
-            // Bloquear el formulario para este evento
+            setResultMessage(`¡Felicidades! Acertaste TODAS las predicciones y ganaste ${pred.ganancia_potencial} monedas.`);
+            setResultType("success");
+            setShowResultModal(true);
+            setUltimaApuestaPagada(pred.id);
             if (pred.evento === `${fightDetails.event}: ${fightDetails.fighter1} vs. ${fightDetails.fighter2}`) {
               setApuestaPagada(true);
             }
           } else {
             await supabase.from('predicciones').update({ pagada: true }).eq('id', pred.id);
-            window.alert('No acertaste la apuesta. ¡Suerte para la próxima!');
-            // Bloquear el formulario para este evento
+            setResultMessage("No acertaste todas las predicciones. ¡Suerte para la próxima!");
+            setResultType("fail");
+            setShowResultModal(true);
+            setUltimaApuestaPagada(pred.id);
             if (pred.evento === `${fightDetails.event}: ${fightDetails.fighter1} vs. ${fightDetails.fighter2}`) {
               setApuestaPagada(true);
             }
@@ -456,6 +467,12 @@ const PredictionPage = () => {
                         <span className="flex items-center"><span className="text-white">Más Golpes:</span> <span className="ml-1 font-bold text-white">{eventPrediction.prediccion.mostSignificantStrikes}</span></span>
                       )}
                     </div>
+                    {/* Botón de cancelar apuesta solo si la apuesta NO está pagada */}
+                    {!eventPrediction.pagada && (
+                      <Button onClick={handleDeletePrediction} className="bg-red-700 hover:bg-red-800 w-full" disabled={loading}>
+                        {loading ? 'Eliminando...' : 'Cancelar apuesta'}
+                      </Button>
+                    )}
                   </div>
                 )}
               </div>
@@ -526,6 +543,21 @@ const PredictionPage = () => {
           )}
         </Card>
       </motion.div>
+
+      {/* Modal de resultado de apuesta */}
+      <Dialog open={showResultModal} onOpenChange={setShowResultModal}>
+        <DialogContent className="max-w-md mx-auto text-center">
+          <DialogTitle className={resultType === "success" ? "text-green-400" : "text-red-400"}>
+            {resultType === "success" ? "¡Apuesta Ganada!" : "Apuesta No Acertada"}
+          </DialogTitle>
+          <DialogDescription className="text-lg mt-2 mb-4">
+            {resultMessage}
+          </DialogDescription>
+          <Button onClick={() => setShowResultModal(false)} className="mt-2 w-full">
+            Cerrar
+          </Button>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
