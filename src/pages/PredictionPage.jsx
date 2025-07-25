@@ -479,7 +479,7 @@ const PredictionPage = () => {
                       )}
                     </div>
                     {/* Botón de cancelar apuesta solo si la apuesta NO está pagada */}
-                    {eventPrediction && eventPrediction.pagada !== true && (
+                    {eventPrediction && eventPrediction.pagada !== true && !eventPrediction.resultados_prediccion && (
                       <Button onClick={handleDeletePrediction} className="bg-red-700 hover:bg-red-800 w-full" disabled={loading}>
                         {loading ? 'Eliminando...' : 'Cancelar apuesta'}
                       </Button>
