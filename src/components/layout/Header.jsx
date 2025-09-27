@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import Logo from "@/components/Logo";
 import Sidebar from "@/components/layout/Sidebar";
-import { Coins, BarChart2, UserCircle, Calendar, Star, MessageSquare, PlayCircle, Users, GitCompare, User, Mail, Award, Trophy, Edit, Scissors } from "lucide-react";
+import { Coins, BarChart2, UserCircle, Calendar, Star, MessageSquare, PlayCircle, Users, GitCompare, User, Mail, Award, Trophy, Edit, Scissors, Settings } from "lucide-react";
 import UserMenu from "./UserMenu";
 import { useUser } from "@/context/UserContext";
 import { useTranslation } from 'react-i18next';
@@ -79,6 +79,17 @@ const Header = () => {
             </Button>
               </>
             )}
+            
+            {/* Enlace de administración - solo visible para usuarios autenticados */}
+            {userData && (
+              <Button variant="ghost" size="sm" asChild>
+                <Link to="/admin/fighters" className="text-yellow-400 hover:text-yellow-300">
+                  <Settings className="w-4 h-4 mr-1" />
+                  Admin
+                </Link>
+              </Button>
+            )}
+            
             <UserMenu />
           </div>
 

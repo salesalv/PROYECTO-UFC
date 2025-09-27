@@ -19,6 +19,7 @@ import CategoryPage from '../pages/CategoryPage';
 import UFCNamajunasBarberCardPage from '../pages/UFCNamajunasBarberCardPage';
 import UFC304CardPage from '../pages/UFC304CardPage';
 import UFCSandhagenNurmagomedovCardPage from '../pages/UFCSandhagenNurmagomedovCardPage';
+import FighterAdminPage from '@/pages/FighterAdminPage';
 
 const AppRoutes = () => {
   return (
@@ -42,6 +43,7 @@ const AppRoutes = () => {
       <Route path="/clips" element={<SavedClipsPage />} />
       <Route path="/thread/:id" element={<ThreadPage />} />
       <Route path="/category/:id" element={<CategoryPage />} />
+      <Route path="/admin/fighters" element={<FighterAdminPage />} />
     </Routes>
   );
 };
