@@ -14,12 +14,12 @@ import { useUser } from "@/context/UserContext";
 import { gastarMonedas, agregarMonedas } from "@/services/coinService";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
-// Placeholder data - Move to context or props later if needed
-const fightDetails = {
+// Datos dinámicos - se cargarán desde la base de datos
+const defaultFightDetails = {
   id: 1,
   fighter1: "Conor McGregor",
   fighter2: "Michael Chandler",
-  event: "UFC 303",
+  event: "UFC 302: McGregor vs. Chandler",
   rounds: 5,
 };
 
@@ -142,10 +142,12 @@ const PredictionBetAmount = ({ betAmount, balance, potentialWinnings, onBetChang
 const PredictionPage = () => {
   const { t } = useTranslation();
   const { user, refreshUser } = useUser();
+  const [fightDetails, setFightDetails] = useState(defaultFightDetails);
+  const [loadingEvent, setLoadingEvent] = useState(true);
   const [predictions, setPredictions] = useState({
     winner: undefined,
     method: undefined,
-    round: [Math.ceil(fightDetails.rounds / 2)],
+    round: [Math.ceil(defaultFightDetails.rounds / 2)],
     firstStrike: undefined,
     firstTakedown: undefined,
     willBeKO: undefined,
@@ -162,6 +164,34 @@ const PredictionPage = () => {
   // Estado para marcar si la apuesta fue finalizada
   const [apuestaFinalizada, setApuestaFinalizada] = useState(false);
   const [confirmando, setConfirmando] = useState(false);
+
+  // Cargar datos del evento
+  useEffect(() => {
+    const loadEventData = async () => {
+      try {
+        setLoadingEvent(true);
+        const events = await getAllEvents();
+        const currentEvent = events[0]; // Usar el primer evento por defecto
+        
+        if (currentEvent) {
+          const fighters = currentEvent.pelea_principal_participantes?.split(' vs ') || ['TBD', 'TBD'];
+          setFightDetails({
+            id: currentEvent.id,
+            fighter1: fighters[0]?.trim() || 'TBD',
+            fighter2: fighters[1]?.trim() || 'TBD',
+            event: currentEvent.titulo,
+            rounds: 5, // Por defecto 5 rounds para peleas principales
+          });
+        }
+      } catch (err) {
+        console.error('Error loading event data:', err);
+      } finally {
+        setLoadingEvent(false);
+      }
+    };
+
+    loadEventData();
+  }, []);
   // Estado para bloquear el formulario si la apuesta ya fue pagada para el evento actual
   const [apuestaPagada, setApuestaPagada] = useState(false);
 
@@ -427,6 +457,19 @@ const PredictionPage = () => {
     if (value === false) return <XCircle className="inline w-5 h-5 text-red-500 ml-1" title="No acertaste" />;
     return <span className="inline text-gray-400 text-xs ml-1">Pendiente</span>;
   };
+
+  if (loadingEvent) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-black via-gray-950 to-black text-white pt-24 pb-12 px-4">
+        <div className="container mx-auto max-w-4xl">
+          <div className="flex justify-center items-center py-20">
+            <Loader2 className="w-8 h-8 animate-spin text-red-500 mr-4" />
+            <span className="text-gray-400">Cargando datos del evento...</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-black via-gray-950 to-black text-white pt-24 pb-12 px-4">

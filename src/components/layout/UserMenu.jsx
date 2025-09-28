@@ -8,7 +8,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { UserCircle, LogOut, Award, BarChart2, Star, Trophy, Coins } from "lucide-react";
+import { UserCircle, LogOut, Award, BarChart2, Star, Coins } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import supabase from "@/db";
 import { useUser } from "@/context/UserContext";
@@ -103,12 +103,6 @@ const UserMenu = () => {
             <Link to="/profile" className="flex items-center text-gray-300 hover:text-white hover:bg-gray-800/50 rounded-md">
               <UserCircle className="mr-2 h-4 w-4" />
               <span>{t('user.profile')}</span>
-            </Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem asChild>
-            <Link to="/rankings" className="flex items-center text-gray-300 hover:text-white hover:bg-gray-800/50 rounded-md">
-              <Trophy className="mr-2 h-4 w-4 text-gray-300" />
-              <span>{t('user.ranking')}</span>
             </Link>
           </DropdownMenuItem>
           <div className="mt-3 px-2">

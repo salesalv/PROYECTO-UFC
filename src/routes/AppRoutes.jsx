@@ -3,7 +3,6 @@ import { Routes, Route } from "react-router-dom";
 import HomePage from "../pages/HomePage";
 import LoginPage from "../pages/LoginPage";
 import RegisterPage from "../pages/RegisterPage";
-import RankingsPage from "../pages/RankingsPage";
 import UserProfilePage from "../pages/UserProfilePage";
 import FighterComparisonPage from "../pages/FighterComparisonPage";
 import FightersPage from "../pages/FightersPage";
@@ -16,6 +15,7 @@ import UFC303CardPage from "../pages/UFC303CardPage";
 import SavedClipsPage from "../pages/SavedClipsPage";
 import ThreadPage from '../pages/ThreadPage';
 import CategoryPage from '../pages/CategoryPage';
+import EventCardPage from '../components/events/EventCardPage';
 import UFCNamajunasBarberCardPage from '../pages/UFCNamajunasBarberCardPage';
 import UFC304CardPage from '../pages/UFC304CardPage';
 import UFCSandhagenNurmagomedovCardPage from '../pages/UFCSandhagenNurmagomedovCardPage';
@@ -26,7 +26,6 @@ const AppRoutes = () => {
       <Route path="/" element={<HomePage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
-      <Route path="/rankings" element={<RankingsPage />} />
       <Route path="/profile" element={<UserProfilePage />} />
       <Route path="/compare" element={<FighterComparisonPage />} />
       <Route path="/fighters" element={<FightersPage />} />
@@ -42,6 +41,7 @@ const AppRoutes = () => {
       <Route path="/clips" element={<SavedClipsPage />} />
       <Route path="/thread/:id" element={<ThreadPage />} />
       <Route path="/category/:id" element={<CategoryPage />} />
+      <Route path="/event/:id" element={<EventCardPage />} />
     </Routes>
   );
 };

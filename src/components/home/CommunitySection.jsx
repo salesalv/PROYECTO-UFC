@@ -46,12 +46,6 @@ const CommunitySection = () => {
               {t('home.learn_more')}
             </Link>
           </Button>
-          <Button variant="outline" size="lg" className="text-lg border-gray-600 text-gray-300 hover:bg-gray-800 hover:text-white w-full sm:w-auto" asChild>
-            <Link to="/rankings">
-              <Users className="w-5 h-5 mr-2" />
-              {t('home.see_rankings')}
-            </Link>
-          </Button>
         </motion.div>
       </div>
     </section>

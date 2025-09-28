@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetClose } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import Logo from "@/components/Logo";
-import { User, BarChart2, LogOut, Coins } from "lucide-react"; // Removed unused icons
+import { User, LogOut, Coins } from "lucide-react";
 import { useUser } from "@/context/UserContext";
 import supabase from "@/db";
 import { useTranslation } from 'react-i18next';
@@ -23,7 +23,6 @@ const Sidebar = ({ trigger, navItems }) => {
       path: item.path,
     })),
     { icon: User, label: t('nav.profile'), path: "/profile" },
-    { icon: BarChart2, label: t('nav.my_rankings'), path: "/rankings" },
   ];
 
   const handleLogout = async () => {
