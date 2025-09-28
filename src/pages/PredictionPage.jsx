@@ -12,6 +12,7 @@ import { useTranslation } from 'react-i18next';
 import supabase from "@/db";
 import { useUser } from "@/context/UserContext";
 import { gastarMonedas, agregarMonedas } from "@/services/coinService";
+import { getAllEvents } from "@/services/eventService";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
 // Datos dinámicos - se cargarán desde la base de datos
@@ -143,7 +144,7 @@ const PredictionPage = () => {
   const { t } = useTranslation();
   const { user, refreshUser } = useUser();
   const [fightDetails, setFightDetails] = useState(defaultFightDetails);
-  const [loadingEvent, setLoadingEvent] = useState(true);
+  const [loadingEvent, setLoadingEvent] = useState(false);
   const [predictions, setPredictions] = useState({
     winner: undefined,
     method: undefined,
@@ -165,11 +166,10 @@ const PredictionPage = () => {
   const [apuestaFinalizada, setApuestaFinalizada] = useState(false);
   const [confirmando, setConfirmando] = useState(false);
 
-  // Cargar datos del evento
+  // Cargar datos del evento (opcional, no bloquea la carga inicial)
   useEffect(() => {
     const loadEventData = async () => {
       try {
-        setLoadingEvent(true);
         const events = await getAllEvents();
         const currentEvent = events[0]; // Usar el primer evento por defecto
         
@@ -185,11 +185,11 @@ const PredictionPage = () => {
         }
       } catch (err) {
         console.error('Error loading event data:', err);
-      } finally {
-        setLoadingEvent(false);
+        // En caso de error, mantener datos por defecto
       }
     };
 
+    // Cargar en segundo plano sin bloquear la UI
     loadEventData();
   }, []);
   // Estado para bloquear el formulario si la apuesta ya fue pagada para el evento actual
@@ -458,18 +458,6 @@ const PredictionPage = () => {
     return <span className="inline text-gray-400 text-xs ml-1">Pendiente</span>;
   };
 
-  if (loadingEvent) {
-    return (
-      <div className="min-h-screen bg-gradient-to-b from-black via-gray-950 to-black text-white pt-24 pb-12 px-4">
-        <div className="container mx-auto max-w-4xl">
-          <div className="flex justify-center items-center py-20">
-            <Loader2 className="w-8 h-8 animate-spin text-red-500 mr-4" />
-            <span className="text-gray-400">Cargando datos del evento...</span>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-black via-gray-950 to-black text-white pt-24 pb-12 px-4">
