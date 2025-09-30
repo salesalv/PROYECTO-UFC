@@ -97,7 +97,8 @@
     "live": "Watch Live",
     "profile": "My Profile",
     "my_rankings": "My Rankings",
-    "buy_coins": "Buy Coins"
+    "buy_coins": "Buy Coins",
+    "rewards": "Rewards"
   },
   "auth": {
     "login": "Login",
@@ -227,7 +228,7 @@
     "alt_celebration": "A victorious fighter celebrating in the octagon",
     "main_event": "Main Event:",
     "co_main_event": "Co-Main Event:",
-    "details": "View Details / Buy"
+    "details": "View Details"
   },
   "category": {
     "not_found": "Category not found.",
@@ -329,7 +330,40 @@
   "error": {
     "title": "Error",
     "loading_history": "Error loading transaction history",
-    "purchase_failed": "Error processing purchase. Please try again."
+    "purchase_failed": "Error processing purchase. Please try again.",
+    "loading_rewards": "Error loading rewards",
+    "redeem_failed": "Error redeeming reward. Please try again."
+  },
+  "rewards": {
+    "title": "Rewards Catalog",
+    "subtitle": "Redeem your virtual coins for exclusive rewards and premium content",
+    "current_balance": "Current Balance",
+    "balance_description": "Coins available to redeem",
+    "all_categories": "All Categories",
+    "badges": "Badges",
+    "content": "Content",
+    "all_rewards": "All Rewards",
+    "categories": "Categories",
+    "my_rewards": "My Rewards",
+    "total_rewards": "Total Rewards",
+    "total_spent": "Total Spent",
+    "average_per_reward": "Average per Reward",
+    "common": "Common",
+    "rare": "Rare",
+    "legendary": "Legendary",
+    "limited": "Limited",
+    "includes": "Includes",
+    "benefits": "Benefits",
+    "processing": "Processing...",
+    "owned": "Already Owned",
+    "insufficient_coins": "Insufficient Coins",
+    "redeem": "Redeem",
+    "redeem_success": "Reward Redeemed!",
+    "reward_added": "{{name}} added to your collection",
+    "login_required": "Login Required",
+    "login_message": "You need to log in to view rewards",
+    "no_rewards": "You have no rewards yet",
+    "start_collecting": "Start collecting rewards!"
   },
   "eventosUFC303": {
     "title": "UFC 303: McGregor vs. Chandler",

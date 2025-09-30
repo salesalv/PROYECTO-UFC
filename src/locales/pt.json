@@ -97,7 +97,8 @@
     "live": "Assistir ao Vivo",
     "profile": "Meu Perfil",
     "my_rankings": "Meus Rankings",
-    "buy_coins": "Comprar Moedas"
+    "buy_coins": "Comprar Moedas",
+    "rewards": "Recompensas"
   },
   "auth": {
     "login": "Entrar",
@@ -181,7 +182,7 @@
     "alt_celebration": "Lutador vitorioso comemorando no octógono",
     "main_event": "Luta Principal:",
     "co_main_event": "Co-Principal:",
-    "details": "Ver Detalhes / Comprar"
+    "details": "Ver Detalhes"
   },
   "category": {
     "not_found": "Categoria não encontrada.",
@@ -287,7 +288,40 @@
   "error": {
     "title": "Erro",
     "loading_history": "Erro ao carregar histórico de transações",
-    "purchase_failed": "Erro ao processar compra. Tente novamente."
+    "purchase_failed": "Erro ao processar compra. Tente novamente.",
+    "loading_rewards": "Erro ao carregar recompensas",
+    "redeem_failed": "Erro ao resgatar recompensa. Tente novamente."
+  },
+  "rewards": {
+    "title": "Catálogo de Recompensas",
+    "subtitle": "Resgate suas moedas virtuais por recompensas exclusivas e conteúdo premium",
+    "current_balance": "Saldo Atual",
+    "balance_description": "Moedas disponíveis para resgatar",
+    "all_categories": "Todas as Categorias",
+    "badges": "Insígnias",
+    "content": "Conteúdo",
+    "all_rewards": "Todas as Recompensas",
+    "categories": "Categorias",
+    "my_rewards": "Minhas Recompensas",
+    "total_rewards": "Total de Recompensas",
+    "total_spent": "Total Gasto",
+    "average_per_reward": "Média por Recompensa",
+    "common": "Comum",
+    "rare": "Rara",
+    "legendary": "Lendária",
+    "limited": "Limitada",
+    "includes": "Inclui",
+    "benefits": "Benefícios",
+    "processing": "Processando...",
+    "owned": "Já Possuída",
+    "insufficient_coins": "Moedas Insuficientes",
+    "redeem": "Resgatar",
+    "redeem_success": "Recompensa Resgatada!",
+    "reward_added": "{{name}} adicionada à sua coleção",
+    "login_required": "Login Necessário",
+    "login_message": "Você precisa fazer login para ver as recompensas",
+    "no_rewards": "Você ainda não tem recompensas",
+    "start_collecting": "Comece a colecionar recompensas!"
   },
   "thread": {
     "replies": "Respostas ({{count}})"

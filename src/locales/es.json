@@ -105,7 +105,8 @@
     "live": "Ver en Vivo",
     "profile": "Mi Perfil",
     "my_rankings": "Mis Rankings",
-    "buy_coins": "Comprar Monedas"
+    "buy_coins": "Comprar Monedas",
+    "rewards": "Recompensas"
   },
   "auth": {
     "login": "Iniciar Sesión",
@@ -235,7 +236,7 @@
     "alt_celebration": "Peleador victorioso celebrando en el octágono",
     "main_event": "Pelea Principal:",
     "co_main_event": "Co-Estelar:",
-    "details": "Ver Detalles / Comprar"
+    "details": "Ver Detalles"
   },
   "category": {
     "not_found": "Categoría no encontrada.",
@@ -345,7 +346,40 @@
   "error": {
     "title": "Error",
     "loading_history": "Error al cargar el historial de transacciones",
-    "purchase_failed": "Error al procesar la compra. Inténtalo de nuevo."
+    "purchase_failed": "Error al procesar la compra. Inténtalo de nuevo.",
+    "loading_rewards": "Error al cargar las recompensas",
+    "redeem_failed": "Error al canjear la recompensa. Inténtalo de nuevo."
+  },
+  "rewards": {
+    "title": "Catálogo de Recompensas",
+    "subtitle": "Canjea tus monedas virtuales por recompensas exclusivas y contenido premium",
+    "current_balance": "Saldo Actual",
+    "balance_description": "Monedas disponibles para canjear",
+    "all_categories": "Todas las Categorías",
+    "badges": "Insignias",
+    "content": "Contenido",
+    "all_rewards": "Todas las Recompensas",
+    "categories": "Categorías",
+    "my_rewards": "Mis Recompensas",
+    "total_rewards": "Total de Recompensas",
+    "total_spent": "Total Gastado",
+    "average_per_reward": "Promedio por Recompensa",
+    "common": "Común",
+    "rare": "Rara",
+    "legendary": "Legendaria",
+    "limited": "Limitada",
+    "includes": "Incluye",
+    "benefits": "Beneficios",
+    "processing": "Procesando...",
+    "owned": "Ya Poseída",
+    "insufficient_coins": "Monedas Insuficientes",
+    "redeem": "Canjear",
+    "redeem_success": "¡Recompensa Canjeada!",
+    "reward_added": "Se agregó {{name}} a tu colección",
+    "login_required": "Inicio de Sesión Requerido",
+    "login_message": "Necesitas iniciar sesión para ver las recompensas",
+    "no_rewards": "No tienes recompensas aún",
+    "start_collecting": "¡Comienza a coleccionar recompensas!"
   },
   "eventosUFC303": {
     "title": "UFC 303: McGregor vs. Chandler",

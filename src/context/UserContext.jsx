@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 import supabase from "@/db";
 import { agregarMonedas, gastarMonedas, obtenerSaldo } from "@/services/coinService";
+import { canjearRecompensa, obtenerRecompensasUsuario, obtenerEstadisticasRecompensas } from "@/services/rewardsService";
 
 const UserContext = createContext();
 
@@ -78,6 +79,61 @@ export const UserProvider = ({ children }) => {
     return user?.saldo >= cantidad;
   }, [user?.saldo]);
 
+  // Función para canjear una recompensa
+  const redeemReward = useCallback(async (recompensaId) => {
+    if (!user?.id) {
+      throw new Error("Usuario no autenticado");
+    }
+    
+    try {
+      const result = await canjearRecompensa(user.id, recompensaId);
+      
+      // Actualizar saldo del usuario
+      setUser(prev => prev ? { ...prev, saldo: result.nuevoSaldo } : null);
+      
+      return result;
+    } catch (error) {
+      console.error('Error canjeando recompensa:', error);
+      throw error;
+    }
+  }, [user?.id]);
+
+  // Función para obtener las recompensas del usuario
+  const getUserRewards = useCallback(async () => {
+    if (!user?.id) {
+      return [];
+    }
+    
+    try {
+      return await obtenerRecompensasUsuario(user.id);
+    } catch (error) {
+      console.error('Error obteniendo recompensas:', error);
+      return [];
+    }
+  }, [user?.id]);
+
+  // Función para obtener estadísticas de recompensas
+  const getRewardStatistics = useCallback(async () => {
+    if (!user?.id) {
+      return {
+        totalRecompensas: 0,
+        totalGastado: 0,
+        promedioPorRecompensa: 0
+      };
+    }
+    
+    try {
+      return await obtenerEstadisticasRecompensas(user.id);
+    } catch (error) {
+      console.error('Error obteniendo estadísticas:', error);
+      return {
+        totalRecompensas: 0,
+        totalGastado: 0,
+        promedioPorRecompensa: 0
+      };
+    }
+  }, [user?.id]);
+
   useEffect(() => {
     fetchUserData();
     // Escuchar cambios de sesión de Supabase
@@ -96,7 +152,10 @@ export const UserProvider = ({ children }) => {
     updateUserBalance,
     addCoins,
     spendCoins,
-    hasEnoughCoins
+    hasEnoughCoins,
+    redeemReward,
+    getUserRewards,
+    getRewardStatistics
   };
 
   return (
