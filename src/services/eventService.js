@@ -259,3 +259,4 @@ export const getEventsByDateRange = async (startDate, endDate) => {
     throw error;
   }
 };
+

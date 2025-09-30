@@ -59,3 +59,4 @@ export const useEvents = (options = {}) => {
 };
 
 export default useEvents;
+

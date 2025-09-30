@@ -96,7 +96,8 @@
     "saved_clips": "Saved Clips",
     "live": "Watch Live",
     "profile": "My Profile",
-    "my_rankings": "My Rankings"
+    "my_rankings": "My Rankings",
+    "buy_coins": "Buy Coins"
   },
   "auth": {
     "login": "Login",
@@ -275,6 +276,60 @@
   },
   "logo": {
     "alt": "UFC Logo"
+  },
+  "coins": {
+    "title": "Buy Virtual Coins",
+    "subtitle": "Purchase virtual coins to participate in predictions, bets and more platform activities",
+    "current_balance": "Current Balance",
+    "balance_description": "Coins available to use",
+    "coins": "Coins",
+    "choose_package": "Choose Your Package",
+    "most_popular": "Most Popular",
+    "discount": "Discount",
+    "per_coin": "Per coin",
+    "buy_now": "Buy Now",
+    "processing": "Processing...",
+    "purchase_initiated": "Purchase Initiated",
+    "redirecting_payment": "Redirecting to MercadoPago...",
+    "purchase_success": "Purchase Successful!",
+    "coins_added": "{{coins}} coins added to your account",
+    "login_required": "Login Required",
+    "login_message": "You need to log in to buy virtual coins",
+    "secure_payment": "Secure Payment",
+    "secure_description": "Protected by MercadoPago",
+    "instant_delivery": "Instant Delivery",
+    "instant_description": "Coins available immediately",
+    "best_value": "Best Value",
+    "best_value_description": "More coins for your money",
+    "payment_methods": "Payment Methods",
+    "accepted_methods": "Accepted Methods",
+    "credit_cards": "Credit Cards",
+    "debit_cards": "Debit Cards",
+    "bank_transfer": "Bank Transfer",
+    "digital_wallets": "Digital Wallets",
+    "security_info": "Security Information",
+    "ssl_encryption": "SSL Encryption",
+    "pci_compliant": "PCI DSS Compliant",
+    "refund_policy": "Refund Policy",
+    "customer_support": "Customer Support"
+  },
+  "transactions": {
+    "history": "Transaction History",
+    "no_transactions": "You have no transactions yet",
+    "registration": "Registration",
+    "bet": "Bet",
+    "vote": "Vote",
+    "purchase_basic": "Purchase - Basic Package",
+    "purchase_standard": "Purchase - Standard Package",
+    "purchase_premium": "Purchase - Premium Package",
+    "purchase_pro": "Purchase - Pro Package",
+    "income": "Income",
+    "expense": "Expense"
+  },
+  "error": {
+    "title": "Error",
+    "loading_history": "Error loading transaction history",
+    "purchase_failed": "Error processing purchase. Please try again."
   },
   "eventosUFC303": {
     "title": "UFC 303: McGregor vs. Chandler",

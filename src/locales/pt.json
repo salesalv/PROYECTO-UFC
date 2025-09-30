@@ -96,7 +96,8 @@
     "saved_clips": "Clipes Salvos",
     "live": "Assistir ao Vivo",
     "profile": "Meu Perfil",
-    "my_rankings": "Meus Rankings"
+    "my_rankings": "Meus Rankings",
+    "buy_coins": "Comprar Moedas"
   },
   "auth": {
     "login": "Entrar",
@@ -233,6 +234,60 @@
   },
   "logo": {
     "alt": "Logo do UFC"
+  },
+  "coins": {
+    "title": "Comprar Moedas Virtuais",
+    "subtitle": "Adquira moedas virtuais para participar em previsões, apostas e mais atividades da plataforma",
+    "current_balance": "Saldo Atual",
+    "balance_description": "Moedas disponíveis para usar",
+    "coins": "Moedas",
+    "choose_package": "Escolha seu Pacote",
+    "most_popular": "Mais Popular",
+    "discount": "Desconto",
+    "per_coin": "Por moeda",
+    "buy_now": "Comprar Agora",
+    "processing": "Processando...",
+    "purchase_initiated": "Compra Iniciada",
+    "redirecting_payment": "Redirecionando para MercadoPago...",
+    "purchase_success": "Compra Bem-sucedida!",
+    "coins_added": "{{coins}} moedas adicionadas à sua conta",
+    "login_required": "Login Necessário",
+    "login_message": "Você precisa fazer login para comprar moedas virtuais",
+    "secure_payment": "Pagamento Seguro",
+    "secure_description": "Protegido pelo MercadoPago",
+    "instant_delivery": "Entrega Instantânea",
+    "instant_description": "Moedas disponíveis imediatamente",
+    "best_value": "Melhor Valor",
+    "best_value_description": "Mais moedas pelo seu dinheiro",
+    "payment_methods": "Métodos de Pagamento",
+    "accepted_methods": "Métodos Aceitos",
+    "credit_cards": "Cartões de Crédito",
+    "debit_cards": "Cartões de Débito",
+    "bank_transfer": "Transferência Bancária",
+    "digital_wallets": "Carteiras Digitais",
+    "security_info": "Informações de Segurança",
+    "ssl_encryption": "Criptografia SSL",
+    "pci_compliant": "Compatível com PCI DSS",
+    "refund_policy": "Política de Reembolso",
+    "customer_support": "Suporte ao Cliente"
+  },
+  "transactions": {
+    "history": "Histórico de Transações",
+    "no_transactions": "Você ainda não tem transações",
+    "registration": "Registro",
+    "bet": "Aposta",
+    "vote": "Voto",
+    "purchase_basic": "Compra - Pacote Básico",
+    "purchase_standard": "Compra - Pacote Padrão",
+    "purchase_premium": "Compra - Pacote Premium",
+    "purchase_pro": "Compra - Pacote Pro",
+    "income": "Receita",
+    "expense": "Despesa"
+  },
+  "error": {
+    "title": "Erro",
+    "loading_history": "Erro ao carregar histórico de transações",
+    "purchase_failed": "Erro ao processar compra. Tente novamente."
   },
   "thread": {
     "replies": "Respostas ({{count}})"

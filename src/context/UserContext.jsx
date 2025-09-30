@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 import supabase from "@/db";
+import { agregarMonedas, gastarMonedas, obtenerSaldo } from "@/services/coinService";
 
 const UserContext = createContext();
 
@@ -28,6 +29,55 @@ export const UserProvider = ({ children }) => {
     setLoading(false);
   }, []);
 
+  // Función para actualizar el saldo del usuario
+  const updateUserBalance = useCallback(async () => {
+    if (user?.id) {
+      try {
+        const nuevoSaldo = await obtenerSaldo(user.id);
+        setUser(prev => prev ? { ...prev, saldo: nuevoSaldo } : null);
+      } catch (error) {
+        console.error('Error actualizando saldo:', error);
+      }
+    }
+  }, [user?.id]);
+
+  // Función para agregar monedas al usuario
+  const addCoins = useCallback(async (cantidad, motivo = "ingreso") => {
+    if (!user?.id) {
+      throw new Error("Usuario no autenticado");
+    }
+    
+    try {
+      const nuevoSaldo = await agregarMonedas(user.id, cantidad, motivo);
+      setUser(prev => prev ? { ...prev, saldo: nuevoSaldo } : null);
+      return nuevoSaldo;
+    } catch (error) {
+      console.error('Error agregando monedas:', error);
+      throw error;
+    }
+  }, [user?.id]);
+
+  // Función para gastar monedas del usuario
+  const spendCoins = useCallback(async (cantidad, motivo = "egreso") => {
+    if (!user?.id) {
+      throw new Error("Usuario no autenticado");
+    }
+    
+    try {
+      const nuevoSaldo = await gastarMonedas(user.id, cantidad, motivo);
+      setUser(prev => prev ? { ...prev, saldo: nuevoSaldo } : null);
+      return nuevoSaldo;
+    } catch (error) {
+      console.error('Error gastando monedas:', error);
+      throw error;
+    }
+  }, [user?.id]);
+
+  // Función para verificar si el usuario tiene suficientes monedas
+  const hasEnoughCoins = useCallback((cantidad) => {
+    return user?.saldo >= cantidad;
+  }, [user?.saldo]);
+
   useEffect(() => {
     fetchUserData();
     // Escuchar cambios de sesión de Supabase
@@ -39,8 +89,18 @@ export const UserProvider = ({ children }) => {
     };
   }, [fetchUserData]);
 
+  const contextValue = {
+    user,
+    loading,
+    refreshUser: fetchUserData,
+    updateUserBalance,
+    addCoins,
+    spendCoins,
+    hasEnoughCoins
+  };
+
   return (
-    <UserContext.Provider value={{ user, loading, refreshUser: fetchUserData }}>
+    <UserContext.Provider value={contextValue}>
       {children}
     </UserContext.Provider>
   );

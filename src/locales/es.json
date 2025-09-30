@@ -104,7 +104,8 @@
     "saved_clips": "Clips Guardados",
     "live": "Ver en Vivo",
     "profile": "Mi Perfil",
-    "my_rankings": "Mis Rankings"
+    "my_rankings": "Mis Rankings",
+    "buy_coins": "Comprar Monedas"
   },
   "auth": {
     "login": "Iniciar Sesión",
@@ -291,6 +292,60 @@
   },
   "logo": {
     "alt": "Logo de UFC"
+  },
+  "coins": {
+    "title": "Comprar Monedas Virtuales",
+    "subtitle": "Adquiere monedas virtuales para participar en predicciones, apuestas y más actividades en la plataforma",
+    "current_balance": "Saldo Actual",
+    "balance_description": "Monedas disponibles para usar",
+    "coins": "Monedas",
+    "choose_package": "Elige tu Paquete",
+    "most_popular": "Más Popular",
+    "discount": "Descuento",
+    "per_coin": "Por moneda",
+    "buy_now": "Comprar Ahora",
+    "processing": "Procesando...",
+    "purchase_initiated": "Compra Iniciada",
+    "redirecting_payment": "Redirigiendo a MercadoPago...",
+    "purchase_success": "¡Compra Exitosa!",
+    "coins_added": "Se agregaron {{coins}} monedas a tu cuenta",
+    "login_required": "Inicio de Sesión Requerido",
+    "login_message": "Necesitas iniciar sesión para comprar monedas virtuales",
+    "secure_payment": "Pago Seguro",
+    "secure_description": "Protegido por MercadoPago",
+    "instant_delivery": "Entrega Instantánea",
+    "instant_description": "Monedas disponibles inmediatamente",
+    "best_value": "Mejor Valor",
+    "best_value_description": "Más monedas por tu dinero",
+    "payment_methods": "Métodos de Pago",
+    "accepted_methods": "Métodos Aceptados",
+    "credit_cards": "Tarjetas de Crédito",
+    "debit_cards": "Tarjetas de Débito",
+    "bank_transfer": "Transferencia Bancaria",
+    "digital_wallets": "Billeteras Digitales",
+    "security_info": "Información de Seguridad",
+    "ssl_encryption": "Cifrado SSL",
+    "pci_compliant": "Cumple con PCI DSS",
+    "refund_policy": "Política de Reembolso",
+    "customer_support": "Soporte al Cliente"
+  },
+  "transactions": {
+    "history": "Historial de Transacciones",
+    "no_transactions": "No tienes transacciones aún",
+    "registration": "Registro",
+    "bet": "Apuesta",
+    "vote": "Voto",
+    "purchase_basic": "Compra - Paquete Básico",
+    "purchase_standard": "Compra - Paquete Estándar",
+    "purchase_premium": "Compra - Paquete Premium",
+    "purchase_pro": "Compra - Paquete Pro",
+    "income": "Ingreso",
+    "expense": "Egreso"
+  },
+  "error": {
+    "title": "Error",
+    "loading_history": "Error al cargar el historial de transacciones",
+    "purchase_failed": "Error al procesar la compra. Inténtalo de nuevo."
   },
   "eventosUFC303": {
     "title": "UFC 303: McGregor vs. Chandler",

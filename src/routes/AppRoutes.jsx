@@ -19,6 +19,7 @@ import EventCardPage from '../components/events/EventCardPage';
 import UFCNamajunasBarberCardPage from '../pages/UFCNamajunasBarberCardPage';
 import UFC304CardPage from '../pages/UFC304CardPage';
 import UFCSandhagenNurmagomedovCardPage from '../pages/UFCSandhagenNurmagomedovCardPage';
+import CoinPurchasePage from '../pages/CoinPurchasePage';
 
 const AppRoutes = () => {
   return (
@@ -39,6 +40,7 @@ const AppRoutes = () => {
       <Route path="/ufc304" element={<UFC304CardPage />} />
       <Route path="/ufcsandhagennurmagomedov" element={<UFCSandhagenNurmagomedovCardPage />} />
       <Route path="/clips" element={<SavedClipsPage />} />
+      <Route path="/coins" element={<CoinPurchasePage />} />
       <Route path="/thread/:id" element={<ThreadPage />} />
       <Route path="/category/:id" element={<CategoryPage />} />
       <Route path="/event/:id" element={<EventCardPage />} />

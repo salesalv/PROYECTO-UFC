@@ -23,6 +23,7 @@ const Sidebar = ({ trigger, navItems }) => {
       path: item.path,
     })),
     { icon: User, label: t('nav.profile'), path: "/profile" },
+    { icon: Coins, label: t('nav.buy_coins'), path: "/coins" },
   ];
 
   const handleLogout = async () => {

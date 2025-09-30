@@ -105,6 +105,12 @@ const UserMenu = () => {
               <span>{t('user.profile')}</span>
             </Link>
           </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link to="/coins" className="flex items-center text-gray-300 hover:text-white hover:bg-gray-800/50 rounded-md">
+              <Coins className="mr-2 h-4 w-4 text-yellow-400" />
+              <span>{t('nav.buy_coins')}</span>
+            </Link>
+          </DropdownMenuItem>
           <div className="mt-3 px-2">
             <Select value={selectedLanguage} onValueChange={setSelectedLanguage}>
               <SelectTrigger className="w-full bg-gray-800 border-gray-700 text-white">
