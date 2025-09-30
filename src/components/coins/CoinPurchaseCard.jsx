@@ -48,7 +48,7 @@ const CoinPurchaseCard = ({ paquete, onSelect, isSelected, isLoading }) => {
           </span>
         </div>
 
-        <div className="text-gray-400 text-sm mb-4">
+        <div className="text-gray-200 text-sm mb-4">
           {paquete.descripcion}
         </div>
 
@@ -67,7 +67,7 @@ const CoinPurchaseCard = ({ paquete, onSelect, isSelected, isLoading }) => {
           <div className="text-2xl font-bold text-white">
             ${paquete.precio.toFixed(2)}
           </div>
-          <div className="text-sm text-gray-400">
+          <div className="text-sm text-gray-200">
             {t('coins.per_coin')}: ${(paquete.precio / paquete.monedas).toFixed(3)}
           </div>
         </div>
