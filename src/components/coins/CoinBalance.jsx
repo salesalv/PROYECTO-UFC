@@ -23,7 +23,7 @@ const CoinBalance = ({ showLabel = true, size = 'default', variant = 'default' }
   const getVariantClasses = () => {
     switch (variant) {
       case 'card':
-        return 'bg-gradient-to-r from-yellow-900/20 to-black border-yellow-500/50 p-4 rounded-lg';
+        return 'bg-gradient-to-r from-gray-800 to-gray-900 border-yellow-500/70 p-4 rounded-lg shadow-lg';
       case 'badge':
         return 'bg-yellow-500/20 text-yellow-400 px-3 py-1 rounded-full';
       case 'minimal':

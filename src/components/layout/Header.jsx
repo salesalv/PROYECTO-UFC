@@ -80,19 +80,6 @@ const Header = () => {
               </>
             )}
             
-            {userData && (
-              <Button 
-                variant="outline" 
-                size="sm" 
-                className="border-yellow-500 bg-yellow-500 text-black hover:bg-yellow-600 hover:text-black font-semibold"
-                asChild
-              >
-                <Link to="/coins" className="flex items-center space-x-1">
-                  <Coins className="h-4 w-4" />
-                  <span>{t('nav.buy_coins')}</span>
-                </Link>
-              </Button>
-            )}
             
             <UserMenu />
           </div>

@@ -151,21 +151,21 @@ const RewardsPage = () => {
         </div>
 
         {/* Current Balance */}
-        <Card className="mb-8 bg-gradient-to-r from-yellow-900/20 to-black border-yellow-500/50">
+        <Card className="mb-8 bg-gradient-to-r from-gray-800 to-gray-900 border-yellow-500/70 shadow-lg">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
                 <Crown className="h-8 w-8 text-yellow-400" />
                 <div>
                   <h3 className="text-lg font-semibold text-white">{t('rewards.current_balance')}</h3>
-                  <p className="text-gray-400">{t('rewards.balance_description')}</p>
+                  <p className="text-gray-300">{t('rewards.balance_description')}</p>
                 </div>
               </div>
               <div className="text-right">
                 <div className="text-3xl font-bold text-yellow-400">
                   {user.saldo?.toLocaleString() || 0}
                 </div>
-                <div className="text-sm text-gray-400">{t('coins.coins')}</div>
+                <div className="text-sm text-gray-300">{t('coins.coins')}</div>
               </div>
             </div>
           </CardContent>
