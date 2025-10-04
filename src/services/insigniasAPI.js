@@ -91,11 +91,9 @@ export async function obtenerMisInsignias() {
   console.log('🔍 obtenerMisInsignias() - Usando Supabase directamente...');
   
   try {
-    // DESACTIVADO temporalmente por error de CORS
-    // const data = await authenticatedFetch('/mis-insignias');
-    // return data.insignias;
-    
     // SIEMPRE usar Supabase directamente para evitar errores de CORS
+    console.log('🎯 Usando conexión directa con Supabase...');
+    
     const usuarioId = 235; // Rugal44 basado en nuestros tests
     
     console.log('🎯 Buscando insignias para usuario:', usuarioId);
@@ -117,10 +115,22 @@ export async function obtenerMisInsignias() {
       const ids = recompensas.map(r => r.recompensa_id);
       console.log('🔍 IDs a buscar:', ids);
       
+      // Mapear los IDs de badge_* a nombres correctos para el catálogo
+      const nombresMapeados = ids.map(id => {
+        switch(id) {
+          case 'badge_bronce': return 'Insignia de Bronce';
+          case 'badge_plata': return 'Insignia de Plata';
+          case 'badge_oro': return 'Insignia de Oro';
+          default: return id;
+        }
+      });
+      
+      console.log('🔄 Buscando con nombres mapeados:', nombresMapeados);
+      
       const { data: insigniasDetalles, error: insigniasError } = await supabase
         .from('recompensas_catalogo')
         .select('*')
-        .in('id', ids)
+        .in('id', nombresMapeados)
         .eq('categoria', 'insignia');
       
       if (insigniasError) {

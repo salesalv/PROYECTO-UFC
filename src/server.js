@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 import authRoutes from './routes/auth.js';
 import comprasRoutes from './routes/compras.js';
 import recompensasRoutes from './routes/recompensas.js';
-import insigniasRoutes from './routes/insignias.js';
+import insigniasRoutes from './routes/insignias_nueva.js';
 
 dotenv.config();
 
