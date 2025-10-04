@@ -35,7 +35,7 @@ const UsuarioInsignia = ({ userId, esUsuarioActual = false, enPerfilPublico = tr
         // Cargar insignia pública del perfil
         const datosPerfil = await obtenerInsigniasPerfil(userId);
         if (datosPerfil.insignia_actual) {
-          setInsificiaActual(datosPerfil.insignia_actual);
+          setInsigniaActual(datosPerfil.insignia_actual);
         }
       }
     } catch (error) {
@@ -114,13 +114,13 @@ const UsuarioInsignia = ({ userId, esUsuarioActual = false, enPerfilPublico = tr
   const getRarezaIcon = (rareza) => {
     switch (rareza) {
       case 'comun':
-        return ⟨Star className="h-3 w-3" />;
+        return <Star className="h-3 w-3" />;
       case 'rara':
-        return ⟨Zap className="h-3 w-3" />;
+        return <Zap className="h-3 w-3" />;
       case 'legendaria':
-        return ⟨Crown className="h-3 w-3" />;
+        return <Crown className="h-3 w-3" />;
       default:
-        return ⟨Star className="h-3 w-3" />;
+        return <Star className="h-3 w-3" />;
     }
   };
 
@@ -229,11 +229,11 @@ const UsuarioInsignia = ({ userId, esUsuarioActual = false, enPerfilPublico = tr
                 <div
                   key={insignia.id}
                   className={`p-3 rounded-lg border cursor-pointer transition-all ${
-                    insigniaEquipada?.id === insignia.id
+                    insigniaActual?.id === insignia.id
                       ? `${getRarezaStyles(insignia.rareza).border} ${getRarezaStyles(insignia.rareza).bg}`
                       : 'border-gray-600 bg-gray-800/30 hover:bg-gray-800/50'
                   }`}
-                  onClick={() => !insigniaEquipada || insigniaEquipada.id !== insignia.id ? cambiarInsignia(insignia.id) : null}
+                  onClick={() => !insigniaActual || insigniaActual.id !== insignia.id ? cambiarInsignia(insignia.id) : null}
                 >
                   <div className="flex items-center space-x-3">
                     <span className="text-2xl">{insignia.icono}</span>
@@ -248,7 +248,7 @@ const UsuarioInsignia = ({ userId, esUsuarioActual = false, enPerfilPublico = tr
                         {new Date(insignia.fecha_canje).toLocaleDateString()}
                       </p>
                     </div>
-                    {insigniaEquipada?.id === insignia.id && (
+                    {insigniaActual?.id === insignia.id && (
                       <Crown className="h-4 w-4 text-green-400" />
                     )}
                   </div>
