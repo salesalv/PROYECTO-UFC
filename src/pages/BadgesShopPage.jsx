@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Crown, Award, ShoppingBag, Coins, Star, Zap, Filter } from 'lucide-react';
+import { Crown, ShoppingBag, Coins, Star } from 'lucide-react';
 import { useUser } from '@/context/UserContext';
 import { useTranslation } from 'react-i18next';
 import { useToast } from '@/components/ui/use-toast';
@@ -12,8 +11,7 @@ import { useRecompensas } from '@/hooks/useRecompensas';
 import AccesoClipsDestacadosCard from '@/components/recompensas/AccesoClipsDestacadosCard';
 import { 
   obtenerInsigniasDisponibles, 
-  obtenerInsigniasUsuario,
-  obtenerEstadisticasInsignias 
+  obtenerInsigniasUsuario
 } from '@/services/insigniasService';
 
 const BadgesShopPage = () => {
@@ -29,15 +27,6 @@ const BadgesShopPage = () => {
 
   const [badges, setBadges] = useState([]);
   const [userBadges, setUserBadges] = useState([]);
-  const [filteredBadges, setFilteredBadges] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState('all');
-  const [selectedRarity, setSelectedRarity] = useState('all');
-  const [statistics, setStatistics] = useState({
-    totalInsignias: 0,
-    totalGastado: 0,
-    insigniasEquipadas: 0,
-    promedioPorInsignia: 0
-  });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -46,22 +35,16 @@ const BadgesShopPage = () => {
     }
     }, [user?.id]);
 
-  useEffect(() => {
-    filterBadges();
-  }, [badges, selectedCategory, selectedRarity]);
-
   const loadData = async () => {
     try {
       setLoading(true);
-      const [badgesData, userBadgesData, statsData] = await Promise.all([
+      const [badgesData, userBadgesData] = await Promise.all([
         obtenerInsigniasDisponibles(),
-        obtenerInsigniasUsuario(user.id),
-        obtenerEstadisticasInsignias(user.id)
+        obtenerInsigniasUsuario(user.id)
       ]);
 
       setBadges(badgesData);
       setUserBadges(userBadgesData);
-      setStatistics(statsData);
     } catch (error) {
       console.error('Error cargando datos:', error);
       toast({
@@ -72,22 +55,6 @@ const BadgesShopPage = () => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const filterBadges = () => {
-    let filtered = badges;
-
-    // Filtrar por categoría
-    if (selectedCategory !== 'all') {
-      filtered = filtered.filter((badge) => badge.categoria === selectedCategory);
-    }
-
-    // Filtrar por rareza
-    if (selectedRarity !== 'all') {
-      filtered = filtered.filter((badge) => badge.rareza === selectedRarity);
-    }
-
-    setFilteredBadges(filtered);
   };
 
   const handlePurchase = async (badgeId) => {
@@ -206,41 +173,6 @@ const BadgesShopPage = () => {
           </CardContent>
         </Card>
 
-        {/* Statistics */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <Card className="bg-gradient-to-br from-blue-900/20 to-black border-blue-500/50">
-            <CardContent className="p-6 text-center">
-              <Award className="h-8 w-8 text-blue-400 mx-auto mb-3" />
-              <h3 className="text-lg font-semibold text-white mb-2">Total Insignias</h3>
-              <p className="text-2xl font-bold text-blue-400">{statistics.totalInsignias}</p>
-            </CardContent>
-          </Card>
-          
-          <Card className="bg-gradient-to-br from-green-900/20 to-black border-green-500/50">
-            <CardContent className="p-6 text-center">
-              <Coins className="h-8 w-8 text-green-400 mx-auto mb-3" />
-              <h3 className="text-lg font-semibold text-white mb-2">Total Gastado</h3>
-              <p className="text-2xl font-bold text-green-400">{statistics.totalGastado.toLocaleString()}</p>
-            </CardContent>
-          </Card>
-          
-          <Card className="bg-gradient-to-br from-purple-900/20 to-black border-purple-500/50">
-            <CardContent className="p-6 text-center">
-              <Crown className="h-8 w-8 text-purple-400 mx-auto mb-3" />
-              <h3 className="text-lg font-semibold text-white mb-2">Insignias Equipadas</h3>
-              <p className="text-2xl font-bold text-purple-400">{statistics.insigniasEquipadas}</p>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-gradient-to-br from-orange-900/20 to-black border-orange-500/50">
-            <CardContent className="p-6 text-center">
-              <Zap className="h-8 w-8 text-orange-400 mx-auto mb-3" />
-              <h3 className="text-lg font-semibold text-white mb-2">Promedio</h3>
-              <p className="text-2xl font-bold text-orange-400">{Math.round(statistics.promedioPorInsignia)}</p>
-            </CardContent>
-          </Card>
-        </div>
-
         {/* Recompensas Premium */}
         <div className="mb-8">
           <h2 className="text-2xl font-bold text-white mb-6 flex items-center space-x-2">
@@ -259,53 +191,10 @@ const BadgesShopPage = () => {
           </div>
         </div>
 
-        {/* Filters */}
-        <Card className="mb-8 bg-gradient-to-br from-gray-900/50 to-black border-gray-700">
-          <CardHeader>
-            <CardTitle className="text-white flex items-center space-x-2">
-              <Filter className="h-5 w-5" />
-              <span>Filtros</span>
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="text-sm text-gray-300 mb-2 block">Categoría</label>
-                <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                  <SelectTrigger className="bg-gray-800 border-gray-700 text-white">
-                    <SelectValue placeholder="Seleccionar categoría" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">Todas las categorías</SelectItem>
-                    <SelectItem value="normal">Normal</SelectItem>
-                    <SelectItem value="especial">Especial</SelectItem>
-                    <SelectItem value="temporada">Temporada</SelectItem>
-                    <SelectItem value="legendaria">Legendaria</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <label className="text-sm text-gray-300 mb-2 block">Rareza</label>
-                <Select value={selectedRarity} onValueChange={setSelectedRarity}>
-                  <SelectTrigger className="bg-gray-800 border-gray-700 text-white">
-                    <SelectValue placeholder="Seleccionar rareza" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">Todas las rarezas</SelectItem>
-                    <SelectItem value="comun">Común</SelectItem>
-                    <SelectItem value="rara">Rara</SelectItem>
-                    <SelectItem value="legendaria">Legendaria</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
         {/* Badges Grid */}
         <div>
           <h2 className="text-2xl font-bold text-white mb-6">
-            Insignias Disponibles ({filteredBadges.length})
+            Insignias Disponibles ({badges.length})
           </h2>
           {loading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
@@ -325,7 +214,7 @@ const BadgesShopPage = () => {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-              {filteredBadges.map((badge) => {
+              {badges.map((badge) => {
                 const isOwned = ownedBadgeIds.includes(badge.id);
                 const styles = getRarityStyles(badge.rareza);
                 const canAfford = user.saldo >= badge.precio;

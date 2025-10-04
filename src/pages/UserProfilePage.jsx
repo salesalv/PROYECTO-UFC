@@ -139,7 +139,7 @@ const UserProfilePage = () => {
                   <UserNameWithBadge 
                     userId={userData?.id}
                     username={userData?.nombre_usuario}
-                    badgePosition="below"
+                    badgePosition="right"
                     className="text-center"
                   />
                 </div>
