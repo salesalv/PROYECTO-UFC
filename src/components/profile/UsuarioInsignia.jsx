@@ -30,6 +30,7 @@ const UsuarioInsignia = ({ userId, esUsuarioActual = false, enPerfilPublico = tr
       if (esUsuarioActual) {
         // Cargar insignias propias con opción de cambio
         const insignias = await obtenerMisInsignias();
+        console.log('🎖️ Insigñas obtenidas:', insignias);
         setMisInsignias(insignias);
         
         // Obtener insignia equipada directamente de Supabase
@@ -44,6 +45,13 @@ const UsuarioInsignia = ({ userId, esUsuarioActual = false, enPerfilPublico = tr
           const insigniaEquipment = insignias.find(insignia => insignia.recompensa_id === usuarioData.insignia_actual);
           if (insigniaEquipment) {
             setInsigniaActual({ ...insigniaEquipment, equipada: true });
+          }
+        } else if (insignias.length > 0) {
+          // Si no tiene insignia_actual pero tiene insignias compradas, mostrar la primera
+          console.log('🔧 Usuario tiene insignias compradas pero no equipada, mostrando primera disponible');
+          const primeraInsignia = insignias.find(insignia => insignia.categoria === 'insignia');
+          if (primeraInsignia) {
+            setInsigniaActual({ ...primeraInsignia, equipada: true });
           }
         }
       } else {

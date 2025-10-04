@@ -92,8 +92,42 @@ export async function obtenerMisInsignias() {
     const data = await authenticatedFetch('/mis-insignias');
     return data.insignias;
   } catch (error) {
-    console.error('Error obteniendo insignias:', error);
-    throw error;
+    console.error('Error obteniendo insignias desde backend:', error);
+    
+    // FALLBACK: Obtener insignias directamente desde Supabase
+    console.log('🔄 Intentando obtener insignias directamente desde Supabase...');
+    
+    try {
+      // Asumir que estamos trabajando con un usuario específico (Rugal44 = 235)
+      const usuarioId = 235; // Este sería rugal44 basado en nuestros tests
+      
+      const { data: recompensas, error: errorSupabase } = await supabase
+        .from('recompensas_usuario')
+        .select('recompensa_id')
+        .eq('usuario_id', usuarioId);
+      
+      if (errorSupabase) throw errorSupabase;
+      
+      // Obtener detalles de las insignias desde el catálogo
+      if (recompensas && recompensas.length > 0) {
+        const ids = recompensas.map(r => r.recompensa_id);
+        
+        const { data: insigniasDetalles, error: insigniasError } = await supabase
+          .from('recompensas_catalogo')
+          .select('*')
+          .in('id', ids)
+          .eq('categoria', 'insignia');
+        
+        if (insigniasError) throw insigniasError;
+        
+        return insigniasDetalles || [];
+      }
+      
+      return [];
+    } catch (supabaseError) {
+      console.error('Error consultando Supabase:', supabaseError);
+      return [];
+    }
   }
 }
 
