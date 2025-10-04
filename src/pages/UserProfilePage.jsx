@@ -111,7 +111,7 @@ const UserProfilePage = () => {
       >
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
           {/* Columna Principal */}
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-3">
             <Card className="bg-black/70 border border-gray-800 backdrop-blur-sm shadow-lg">
               <CardHeader className="text-center">
                 <div className="relative inline-block mb-4">
@@ -194,13 +194,6 @@ const UserProfilePage = () => {
                       <p className="font-semibold text-xl text-white">{userData?.saldo?.toLocaleString() ?? 0}</p>
                     </div>
                   </div>
-                  <div className="flex items-center space-x-4 p-4 bg-gray-900/50 rounded-lg border border-gray-700">
-                    <Trophy className="w-6 h-6 text-yellow-500" />
-                    <div>
-                      <p className="text-sm text-gray-300">{t('profile.ranking')}</p>
-                      <p className="font-semibold text-xl text-white">{userData?.rango ?? '-'}</p>
-                    </div>
-                  </div>
                 </div>
               </CardContent>
               <CardFooter className="flex justify-between">
@@ -215,7 +208,7 @@ const UserProfilePage = () => {
           </div>
 
           {/* Columna de Insignias */}
-          <div className="lg:col-span-3">
+          <div className="lg:col-span-2">
             <BadgeManager userId={userData?.id} />
           </div>
         </div>
