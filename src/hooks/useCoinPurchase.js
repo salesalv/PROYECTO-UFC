@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { useUser } from '@/context/UserContext';
-import { crearPreferenciaMercadoPago, procesarPagoExitoso } from '@/services/coinService';
+import { crearPaymentIntent, simularPago } from '@/services/coinApiService';
 import { useToast } from '@/components/ui/use-toast';
 import { useTranslation } from 'react-i18next';
 
@@ -25,45 +25,57 @@ export const useCoinPurchase = () => {
     setSelectedPaquete(paquete);
 
     try {
-      // Crear preferencia de MercadoPago
-      const preferencia = await crearPreferenciaMercadoPago(paquete, user.id);
+      // Crear intención de pago usando el backend API
+      const response = await crearPaymentIntent(paquete.id);
       
-      // En un entorno real, aquí redirigirías a MercadoPago
-      // window.location.href = preferencia.init_point;
+      if (!response.success) {
+        throw new Error(response.error || 'Error creando pago');
+      }
       
-      // Por ahora, simulamos el proceso
-      toast({
-        title: t('coins.purchase_initiated'),
-        description: t('coins.redirecting_payment'),
-      });
+      // En desarrollo, usar simulación de pago
+      if (process.env.NODE_ENV === 'development') {
+        toast({
+          title: t('coins.purchase_initiated'),
+          description: t('coins.processing_payment'),
+        });
 
-      // Simular redirección a MercadoPago (en desarrollo)
-      setTimeout(async () => {
-        try {
-          // Simular pago exitoso
-          await procesarPagoExitoso(`payment_${Date.now()}`, user.id, paquete);
-          
-          toast({
-            title: t('coins.purchase_success'),
-            description: t('coins.coins_added', { coins: paquete.monedas }),
-          });
-          
-          // Refrescar datos del usuario
-          refreshUser();
-          
-          return true;
-        } catch (error) {
-          console.error('Error procesando pago:', error);
-          toast({
-            title: t('error.title'),
-            description: t('error.purchase_failed'),
-            variant: 'destructive'
-          });
-          return false;
-        } finally {
-          setSelectedPaquete(null);
-        }
-      }, 2000);
+        // Simular el proceso de pago
+        setTimeout(async () => {
+          try {
+            // Simular pago usando el endpoint de testing
+            await simularPago(response.preference_id);
+            
+            toast({
+              title: t('coins.purchase_success'),
+              description: t('coins.coins_added', { coins: paquete.monedas }),
+            });
+            
+            // Refrescar datos del usuario
+            refreshUser();
+            
+            return true;
+          } catch (error) {
+            console.error('Error procesando pago:', error);
+            toast({
+              title: t('error.title'),
+              description: t('error.purchase_failed'),
+              variant: 'destructive'
+            });
+            return false;
+          } finally {
+            setSelectedPaquete(null);
+          }
+        }, 2000);
+      } else {
+        // En producción, redirigir a MercadoPago
+        toast({
+          title: t('coins.purchase_initiated'),
+          description: t('coins.redirecting_payment'),
+        });
+        
+        // Redirigir a MercadoPago
+        window.location.href = response.checkout_url;
+      }
 
       return true;
     } catch (error) {
@@ -81,25 +93,26 @@ export const useCoinPurchase = () => {
 
   const handlePaymentSuccess = useCallback(async (paymentId, paquete) => {
     try {
-      await procesarPagoExitoso(paymentId, user.id, paquete);
+      // En este caso, el pago ya fue procesado por el webhook
+      // Solo refrescamos los datos del usuario
+      await refreshUser();
       
       toast({
         title: t('coins.purchase_success'),
         description: t('coins.coins_added', { coins: paquete.monedas }),
       });
       
-      refreshUser();
       return true;
     } catch (error) {
-      console.error('Error procesando pago exitoso:', error);
+      console.error('Error refrescando datos:', error);
       toast({
         title: t('error.title'),
-        description: t('error.purchase_failed'),
+        description: t('error.refresh_failed'),
         variant: 'destructive'
       });
       return false;
     }
-  }, [user, toast, t, refreshUser]);
+  }, [toast, t, refreshUser]);
 
   return {
     purchaseCoins,

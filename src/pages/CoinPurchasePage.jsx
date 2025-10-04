@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+
+
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -9,6 +11,7 @@ import { PAQUETES_MONEDAS, crearPreferenciaMercadoPago, obtenerHistorialTransacc
 import CoinPurchaseCard from '@/components/coins/CoinPurchaseCard';
 import TransactionHistory from '@/components/coins/TransactionHistory';
 import { useToast } from '@/components/ui/use-toast';
+import BackendTest from '@/components/BackendTest';
 
 const CoinPurchasePage = () => {
   const { user, refreshUser } = useUser();
@@ -230,6 +233,9 @@ const CoinPurchasePage = () => {
           </CardContent>
         </Card>
       </div>
+
+      {/* Componente de prueba del backend */}
+      <BackendTest />
     </div>
   );
 };
