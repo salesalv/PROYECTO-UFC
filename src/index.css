@@ -156,3 +156,18 @@
   border: 2px solid rgba(34, 197, 94, 0.5);
   box-shadow: 0 0 20px rgba(34, 197, 94, 0.3);
 }
+
+/* Utilidades para truncar texto */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}

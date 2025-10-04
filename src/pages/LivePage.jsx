@@ -8,6 +8,7 @@ import { useClips } from "@/context/ClipsContext";
 import { useUser } from "@/context/UserContext";
 import supabase from "@/db";
 import { useTranslation } from 'react-i18next';
+import UserNameWithBadge from '@/components/common/UserNameWithBadge';
 
 const LivePage = () => {
   const [isRecording, setIsRecording] = useState(false);
@@ -282,7 +283,11 @@ const LivePage = () => {
                   )}
                   {chatMessages.map((msg) => (
                     <div key={msg.id} className="mb-2">
-                      <span className="font-bold text-red-400 mr-2">{msg.username}</span>
+                      <UserNameWithBadge 
+                        userId={msg.user_id}
+                        username={msg.username}
+                        className="font-bold text-red-400 mr-2"
+                      />
                       <span className="text-gray-300">{msg.message}</span>
                       <span className="text-xs text-gray-500 ml-2">{new Date(msg.created_at).toLocaleTimeString()}</span>
                     </div>

@@ -320,7 +320,7 @@ const BadgeManager = ({ userId }) => {
               <p className="text-sm mt-2">Compra tu primera insignia para empezar</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-80 overflow-y-auto">
+            <div className="space-y-4 max-h-80 overflow-y-auto pr-2">
               {userBadges.map((userBadge) => {
                 const badge = userBadge.insignias_catalogo;
                 const isEquipped = userBadge.equipada;
@@ -341,19 +341,19 @@ const BadgeManager = ({ userId }) => {
                     
                     <div className="relative z-10">
                       {/* Header de la insignia */}
-                      <div className="flex items-start justify-between mb-3">
-                        <div className="flex items-center space-x-3">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center space-x-3 flex-1">
                           <div className={`text-3xl transform transition-transform group-hover:scale-110 ${isEquipped ? 'animate-glow' : ''}`}>
                             {badge?.icono}
                           </div>
-                          <div className="flex flex-col">
-                            <h3 className="font-bold text-white text-sm leading-tight">{badge?.nombre}</h3>
-                            <p className="text-xs text-gray-400 mt-1">{badge?.descripcion}</p>
+                          <div className="flex-1 min-w-0">
+                            <h3 className="font-bold text-white text-sm leading-tight truncate">{badge?.nombre}</h3>
+                            <p className="text-xs text-gray-400 mt-1 line-clamp-2">{badge?.descripcion}</p>
                           </div>
                         </div>
                         
                         {/* Indicador de rareza */}
-                        <Badge className={`${getBadgeRarityStyles(badge?.rareza).badge} text-xs px-2 py-1`}>
+                        <Badge className={`${getBadgeRarityStyles(badge?.rareza).badge} text-xs px-2 py-1 flex-shrink-0`}>
                           {getBadgeRarityIcon(badge?.rareza)}
                           <span className="ml-1 capitalize">{badge?.rareza}</span>
                         </Badge>
@@ -361,7 +361,7 @@ const BadgeManager = ({ userId }) => {
 
                       {/* Badge de equipada */}
                       {isEquipped && (
-                        <div className="absolute top-2 right-2">
+                        <div className="mb-3">
                           <Badge className="bg-green-500 text-white text-xs px-2 py-1 animate-pulse shadow-lg">
                             <span className="flex items-center space-x-1">
                               <Crown className="h-3 w-3" />
@@ -372,13 +372,11 @@ const BadgeManager = ({ userId }) => {
                       )}
 
                       {/* Información de compra */}
-                      <div className="flex items-center justify-between mb-3">
-                        <div className="text-xs text-gray-400">
-                          Comprada: {new Date(userBadge.fecha_compra).toLocaleDateString('es-ES')}
-                        </div>
-                        <div className="flex items-center space-x-1 text-yellow-400">
-                          <Coins className="h-3 w-3" />
-                          <span className="text-xs font-semibold">{userBadge.precio_pagado}</span>
+                      <div className="flex items-center justify-between text-xs text-gray-400 mb-3">
+                        <span>Comprada: {new Date(userBadge.fecha_compra).toLocaleDateString('es-ES')}</span>
+                        <div className="flex items-center space-x-1">
+                          <Coins className="h-3 w-3 text-yellow-400" />
+                          <span className="text-yellow-400 font-medium">{userBadge.precio_pagado}</span>
                         </div>
                       </div>
 

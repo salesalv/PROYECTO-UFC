@@ -9,6 +9,7 @@ import ThreadButton from '../components/ThreadButton'; // Import ThreadButton
 import { Link } from 'react-router-dom'; // Import Link
 import { useTranslation } from 'react-i18next';
 import { getCategories, getRecentThreads } from '../services/forumService';
+import UserNameWithBadge from '@/components/common/UserNameWithBadge';
 
 const ForumPage = () => {
   const { t } = useTranslation();
@@ -81,7 +82,11 @@ const ForumPage = () => {
                       <div>
                         <Link to={`/thread/${thread.id}`} className="text-lg font-semibold text-white hover:text-red-400 transition-colors">{thread.title}</Link>
                         <p className="text-sm text-gray-500">
-                          {t('forum.by')} <span className="font-medium text-gray-400">{thread.username}</span>
+                          {t('forum.by')} <UserNameWithBadge 
+                            userId={thread.user_id}
+                            username={thread.username}
+                            className="font-medium text-gray-400"
+                          />
                           {thread.forum_categories?.name && (
                             <>
                               {" "}{t('forum.in')} <span className="text-red-400">{thread.forum_categories.name}</span>

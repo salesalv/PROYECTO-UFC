@@ -13,6 +13,7 @@ import BadgeManager from "@/components/badges/BadgeManager";
 import supabase from "@/db";
 import { useUser } from "@/context/UserContext";
 import { useTranslation } from "react-i18next";
+import UserNameWithBadge from '@/components/common/UserNameWithBadge';
 
 const UserProfilePage = () => {
   const { user: userData, loading, refreshUser } = useUser();
@@ -131,9 +132,17 @@ const UserProfilePage = () => {
                     />
                   )}
                 </div>
-                <CardTitle className="text-3xl font-black uppercase tracking-wider text-red-500">
-                  {userData?.nombre_usuario || t('profile.username')}
-                </CardTitle>
+                <div className="flex flex-col items-center space-y-2">
+                  <CardTitle className="text-3xl font-black uppercase tracking-wider text-red-500">
+                    {userData?.nombre_usuario || t('profile.username')}
+                  </CardTitle>
+                  <UserNameWithBadge 
+                    userId={userData?.id}
+                    username={userData?.nombre_usuario}
+                    badgePosition="below"
+                    className="text-center"
+                  />
+                </div>
                 <CardDescription className="text-gray-300">
                   {t('profile.member_since')} {userData ? new Date(userData.fecha_registro).toLocaleDateString() : "-"}
                 </CardDescription>

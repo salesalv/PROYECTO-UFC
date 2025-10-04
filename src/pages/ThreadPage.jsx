@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { useTranslation } from 'react-i18next';
 import { getThreadById, getRepliesByThread, createReply } from '../services/forumService';
 import { useUser } from '@/context/UserContext';
+import UserNameWithBadge from '@/components/common/UserNameWithBadge';
 
 // Este comentario se añade para asegurar que Vite compile el archivo de nuevo.
 
@@ -56,7 +57,11 @@ const ThreadPage = () => {
           <CardHeader>
             <CardTitle className="text-3xl font-bold text-red-500 mb-2">{thread.title}</CardTitle>
             <p className="text-sm text-gray-400">
-              {t('thread.by')} <span className="font-medium text-red-400">{thread.username}</span> - {new Date(thread.created_at).toLocaleString()}
+              {t('thread.by')} <UserNameWithBadge 
+                userId={thread.user_id}
+                username={thread.username}
+                className="font-medium text-red-400"
+              /> - {new Date(thread.created_at).toLocaleString()}
             </p>
           </CardHeader>
         </Card>
@@ -70,7 +75,11 @@ const ThreadPage = () => {
                 <AvatarFallback>{thread.username?.charAt(0)}</AvatarFallback>
               </Avatar>
               <div>
-                <p className="font-semibold text-white">{thread.username}</p>
+                <UserNameWithBadge 
+                  userId={thread.user_id}
+                  username={thread.username}
+                  className="font-semibold text-white"
+                />
                 <p className="text-xs text-gray-500">{new Date(thread.created_at).toLocaleString()}</p>
               </div>
             </div>
@@ -95,7 +104,11 @@ const ThreadPage = () => {
                           <AvatarFallback>{reply.username?.charAt(0)}</AvatarFallback>
                         </Avatar>
                         <div>
-                          <p className="font-semibold text-white">{reply.username}</p>
+                          <UserNameWithBadge 
+                            userId={reply.user_id}
+                            username={reply.username}
+                            className="font-semibold text-white"
+                          />
                           <p className="text-xs text-gray-500">{new Date(reply.created_at).toLocaleString()}</p>
                           <div className="whitespace-pre-line text-white mt-1">{reply.content}</div>
                         </div>
