@@ -9,11 +9,6 @@ import supabase from '@/db';
  */
 export async function usuarioTieneAccesoClipsDestacados(usuarioId) {
   try {
-    // Por ahora, retornar false hasta que se cree la tabla
-    // TODO: Implementar cuando se cree la tabla recompensas_usuario
-    return false;
-    
-    /* Código original comentado hasta crear la tabla:
     const { data, error } = await supabase
       .from('recompensas_usuario')
       .select('*')
@@ -24,7 +19,6 @@ export async function usuarioTieneAccesoClipsDestacados(usuarioId) {
 
     if (error && error.code !== 'PGRST116') throw error;
     return !!data;
-    */
   } catch (error) {
     console.error('Error verificando acceso a clips destacados:', error);
     return false;
@@ -36,10 +30,6 @@ export async function usuarioTieneAccesoClipsDestacados(usuarioId) {
  */
 export async function comprarAccesoClipsDestacados(usuarioId, precio = 500) {
   try {
-    // Por ahora, mostrar mensaje de que la funcionalidad está en desarrollo
-    throw new Error('Esta funcionalidad estará disponible próximamente');
-    
-    /* Código original comentado hasta crear la tabla:
     // Verificar si ya tiene acceso
     const tieneAcceso = await usuarioTieneAccesoClipsDestacados(usuarioId);
     if (tieneAcceso) {
@@ -100,7 +90,7 @@ export async function comprarAccesoClipsDestacados(usuarioId, precio = 500) {
       nuevoSaldo,
       precio
     };
-    */
+
   } catch (error) {
     console.error('Error comprando acceso a clips destacados:', error);
     throw error;
@@ -112,11 +102,6 @@ export async function comprarAccesoClipsDestacados(usuarioId, precio = 500) {
  */
 export async function obtenerRecompensasUsuario(usuarioId) {
   try {
-    // Por ahora, retornar array vacío hasta que se cree la tabla
-    // TODO: Implementar cuando se cree la tabla recompensas_usuario
-    return [];
-    
-    /* Código original comentado hasta crear la tabla:
     const { data, error } = await supabase
       .from('recompensas_usuario')
       .select('*')
@@ -126,7 +111,6 @@ export async function obtenerRecompensasUsuario(usuarioId) {
 
     if (error) throw error;
     return data || [];
-    */
   } catch (error) {
     console.error('Error obteniendo recompensas del usuario:', error);
     return [];
