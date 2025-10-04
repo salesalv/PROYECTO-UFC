@@ -112,16 +112,12 @@ const UserProfilePage = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Columna Principal */}
           <div className="md:col-span-2">
-            {/* Componente de Insignias */}
-            {userData?.id ? (
-              <UsuarioInsignia 
-                userId={userData.id} 
-                esUsuarioActual={true}
-                enPerfilPublico={false}
-              />
-            ) : (
-              <InsigniaPerfilSimplet usuario={userData} />
-            )}
+            {/* Componente de Insignias - Sistema COMPLETO */}
+            <UsuarioInsignia 
+              userId={userData?.id} 
+              esUsuarioActual={true}
+              enPerfilPublico={false}
+            />
 
             <Card className="bg-black/70 border border-gray-800 backdrop-blur-sm shadow-lg">
               <CardHeader className="text-center">

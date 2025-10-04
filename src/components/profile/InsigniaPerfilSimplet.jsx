@@ -129,9 +129,30 @@ const InsigniaPerfilSimplet = ({ usuario }) => {
     }
   };
 
-  // Si no tiene insignia, no mostrar nada
+  // Si no tiene insignia, mostrar mensaje de sin insignias
   if (!insigniaData) {
-    return null;
+    return (
+      <Card className="bg-gray-900/50 border-gray-700 mb-6">
+        <CardHeader>
+          <CardTitle className="text-white flex items-center space-x-2">
+            <Award className="h-5 w-5 text-yellow-400" />
+            <span>{t('insignias.title')}</span>
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="text-center py-8">
+          <Shield className="h-16 w-16 text-gray-500 mx-auto mb-4" />
+          <h3 className="text-lg font-semibold text-white mb-2">
+            {t('insignias.no_badges')}
+          </h3>
+          <p className="text-gray-400 mb-4">
+            {t('insignias.no_badges_description')}
+          </p>
+          <Button asChild className="bg-red-600 hover:bg-red-700">
+            <a href="/recompensas">{t('insignias.get_badges')}</a>
+          </Button>
+        </CardContent>
+      </Card>
+    );
   }
 
   return (
