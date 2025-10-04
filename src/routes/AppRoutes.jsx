@@ -20,7 +20,7 @@ import UFCNamajunasBarberCardPage from '../pages/UFCNamajunasBarberCardPage';
 import UFC304CardPage from '../pages/UFC304CardPage';
 import UFCSandhagenNurmagomedovCardPage from '../pages/UFCSandhagenNurmagomedovCardPage';
 import CoinPurchasePage from '../pages/CoinPurchasePage';
-import RewardsPage from '../pages/RewardsPage';
+import BadgesShopPage from '../pages/BadgesShopPage';
 
 const AppRoutes = () => {
   return (
@@ -42,7 +42,7 @@ const AppRoutes = () => {
       <Route path="/ufcsandhagennurmagomedov" element={<UFCSandhagenNurmagomedovCardPage />} />
       <Route path="/clips" element={<SavedClipsPage />} />
       <Route path="/coins" element={<CoinPurchasePage />} />
-      <Route path="/rewards" element={<RewardsPage />} />
+      <Route path="/badges" element={<BadgesShopPage />} />
       <Route path="/thread/:id" element={<ThreadPage />} />
       <Route path="/category/:id" element={<CategoryPage />} />
       <Route path="/event/:id" element={<EventCardPage />} />
