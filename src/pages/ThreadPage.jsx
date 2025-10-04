@@ -58,7 +58,6 @@ const ThreadPage = () => {
             <CardTitle className="text-3xl font-bold text-red-500 mb-2">{thread.title}</CardTitle>
             <p className="text-sm text-gray-400">
               {t('thread.by')} <UserNameWithBadge 
-                userId={thread.user_id}
                 username={thread.username}
                 className="font-medium text-red-400"
               /> - {new Date(thread.created_at).toLocaleString()}
@@ -76,7 +75,6 @@ const ThreadPage = () => {
               </Avatar>
               <div>
                 <UserNameWithBadge 
-                  userId={thread.user_id}
                   username={thread.username}
                   className="font-semibold text-white"
                 />
@@ -105,7 +103,6 @@ const ThreadPage = () => {
                         </Avatar>
                         <div>
                           <UserNameWithBadge 
-                            userId={reply.user_id}
                             username={reply.username}
                             className="font-semibold text-white"
                           />

@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useEquippedBadge } from '@/hooks/useEquippedBadge';
 import EquippedBadgeDisplay from '@/components/badges/EquippedBadgeDisplay';
+import { getUserIdFromUsername } from '@/services/userService';
 
 /**
  * Componente para mostrar el nombre del usuario con su insignia equipada
@@ -13,7 +14,22 @@ const UserNameWithBadge = ({
   showBadge = true,
   badgePosition = 'right' // 'right' o 'below'
 }) => {
-  const { equippedBadge } = useEquippedBadge(userId);
+  const [numericUserId, setNumericUserId] = useState(userId);
+  const { equippedBadge } = useEquippedBadge(numericUserId);
+
+  // Si no tenemos userId pero sí username, intentar obtener el ID numérico
+  useEffect(() => {
+    const fetchUserId = async () => {
+      if (!userId && username) {
+        const id = await getUserIdFromUsername(username);
+        setNumericUserId(id);
+      } else {
+        setNumericUserId(userId);
+      }
+    };
+
+    fetchUserId();
+  }, [userId, username]);
 
   if (!username) return null;
 

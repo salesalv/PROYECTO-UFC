@@ -83,7 +83,6 @@ const ForumPage = () => {
                         <Link to={`/thread/${thread.id}`} className="text-lg font-semibold text-white hover:text-red-400 transition-colors">{thread.title}</Link>
                         <p className="text-sm text-gray-500">
                           {t('forum.by')} <UserNameWithBadge 
-                            userId={thread.user_id}
                             username={thread.username}
                             className="font-medium text-gray-400"
                           />

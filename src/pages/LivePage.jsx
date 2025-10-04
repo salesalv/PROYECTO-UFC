@@ -284,7 +284,6 @@ const LivePage = () => {
                   {chatMessages.map((msg) => (
                     <div key={msg.id} className="mb-2">
                       <UserNameWithBadge 
-                        userId={msg.user_id}
                         username={msg.username}
                         className="font-bold text-red-400 mr-2"
                       />
