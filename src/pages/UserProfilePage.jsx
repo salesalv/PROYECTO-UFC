@@ -111,7 +111,7 @@ const UserProfilePage = () => {
       >
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
           {/* Columna Principal */}
-          <div className="lg:col-span-3">
+          <div className="lg:col-span-2">
             <Card className="bg-black/70 border border-gray-800 backdrop-blur-sm shadow-lg">
               <CardHeader className="text-center">
                 <div className="relative inline-block mb-4">
@@ -133,15 +133,19 @@ const UserProfilePage = () => {
                   )}
                 </div>
                 <div className="flex flex-col items-center space-y-2">
-                  <CardTitle className="text-3xl font-black uppercase tracking-wider text-red-500">
-                    {userData?.nombre_usuario || t('profile.username')}
-                  </CardTitle>
-                  <UserNameWithBadge 
-                    userId={userData?.id}
-                    username={userData?.nombre_usuario}
-                    badgePosition="right"
-                    className="text-center"
-                  />
+                  <div className="flex items-center space-x-3">
+                    <CardTitle className="text-3xl font-black uppercase tracking-wider text-red-500">
+                      {userData?.nombre_usuario || t('profile.username')}
+                    </CardTitle>
+                    <UserNameWithBadge 
+                      userId={userData?.id}
+                      username={userData?.nombre_usuario}
+                      badgePosition="right"
+                      className="flex-shrink-0"
+                      showBadge={true}
+                      showUsername={false}
+                    />
+                  </div>
                 </div>
                 <CardDescription className="text-gray-300">
                   {t('profile.member_since')} {userData ? new Date(userData.fecha_registro).toLocaleDateString() : "-"}
@@ -211,7 +215,7 @@ const UserProfilePage = () => {
           </div>
 
           {/* Columna de Insignias */}
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-3">
             <BadgeManager userId={userData?.id} />
           </div>
         </div>

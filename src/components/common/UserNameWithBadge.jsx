@@ -12,7 +12,8 @@ const UserNameWithBadge = ({
   username, 
   className = '', 
   showBadge = true,
-  badgePosition = 'right' // 'right' o 'below'
+  badgePosition = 'right', // 'right' o 'below'
+  showUsername = true // Nuevo prop para controlar si mostrar el nombre
 }) => {
   const [numericUserId, setNumericUserId] = useState(userId);
   const { equippedBadge } = useEquippedBadge(numericUserId);
@@ -34,13 +35,13 @@ const UserNameWithBadge = ({
   if (!username) return null;
 
   if (!showBadge || !equippedBadge) {
-    return <span className={className}>{username}</span>;
+    return showUsername ? <span className={className}>{username}</span> : null;
   }
 
   if (badgePosition === 'below') {
     return (
       <div className={`flex flex-col space-y-1 ${className}`}>
-        <span>{username}</span>
+        {showUsername && <span>{username}</span>}
         <EquippedBadgeDisplay 
           equippedBadge={equippedBadge} 
           className="self-start"
@@ -51,7 +52,7 @@ const UserNameWithBadge = ({
 
   return (
     <div className={`flex items-start space-x-2 ${className}`}>
-      <span className="leading-tight">{username}</span>
+      {showUsername && <span className="leading-tight">{username}</span>}
       <EquippedBadgeDisplay 
         equippedBadge={equippedBadge} 
         className="flex-shrink-0"
