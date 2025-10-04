@@ -306,9 +306,16 @@ router.post('/canjear', verifyToken, async (req, res) => {
         .update({ saldo: user.saldo })
         .eq('id', req.userId);
       
+      // Mensaje más específico sobre la tabla faltante
+      let errorMessage = 'Error registrando recompensa';
+      if (recompensaError.message.includes('recompensas_usuario')) {
+        errorMessage = '⚠️ TABLA FALTANTE: Necesitas crear la tabla "recompensas_usuario" en Supabase Dashboard. Consulta el archivo SOLUCION_EMPENTA_RECOMPENSAS.md';
+      }
+      
       return res.status(500).json({ 
         success: false, 
-        error: 'Error registrando recompensa' 
+        error: errorMessage,
+        details: recompensaError.message
       });
     }
 
@@ -356,9 +363,16 @@ router.get('/usuario', verifyToken, async (req, res) => {
 
     if (error) {
       console.error('Error obteniendo recompensas del usuario:', error);
+      
+      let errorMessage = 'Error obteniendo recompensas';
+      if (error.message.includes('recompensas_usuario')) {
+        errorMessage = '⚠️ TABLA FALTANTE: Necesitas crear la tabla "recompensas_usuario" en Supabase Dashboard.';
+      }
+      
       return res.status(500).json({ 
         success: false, 
-        error: 'Error obteniendo recompensas' 
+        error: errorMessage,
+        details: error.message
       });
     }
 
