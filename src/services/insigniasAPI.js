@@ -94,7 +94,8 @@ export async function obtenerMisInsignias() {
     // SIEMPRE usar Supabase directamente para evitar errores de CORS
     console.log('🎯 Usando conexión directa con Supabase...');
     
-    const usuarioId = 235; // Rugal44 basado en nuestros tests
+    // Intentar obtener userId del localStorage o usar el usuario por defecto
+    const usuarioId = localStorage.getItem('userId') || localStorage.getItem('currentUserId') || 235;
     
     console.log('🎯 Buscando insignias para usuario:', usuarioId);
     

@@ -97,20 +97,27 @@ const InsigniaPerfilSimplet = ({ usuario }) => {
         rareza: 'comun',
         descripcion: 'Insignia elegante de plata para tu perfil'
       },
-      // También agregar los nombres del catálogo como aparecen
-      'Insignia de Bronce': {
+      // También agregar los nombres del catálogo como aparecen realmente
+      'Instrucciones de Bronce': {
         id: 'badge_bronce',
         nombre: 'Insignia de Bronce',
         icono: '🥉',
         rareza: 'comun',
         descripcion: 'Insignia básica de bronce para tu perfil'
       },
-      'Insignia de Plata': {
+      'Instrucciones de Plata': {
         id: 'badge_plata',
         nombre: 'Insignia de Plata',
         icono: '🥈',
         rareza: 'comun',
         descripcion: 'Insignia elegante de plata para tu perfil'
+      },
+      'Instrucciones de Oro': {
+        id: 'badge_oro',
+        nombre: 'Insignia de Oro',
+        icono: '🥇',
+        rareza: 'comun',
+        descripcion: 'Insignia premium de oro para tu perfil'
       },
       'badge_oro': {
         id: 'badge_oro',
