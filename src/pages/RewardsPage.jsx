@@ -5,12 +5,8 @@ import { Badge } from '@/components/ui/badge';
 import { Crown, Star, Zap, Gift, Filter } from 'lucide-react';
 import { useUser } from '@/context/UserContext';
 import { useTranslation } from 'react-i18next';
-import { 
-  RECOMPENSAS_CATALOGO, 
-  canjearRecompensa, 
-  obtenerRecompensasUsuario,
-  obtenerEstadisticasRecompensas 
-} from '@/services/rewardsService';
+import { RECOMPENSAS_CATALOGO } from '@/services/rewardsService';
+import API_BASE_URL from '@/utils/apiConfig';
 import RewardCard from '@/components/rewards/RewardCard';
 import UserRewardsList from '@/components/rewards/UserRewardsList';
 import { useToast } from '@/components/ui/use-toast';
@@ -45,8 +41,18 @@ const RewardsPage = () => {
   const loadUserRewards = async () => {
     try {
       setLoadingRewards(true);
-      const rewards = await obtenerRecompensasUsuario(user.id);
-      setUserRewards(rewards);
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${API_BASE_URL}/recompensas/usuario`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      const data = await response.json();
+      if (data.success) {
+        setUserRewards(data.recompensas);
+      } else {
+        console.error('Error obteniendo recompensas:', data.error);
+      }
     } catch (error) {
       console.error('Error cargando recompensas:', error);
       toast({
@@ -61,8 +67,18 @@ const RewardsPage = () => {
 
   const loadStatistics = async () => {
     try {
-      const stats = await obtenerEstadisticasRecompensas(user.id);
-      setStatistics(stats);
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${API_BASE_URL}/recompensas/estadisticas`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      const data = await response.json();
+      if (data.success) {
+        setStatistics(data.estadisticas);
+      } else {
+        console.error('Error obteniendo estadísticas:', data.error);
+      }
     } catch (error) {
       console.error('Error cargando estadísticas:', error);
     }
@@ -81,17 +97,31 @@ const RewardsPage = () => {
     setIsRedeeming(true);
 
     try {
-      const result = await canjearRecompensa(user.id, recompensa.id);
-      
-      toast({
-        title: t('rewards.redeem_success'),
-        description: t('rewards.reward_added', { name: recompensa.nombre }),
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${API_BASE_URL}/recompensas/canjear`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ recompensaId: recompensa.id })
       });
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        toast({
+          title: t('rewards.redeem_success'),
+          description: `${recompensa.nombre} agregada exitosamente!`
+        });
 
-      // Refrescar datos del usuario y recompensas
-      refreshUser();
-      loadUserRewards();
-      loadStatistics();
+        // Refrescar datos del usuario y recompensas
+        refreshUser();
+        loadUserRewards();
+        loadStatistics();
+      } else {
+        throw new Error(data.error || 'Error al canjear recompensa');
+      }
 
     } catch (error) {
       console.error('Error canjeando recompensa:', error);
@@ -105,11 +135,46 @@ const RewardsPage = () => {
     }
   };
 
-  const getFilteredRewards = () => {
-    if (selectedCategory === 'all') {
-      return RECOMPENSAS_CATALOGO;
+  const [availableRewards, setAvailableRewards] = useState([]);
+
+  useEffect(() => {
+    loadAvailableRewards();
+  }, []);
+
+  const loadAvailableRewards = async () => {
+    try {
+      if (selectedCategory === 'insignias') {
+        // Para insignias específicamente, usar la API de insignias
+        const response = await fetch(`${API_BASE_URL}/recompensas/catalogo/insignias`);
+        const data = await response.json();
+        if (data.success) {
+          setAvailableRewards(data.insignias);
+        }
+      } else {
+        // Para otras categorías o todas, usar el catálogo general
+        const response = await fetch(`${API_BASE_URL}/recompensas/catalogo`);
+        const data = await response.json();
+        if (data.success) {
+          setAvailableRewards(data.recompensas);
+        }
+      }
+    } catch (error) {
+      console.error('Error cargando recompensas:', error);
+      // Fallback al catálogo estático
+      if (selectedCategory === 'all') {
+        setAvailableRewards(RECOMPENSAS_CATALOGO);
+      } else {
+        setAvailableRewards(RECOMPENSAS_CATALOGO.filter(recompensa => recompensa.categoria === selectedCategory));
+      }
     }
-    return RECOMPENSAS_CATALOGO.filter(recompensa => recompensa.categoria === selectedCategory);
+  };
+
+  useEffect(() => {
+    loadAvailableRewards();
+  }, [selectedCategory]);
+
+  const getFilteredRewards = () => {
+    return availableRewards;
   };
 
   const getUserOwnedRewardIds = () => {
