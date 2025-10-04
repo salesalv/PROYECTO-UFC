@@ -202,14 +202,14 @@ const BadgeManager = ({ userId }) => {
               <div className="absolute inset-0 bg-gradient-to-r from-green-500/10 via-emerald-500/5 to-green-500/10 rounded-xl opacity-50 animate-pulse"></div>
               
               <div className="relative z-10">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-4">
-                    <div className="text-4xl transform transition-transform group-hover:scale-110 animate-glow">
+                <div className="flex items-start justify-between">
+                  <div className="flex items-start space-x-4 flex-1">
+                    <div className="text-4xl transform transition-transform group-hover:scale-110 animate-glow flex-shrink-0">
                       {equippedBadge.insignias_catalogo?.icono || '🏆'}
                     </div>
-                    <div>
-                      <div className="flex items-center space-x-2 mb-1">
-                        <h3 className="font-bold text-white text-lg">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center space-x-2 mb-2">
+                        <h3 className="font-bold text-white text-xl">
                           {equippedBadge.insignias_catalogo?.nombre}
                         </h3>
                         <Badge className="bg-green-500 text-white text-xs animate-pulse shadow-lg">
@@ -217,17 +217,17 @@ const BadgeManager = ({ userId }) => {
                           <span>Equipada</span>
                         </Badge>
                       </div>
-                      <p className="text-sm text-gray-300 mb-2">
+                      <p className="text-base text-gray-300 mb-3">
                         {equippedBadge.insignias_catalogo?.descripcion}
                       </p>
-                      <div className="flex items-center space-x-2">
-                        <Badge className={`${getBadgeRarityStyles(equippedBadge.insignias_catalogo?.rareza).badge} text-xs`}>
+                      <div className="flex items-center space-x-3">
+                        <Badge className={`${getBadgeRarityStyles(equippedBadge.insignias_catalogo?.rareza).badge} text-sm`}>
                           {getBadgeRarityIcon(equippedBadge.insignias_catalogo?.rareza)}
                           <span className="ml-1 capitalize">
                             {equippedBadge.insignias_catalogo?.rareza}
                           </span>
                         </Badge>
-                        <span className="text-xs text-yellow-400">
+                        <span className="text-sm text-yellow-400">
                           Comprada por {equippedBadge.precio_pagado} monedas
                         </span>
                       </div>
@@ -237,7 +237,7 @@ const BadgeManager = ({ userId }) => {
                     variant="outline"
                     size="sm"
                     onClick={handleUnequipBadge}
-                    className="border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition-all duration-300 hover:shadow-lg"
+                    className="border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition-all duration-300 hover:shadow-lg flex-shrink-0"
                   >
                     <Crown className="h-4 w-4 mr-1" />
                     Desequipar
@@ -361,14 +361,14 @@ const BadgeManager = ({ userId }) => {
                     
                     <div className="relative z-10">
                       {/* Header de la insignia */}
-                      <div className="flex items-center justify-between mb-3">
-                        <div className="flex items-center space-x-3 flex-1">
-                          <div className={`text-3xl transform transition-transform group-hover:scale-110 ${isEquipped ? 'animate-glow' : ''}`}>
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="flex items-start space-x-3 flex-1">
+                          <div className={`text-3xl transform transition-transform group-hover:scale-110 ${isEquipped ? 'animate-glow' : ''} flex-shrink-0`}>
                             {badge?.icono}
                           </div>
                           <div className="flex-1 min-w-0">
-                            <h3 className="font-bold text-white text-sm leading-tight truncate">{badge?.nombre}</h3>
-                            <p className="text-xs text-gray-400 mt-1 line-clamp-2">{badge?.descripcion}</p>
+                            <h3 className="font-bold text-white text-base leading-tight">{badge?.nombre}</h3>
+                            <p className="text-sm text-gray-400 mt-1">{badge?.descripcion}</p>
                           </div>
                         </div>
                         

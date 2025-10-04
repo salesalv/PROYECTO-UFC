@@ -109,9 +109,9 @@ const UserProfilePage = () => {
         transition={{ duration: 0.5 }}
         className="container mx-auto max-w-4xl"
       >
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
           {/* Columna Principal */}
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-3">
             <Card className="bg-black/70 border border-gray-800 backdrop-blur-sm shadow-lg">
               <CardHeader className="text-center">
                 <div className="relative inline-block mb-4">
@@ -211,7 +211,7 @@ const UserProfilePage = () => {
           </div>
 
           {/* Columna de Insignias */}
-          <div className="lg:col-span-1">
+          <div className="lg:col-span-2">
             <BadgeManager userId={userData?.id} />
           </div>
         </div>
