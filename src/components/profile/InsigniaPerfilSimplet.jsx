@@ -62,20 +62,49 @@ const InsigniaPerfilSimplet = ({ usuario }) => {
         
         console.log('🎯 Insignias en catálogo:', catalogoDetalles);
         
-        // Si encontramos insignias, mostrar la primera
+        // Si encontramos insignias, crear un objeto con todas
         if (catalogoDetalles && catalogoDetalles.length > 0) {
-          const primeraInsignia = catalogoDetalles[0];
-          console.log('✅ Mostrando primera insignia:', primeraInsignia);
+          console.log('✅ Catálogo encontrado:', catalogoDetalles);
           
-          // Mapear a nuestro formato local
-          const insigniaLocal = obtenerDatosInsignia(primeraInsignia.id);
-          if (insigniaLocal) {
-            setInsigniaData(insigniaLocal);
-          }
+          // Crear un objeto que represente todas las insignias disponibles
+          const insigniaEquipada = {
+            id: catalogoDetalles[0].id,
+            nombre: procesarNombre(catalogoDetalles[0].nombre),
+            icono: getIconoInsignia(catalogoDetalles[0].id),
+            rareza: 'comun',
+            descripcion: `${procesarNombre(catalogoDetalles[0].nombre)} para tu perfil`,
+            todasDisponibles: catalogoDetalles.map(item => ({
+              id: item.id,
+              nombre: procesarNombre(item.nombre),
+              icono: getIconoInsignia(item.id),
+              rareza: 'comun'
+            }))
+          };
+          
+          setInsigniaData(insigniaEquipada);
+          console.log('🎖️ Insignia configurada:', insigniaEquipada);
         }
       }
     } catch (error) {
       console.error('❌ Error en buscarInsigniasCompradas:', error);
+    }
+  };
+
+  const procesarNombre = (nombreOriginal) => {
+    switch(nombreOriginal) {
+      case 'Instrucciones de Bronce': return 'Insignia de Bronce';
+      case 'Instrucciones de Plata': return 'Insignia de Plata';
+      case 'Instrucciones de Oro': return 'Insignia de Oro';
+      default: return nombreOriginal;
+    }
+  };
+
+  const getIconoInsignia = (id) => {
+    switch(id) {
+      case 'badge_bronce': return '🥉';
+      case 'badge_plata': return '🥈';
+      case 'badge_oro': return '🥇';
+      default: return '🏆';
     }
   };
 
