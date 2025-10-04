@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { PlayCircle, Star, Eye, Loader2, X } from "lucide-react";
 import { useTranslation } from 'react-i18next';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import ProtectedContent from "@/components/common/ProtectedContent";
 import { 
   getFeaturedClips, 
   registerUniqueView, 
@@ -106,13 +107,14 @@ const HighlightsPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-black via-gray-900 to-black text-white pt-24 pb-12 px-4">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="container mx-auto max-w-7xl"
-      >
+    <ProtectedContent>
+      <div className="min-h-screen bg-gradient-to-b from-black via-gray-900 to-black text-white pt-24 pb-12 px-4">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="container mx-auto max-w-7xl"
+        >
         <div className="text-center mb-10">
           <h1 className="text-4xl md:text-5xl font-black uppercase text-red-500 tracking-wider flex items-center justify-center">
             <Star className="w-10 h-10 mr-4 text-yellow-400" />
@@ -225,7 +227,8 @@ const HighlightsPage = () => {
           </div>
         </DialogContent>
       </Dialog>
-    </div>
+      </div>
+    </ProtectedContent>
   );
 };
 

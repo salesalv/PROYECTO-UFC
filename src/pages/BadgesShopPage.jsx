@@ -8,6 +8,8 @@ import { useUser } from '@/context/UserContext';
 import { useTranslation } from 'react-i18next';
 import { useToast } from '@/components/ui/use-toast';
 import { useBadgePurchase } from '@/hooks/useBadgePurchase';
+import { useRecompensas } from '@/hooks/useRecompensas';
+import AccesoClipsDestacadosCard from '@/components/recompensas/AccesoClipsDestacadosCard';
 import { 
   obtenerInsigniasDisponibles, 
   obtenerInsigniasUsuario,
@@ -19,6 +21,11 @@ const BadgesShopPage = () => {
   const { t } = useTranslation();
   const { toast } = useToast();
   const { loading: purchaseLoading, purchaseBadge } = useBadgePurchase();
+  const { 
+    tieneAccesoClipsDestacados, 
+    loading: recompensasLoading, 
+    comprarAccesoClips 
+  } = useRecompensas(user?.id);
 
   const [badges, setBadges] = useState([]);
   const [userBadges, setUserBadges] = useState([]);
@@ -171,10 +178,10 @@ const BadgesShopPage = () => {
         <div className="text-center mb-8">
           <div className="flex items-center justify-center space-x-3 mb-4">
             <Crown className="h-8 w-8 text-yellow-400" />
-            <h1 className="text-4xl font-bold text-white">Tienda de Insignias</h1>
+            <h1 className="text-4xl font-bold text-white">Canjear Recompensas</h1>
           </div>
           <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-            Colecciona insignias exclusivas y muestra tu estilo único en la plataforma
+            Colecciona insignias exclusivas y desbloquea contenido premium
           </p>
         </div>
 
@@ -232,6 +239,24 @@ const BadgesShopPage = () => {
               <p className="text-2xl font-bold text-orange-400">{Math.round(statistics.promedioPorInsignia)}</p>
             </CardContent>
           </Card>
+        </div>
+
+        {/* Recompensas Premium */}
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold text-white mb-6 flex items-center space-x-2">
+            <Star className="h-6 w-6 text-purple-400" />
+            <span>Recompensas Premium</span>
+          </h2>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <AccesoClipsDestacadosCard
+              userId={user?.id}
+              tieneAcceso={tieneAccesoClipsDestacados}
+              loading={recompensasLoading}
+              onComprarAcceso={comprarAccesoClips}
+              saldoUsuario={user?.saldo}
+            />
+            {/* Aquí se pueden agregar más recompensas en el futuro */}
+          </div>
         </div>
 
         {/* Filters */}

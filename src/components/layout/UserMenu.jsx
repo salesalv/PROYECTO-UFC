@@ -138,7 +138,7 @@ const UserMenu =() => {
           <DropdownMenuItem asChild>
             <Link to="/badges" className="flex items-center text-gray-300 hover:text-white hover:bg-gray-800/50 rounded-md">
               <Crown className="mr-2 h-4 w-4 text-purple-400" />
-              <span>Insignias</span>
+              <span>Canjear Recompensas</span>
             </Link>
           </DropdownMenuItem>
           <div className="mt-3 px-2">
