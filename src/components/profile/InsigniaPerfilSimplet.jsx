@@ -4,23 +4,84 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Crown, Award, Zap, Star, Shield, Settings } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import supabase from '@/db';
 
 const InsigniaPerfilSimplet = ({ usuario }) => {
   const [insigniaData, setInsigniaData] = useState(null);
   const { t } = useTranslation();
 
   useEffect(() => {
-    // Simular datos de insignia básicos si el usuario viene con insignia_actual
+    console.log('🔍 InsigniaPerfilSimplet recibió usuario:', usuario);
+    
+    // Primero intentar con insignia_actual si existe
     if (usuario?.insignia_actual) {
-      // Mapear IDs a datos básicos de insignias
+      console.log('✅ Usuario tiene insignia_actual:', usuario.insignia_actual);
       const insigniaBase = obtenerDatosInsignia(usuario.insignia_actual);
       if (insigniaBase) {
         setInsigniaData(insigniaBase);
       }
+    } else if (usuario?.id) {
+      // Si no tiene insignia_actual pero tiene ID, buscar en recompensas_usuario
+      console.log('🔍 Usuario no tiene insignia_actual, buscando en recompensas_usuario...', usuario.id);
+      buscarInsigniasCompradas(usuario.id);
     }
   }, [usuario]);
 
+  const buscarInsigniasCompradas = async (usuarioId) => {
+    try {
+      console.log('🔍 Buscando recompensas para usuario:', usuarioId);
+      
+      // Buscar recompensas del usuario
+      const { data: recompensas, error: recompensasError } = await supabase
+        .from('recompensas_usuario')
+        .select('recompensa_id')
+        .eq('usuario_id', usuarioId);
+      
+      if (recompensasError) {
+        console.error('❌ Error buscando recompensas:', recompensasError);
+        return;
+      }
+      
+      console.log('🎖️ Recompensas encontradas:', recompensas);
+      
+      if (recompensas && recompensas.length > 0) {
+        // Buscar detalles de las recompensas en el catálogo
+        const ids = recompensas.map(r => r.recompensa_id);
+        console.log('🔍 IDs de recompensas:', ids);
+        
+        const { data: catalogoDetalles, error: catalogoError } = await supabase
+          .from('recompensas_catalogo')
+          .select('id, nombre, categoria')
+          .in('id', ids)
+          .eq('categoria', 'insignia');
+        
+        if (catalogoError) {
+          console.error('❌ Error buscando en catálogo:', catalogoError);
+          return;
+        }
+        
+        console.log('🎯 Insignias en catálogo:', catalogoDetalles);
+        
+        // Si encontramos insignias, mostrar la primera
+        if (catalogoDetalles && catalogoDetalles.length > 0) {
+          const primeraInsignia = catalogoDetalles[0];
+          console.log('✅ Mostrando primera insignia:', primeraInsignia);
+          
+          // Mapear a nuestro formato local
+          const insigniaLocal = obtenerDatosInsignia(primeraInsignia.id);
+          if (insigniaLocal) {
+            setInsigniaData(insigniaLocal);
+          }
+        }
+      }
+    } catch (error) {
+      console.error('❌ Error en buscarInsigniasCompradas:', error);
+    }
+  };
+
   const obtenerDatosInsignia = (insigniaId) => {
+    console.log('🔍 Obteniendo datos para insignia:', insigniaId);
+    
     const insigniasCatalog = {
       'badge_bronce': {
         id: 'badge_bronce',
@@ -30,6 +91,21 @@ const InsigniaPerfilSimplet = ({ usuario }) => {
         descripcion: 'Insignia básica de bronce para tu perfil'
       },
       'badge_plata': {
+        id: 'badge_plata',
+        nombre: 'Insignia de Plata', 
+        icono: '🥈',
+        rareza: 'comun',
+        descripcion: 'Insignia elegante de plata para tu perfil'
+      },
+      // También agregar los nombres del catálogo como aparecen
+      'Insignia de Bronce': {
+        id: 'badge_bronce',
+        nombre: 'Insignia de Bronce',
+        icono: '🥉',
+        rareza: 'comun',
+        descripcion: 'Insignia básica de bronce para tu perfil'
+      },
+      'Insignia de Plata': {
         id: 'badge_plata',
         nombre: 'Insignia de Plata',
         icono: '🥈',

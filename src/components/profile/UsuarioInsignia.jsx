@@ -46,12 +46,19 @@ const UsuarioInsignia = ({ userId, esUsuarioActual = false, enPerfilPublico = tr
           if (insigniaEquipment) {
             setInsigniaActual({ ...insigniaEquipment, equipada: true });
           }
-        } else if (insignias.length > 0) {
-          // Si no tiene insignia_actual pero tiene insignias compradas, mostrar la primera
-          console.log('🔧 Usuario tiene insignias compradas pero no equipada, mostrando primera disponible');
-          const primeraInsignia = insignias.find(insignia => insignia.categoria === 'insignia');
-          if (primeraInsignia) {
-            setInsigniaActual({ ...primeraInsignia, equipada: true });
+        } else {
+          // Si no tiene insignia_actual, verificar si tiene insignias disponibles
+          console.log('🔧 Usuario no tiene insignia equipada, verificando insignias disponibles...');
+          
+          // Buscar insignias de categoria 'insignia' directamente en el array
+          const insigniasDisponibles = insignias.filter(insignia => insignia.categoria === 'insignia');
+          console.log('🎖️ Insidias disponibles:', insigniasDisponibles);
+          
+          if (insigniasDisponibles.length > 0) {
+            console.log('✅ Usuario tiene insignias, mostrando primera disponible');
+            setInsigniaActual({ ...insigniasDisponibles[0], equipada: false });
+          } else {
+            console.log('❌ Usuario no tiene insignias disponibles');
           }
         }
       } else {
@@ -282,7 +289,7 @@ const UsuarioInsignia = ({ userId, esUsuarioActual = false, enPerfilPublico = tr
         )}
 
         {/* Botón para obtener más insignias (solo usuario actual sin insignias) */}
-        {esUsuarioActual && misInsignias.length === 0 && (
+        {esUsuarioActual && (!misInsignias || misInsignias.length === 0) && !insigniaActual && (
           <div className="text-center pt-4">
             <Button asChild className="bg-red-600 hover:bg-red-700">
               <a href="/recompensas">{t('insignias.buy_more')}</a>
