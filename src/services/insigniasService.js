@@ -160,7 +160,7 @@ export async function obtenerInsigniasUsuario(usuarioId) {
       .from('insignias_usuario')
       .select(`
         *,
-        insignia:insignias_catalogo(*)
+        insignias_catalogo(*)
       `)
       .eq('usuario_id', usuarioId)
       .order('fecha_compra', { ascending: false });
@@ -239,7 +239,7 @@ export async function obtenerInsigniaEquipada(usuarioId) {
       .from('insignias_usuario')
       .select(`
         *,
-        insignia:insignias_catalogo(*)
+        insignias_catalogo(*)
       `)
       .eq('usuario_id', usuarioId)
       .eq('equipada', true)
