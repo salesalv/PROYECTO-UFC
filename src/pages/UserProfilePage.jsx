@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/input";
 import supabase from "@/db";
 import { useUser } from "@/context/UserContext";
 import { useTranslation } from "react-i18next";
-import MostrarInsignias from "@/components/MostrarInsignias";
+import MostrarInsignias from "@/components/MostrarInsigniasReal";
 
 const UserProfilePage = () => {
   const { user: userData, loading, refreshUser } = useUser();
