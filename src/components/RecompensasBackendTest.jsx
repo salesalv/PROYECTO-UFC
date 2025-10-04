@@ -70,7 +70,7 @@ const RecompensasBackendTest = () => {
         title: "❌ Error",
         description: error.message,
         variant: 'destructive'
-      Letto});
+      });
     } finally {
       setCargando(false);
     }
