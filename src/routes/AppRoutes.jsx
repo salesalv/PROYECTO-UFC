@@ -43,6 +43,7 @@ const AppRoutes = () => {
       <Route path="/clips" element={<SavedClipsPage />} />
       <Route path="/coins" element={<CoinPurchasePage />} />
       <Route path="/rewards" element={<RewardsPage />} />
+      <Route path="/recompensas" element={<RewardsPage />} />
       <Route path="/thread/:id" element={<ThreadPage />} />
       <Route path="/category/:id" element={<CategoryPage />} />
       <Route path="/event/:id" element={<EventCardPage />} />

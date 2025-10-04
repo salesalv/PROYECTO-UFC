@@ -332,7 +332,7 @@ router.get('/historial', verifyToken, async (req, res) => {
       success: false, 
       error: 'Error interno del servidor' 
     });
- }};
+});
 
 // PUT /api/insignias/configuracion - Actualizar configuración de visualización
 router.put('/configuracion', verifyToken, async (req, res) => {
