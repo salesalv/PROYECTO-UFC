@@ -112,12 +112,18 @@ const UserProfilePage = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Columna Principal */}
           <div className="md:col-span-2">
-            {/* Componente de Insignias - Sistema COMPLETO */}
-            <UsuarioInsignia 
-              userId={userData?.id} 
-              esUsuarioActual={true}
-              enPerfilPublico={false}
-            />
+            {/* Componente de Insignias - Conectar con tu base de datos */}
+            {userData?.id ? (
+              <UsuarioInsignia 
+                userId={userData.id} 
+                esUsuarioActual={true}
+                enPerfilPublico={false}
+              />
+            ) : (
+              <div className="bg-gray-900/50 border-gray-700 mb-6 p-4 rounded-lg">
+                <p className="text-white">Esperando datos del usuario...</p>
+              </div>
+            )}
 
             <Card className="bg-black/70 border border-gray-800 backdrop-blur-sm shadow-lg">
               <CardHeader className="text-center">

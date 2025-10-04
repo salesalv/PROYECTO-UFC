@@ -6,6 +6,7 @@ import { Crown, Award, Zap, Star, Shield, Settings } from 'lucide-react';
 import { obtenerInsigniasPerfil, equiparInsignia, obtenerMisInsignias } from '@/services/insigniasAPI';
 import { useToast } from '@/components/ui/use-toast';
 import { useTranslation } from 'react-i18next';
+import supabase from '@/db';
 
 const UsuarioInsignia = ({ userId, esUsuarioActual = false, enPerfilPublico = true }) => {
   const [insigniaActual, setInsigniaActual] = useState(null);
@@ -31,9 +32,20 @@ const UsuarioInsignia = ({ userId, esUsuarioActual = false, enPerfilPublico = tr
         const insignias = await obtenerMisInsignias();
         setMisInsignias(insignias);
         
-        // Encontrar la insignia equipada
-        const equipada = insignias.find(insignia => insignia.equipada);
-        setInsigniaActual(equipada);
+        // Obtener insignia equipada directamente de Supabase
+        const { data: usuarioData } = await supabase
+          .from('usuario')
+          .select('insignia_actual')
+          .eq('id', userId)
+          .single();
+        
+        if (usuarioData?.insignia_actual) {
+          // Buscar la insignia en el listado
+          const insigniaEquipment = insignias.find(insignia => insignia.recompensa_id === usuarioData.insignia_actual);
+          if (insigniaEquipment) {
+            setInsigniaActual({ ...insigniaEquipment, equipada: true });
+          }
+        }
       } else {
         // Cargar insignia pública del perfil
         const datosPerfil = await obtenerInsigniasPerfil(userId);
