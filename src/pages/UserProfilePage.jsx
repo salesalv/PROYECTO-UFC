@@ -111,7 +111,7 @@ const UserProfilePage = () => {
       >
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
           {/* Columna Principal */}
-          <div className="lg:col-span-3">
+          <div className="lg:col-span-2">
             <Card className="bg-black/70 border border-gray-800 backdrop-blur-sm shadow-lg">
               <CardHeader className="text-center">
                 <div className="relative inline-block mb-4">
@@ -208,7 +208,7 @@ const UserProfilePage = () => {
           </div>
 
           {/* Columna de Insignias */}
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-3">
             <BadgeManager userId={userData?.id} />
           </div>
         </div>
