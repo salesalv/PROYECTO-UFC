@@ -2,6 +2,8 @@
  * Servicio para interactuar con la API de insignias del backend
  */
 
+import supabase from '@/db';
+
 const API_BASE_URL = process.env.NODE_ENV === 'production' 
   ? 'https://tu-dominio.vercel.app/api/insignias'
   : 'http://localhost:3001/api/insignias';
@@ -10,9 +12,38 @@ const API_BASE_URL = process.env.NODE_ENV === 'production'
  * Realiza una petición autenticada al backend
  */
 async function authenticatedFetch(endpoint, options = {}) {
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem('token') || localStorage.getItem('authToken');
   
   if (!token) {
+    // Intento de obtener token de usuario actual de contexto Supabase
+    try {
+      const user = await supabase.auth.getUser();
+      if (user?.data?.user) {
+        // Si hay usuario de Supabase pero no token JWT, usar session
+        const session = await supabase.auth.getSession();
+        if (session?.data?.session?.access_token) {
+          const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+            ...options,
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${session.data.session.access_token}`,
+              ...options.headers,
+            },
+          });
+
+          const data = await response.json();
+
+          if (!response.ok) {
+            throw new Error(data.error || 'Error en la petición');
+          }
+
+          return data;
+        }
+      }
+    } catch (authError) {
+      console.warn('No se pudo obtener token de sesión:', authError);
+    }
+    
     throw new Error('No hay token de autenticación disponible');
   }
 

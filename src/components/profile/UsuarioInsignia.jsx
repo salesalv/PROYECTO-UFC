@@ -16,8 +16,11 @@ const UsuarioInsignia = ({ userId, esUsuarioActual = false, enPerfilPublico = tr
   const { t } = useTranslation();
 
   useEffect(() => {
-    cargarInsignias();
-  }, [userId]);
+    // Solo cargar insignias si hay un usuario autenticado
+    if (userId || esUsuarioActual) {
+      cargarInsignias();
+    }
+  }, [userId, esUsuarioActual]);
 
   const cargarInsignias = async () => {
     try {

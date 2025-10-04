@@ -13,6 +13,7 @@ import supabase from "@/db";
 import { useUser } from "@/context/UserContext";
 import { useTranslation } from "react-i18next";
 import UsuarioInsignia from "@/components/profile/UsuarioInsignia";
+import InsigniaPerfilSimplet from "@/components/profile/InsigniaPerfilSimplet";
 
 const UserProfilePage = () => {
   const { user: userData, loading, refreshUser } = useUser();
@@ -112,11 +113,15 @@ const UserProfilePage = () => {
           {/* Columna Principal */}
           <div className="md:col-span-2">
             {/* Componente de Insignias */}
-            <UsuarioInsignia 
-              userId={userData?.id} 
-              esUsuarioActual={true}
-              enPerfilPublico={false}
-            />
+            {userData?.id ? (
+              <UsuarioInsignia 
+                userId={userData.id} 
+                esUsuarioActual={true}
+                enPerfilPublico={false}
+              />
+            ) : (
+              <InsigniaPerfilSimplet usuario={userData} />
+            )}
 
             <Card className="bg-black/70 border border-gray-800 backdrop-blur-sm shadow-lg">
               <CardHeader className="text-center">
