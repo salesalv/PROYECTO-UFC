@@ -5,6 +5,7 @@ import { ClipsProvider } from './context/ClipsContext';
 import './index.css';
 import { BrowserRouter } from 'react-router-dom';
 import { UserProvider } from './context/UserContext';
+import { BadgeEventProvider } from './context/BadgeEventContext';
 import './i18n';
 
 const root = createRoot(document.getElementById('root'));
@@ -13,9 +14,11 @@ root.render(
   <React.StrictMode>
     <BrowserRouter>
       <UserProvider>
-      <ClipsProvider>
-        <App />
-      </ClipsProvider>
+        <BadgeEventProvider>
+          <ClipsProvider>
+            <App />
+          </ClipsProvider>
+        </BadgeEventProvider>
       </UserProvider>
     </BrowserRouter>
   </React.StrictMode>

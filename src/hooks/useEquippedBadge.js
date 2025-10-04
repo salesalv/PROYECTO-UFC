@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { obtenerInsigniaEquipada } from '@/services/insigniasService';
+import { useBadgeEvents } from '@/context/BadgeEventContext';
 
 /**
  * Hook para obtener la insignia equipada del usuario
@@ -7,6 +8,7 @@ import { obtenerInsigniaEquipada } from '@/services/insigniasService';
 export const useEquippedBadge = (userId) => {
   const [equippedBadge, setEquippedBadge] = useState(null);
   const [loading, setLoading] = useState(false);
+  const { badgeUpdateTrigger } = useBadgeEvents();
 
   useEffect(() => {
     const loadEquippedBadge = async () => {
@@ -28,7 +30,7 @@ export const useEquippedBadge = (userId) => {
     };
 
     loadEquippedBadge();
-  }, [userId]);
+  }, [userId, badgeUpdateTrigger]);
 
   return {
     equippedBadge,
