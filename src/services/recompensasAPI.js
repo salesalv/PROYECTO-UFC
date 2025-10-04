@@ -3,7 +3,7 @@
  */
 
 const API_BASE_URL = process.env.NODE_ENV === 'production' 
-  ? 'https://tu-dominio.vercel.app/api/recompensas'
+  ? 'https://smashufc-nine.vercel.app/api/recompensas'
   : 'http://localhost:3001/api/recompensas';
 
 /**

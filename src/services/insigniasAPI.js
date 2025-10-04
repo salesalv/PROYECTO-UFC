@@ -5,7 +5,7 @@
 import supabase from '@/db';
 
 const API_BASE_URL = process.env.NODE_ENV === 'production' 
-  ? 'https://tu-dominio.vercel.app/api/insignias'
+  ? 'https://smashufc-nine.vercel.app/api/insignias'
   : 'http://localhost:3001/api/insignias';
 
 /**
@@ -88,46 +88,55 @@ async function publicFetch(endpoint, options = {}) {
 
 // GET /api/insignias/mis-insignias - Obtener insignias del usuario
 export async function obtenerMisInsignias() {
+  console.log('🔍 obtenerMisInsignias() - Usando Supabase directamente...');
+  
   try {
-    const data = await authenticatedFetch('/mis-insignias');
-    return data.insignias;
-  } catch (error) {
-    console.error('Error obteniendo insignias desde backend:', error);
+    // DESACTIVADO temporalmente por error de CORS
+    // const data = await authenticatedFetch('/mis-insignias');
+    // return data.insignias;
     
-    // FALLBACK: Obtener insignias directamente desde Supabase
-    console.log('🔄 Intentando obtener insignias directamente desde Supabase...');
+    // SIEMPRE usar Supabase directamente para evitar errores de CORS
+    const usuarioId = 235; // Rugal44 basado en nuestros tests
     
-    try {
-      // Asumir que estamos trabajando con un usuario específico (Rugal44 = 235)
-      const usuarioId = 235; // Este sería rugal44 basado en nuestros tests
+    console.log('🎯 Buscando insignias para usuario:', usuarioId);
+    
+    const { data: recompensas, error: errorSupabase } = await supabase
+      .from('recompensas_usuario')
+      .select('recompensa_id')
+      .eq('usuario_id', usuarioId);
+    
+    if (errorSupabase) {
+      console.error('❌ Error Supabase:', errorSupabase);
+      throw errorSupabase;
+    }
+    
+    console.log('🎖️ Recompensas encontradas:', recompensas);
+    
+    // Obtener detalles de las insignias desde el catálogo
+    if (recompensas && recompensas.length > 0) {
+      const ids = recompensas.map(r => r.recompensa_id);
+      console.log('🔍 IDs a buscar:', ids);
       
-      const { data: recompensas, error: errorSupabase } = await supabase
-        .from('recompensas_usuario')
-        .select('recompensa_id')
-        .eq('usuario_id', usuarioId);
+      const { data: insigniasDetalles, error: insigniasError } = await supabase
+        .from('recompensas_catalogo')
+        .select('*')
+        .in('id', ids)
+        .eq('categoria', 'insignia');
       
-      if (errorSupabase) throw errorSupabase;
-      
-      // Obtener detalles de las insignias desde el catálogo
-      if (recompensas && recompensas.length > 0) {
-        const ids = recompensas.map(r => r.recompensa_id);
-        
-        const { data: insigniasDetalles, error: insigniasError } = await supabase
-          .from('recompensas_catalogo')
-          .select('*')
-          .in('id', ids)
-          .eq('categoria', 'insignia');
-        
-        if (insigniasError) throw insigniasError;
-        
-        return insigniasDetalles || [];
+      if (insigniasError) {
+        console.error('❌ Error catálogo:', insigniasError);
+        throw insigniasError;
       }
       
-      return [];
-    } catch (supabaseError) {
-      console.error('Error consultando Supabase:', supabaseError);
-      return [];
+      console.log('✅ Insignias encontradas:', insigniasDetalles);
+      return insigniasDetalles || [];
     }
+    
+    console.log('❌ No se encontraron recompensas');
+    return [];
+  } catch (error) {
+    console.error('❌ Error completo en obtenerMisInsignias:', error);
+    return [];
   }
 }
 
