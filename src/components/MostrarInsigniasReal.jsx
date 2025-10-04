@@ -45,24 +45,29 @@ const MostrarInsigniasReal = () => {
           console.error('❌ Error detalles:', errorDetalles);
           setModoPrueba(true);
         } else {
-          console.log('✅ Detalles:', detalles);
+          console.log('✅ Detalles encontrados:', detalles);
           
-          const insigniasData = detalles.map(item => {
-            let nombre = item.nombre === 'Instrucciones de Bronce' ? 'Insignia de Bronce' :
-                        item.nombre === 'Instrucciones de Plata' ? 'Insignia de Plata' :
-                        item.nombre === 'Instrucciones de Oro' ? 'Insignia de Oro' : item.nombre;
+          if (detalles && detalles.length > 0) {
+            const insigniasData = detalles.map(item => {
+              let nombre = item.nombre === 'Instrucciones de Bronce' ? 'Insignia de Bronce' :
+                          item.nombre === 'Instrucciones de Plata' ? 'Insignia de Plata' :
+                          item.nombre === 'Instrucciones de Oro' ? 'Insignia de Oro' : item.nombre;
+              
+              let icono = item.id === 'badge_bronce' ? '🥉' :
+                         item.id === 'badge_plata' ? '🥈' :
+                         item.id === 'badge_oro' ? '🥇' : '🏆';
+              
+              return { nombre, icono };
+            });
             
-            let icono = item.id === 'badge_bronce' ? '🥉' :
-                       item.id === 'badge_plata' ? '🥈' :
-                       item.id === 'badge_oro' ? '🥇' : '🏆';
-            
-            return { nombre, icono };
-          });
-          
-          setInsigniasReales(insigniasData);
-          setModoPrueba(false);
-          console.log('🏆 Insignias reales cargadas:', insigniasData);
-          console.log('✅ Modo Supabase activado - datos actualizados');
+            setInsigniasReales(insigniasData);
+            setModoPrueba(false);  // Cambiar a false cuando hay datos reales
+            console.log('🏆 Insignias reales cargadas:', insigniasData);
+            console.log('✅ Modo Supabase - MOSTRANDO DATOS REALES');
+          } else {
+            console.log('⚠️ No se encontraron detalles en catálogo');
+            setModoPrueba(true);
+          }
         }
       } else {
         console.log('❌ No se encontraron recompensas');
@@ -105,7 +110,7 @@ const MostrarInsigniasReal = () => {
       <CardHeader>
         <CardTitle className="text-white flex items-center space-x-2">
           <Award className="h-5 w-5 text-yellow-400" />
-          <span>Mis Insignias ({insigniasAMostrar.length}) {modoPrueba ? '[Datos Reales]' : '[Desde Supabase]'}</span>
+          <span>Mis Insignias ({insigniasAMostrar.length}) {modoPrueba ? '[Modo Prueba]' : '[Datos Reales]'}</span>
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -115,15 +120,21 @@ const MostrarInsigniasReal = () => {
               <div className="text-4xl">{insignia.icono}</div>
               <div>
                 <h3 className="text-lg font-bold text-white">{insignia.nombre}</h3>
-                <p className="text-gray-400">Insignia obtenida {modoPrueba ? '(desde Supabase)' : ''}</p>
+                <p className="text-gray-400">Insignia obtenida {modoPrueba ? '(modo prueba)' : '(desde Supabase)'}</p>
               </div>
             </div>
           ))}
         </div>
-        {modoPrueba && (
-          <div className="mt-4 p-3 bg-blue-900/20 border border-blue-500 rounded-lg">
-            <p className="text-blue-300 text-sm">
-              🔍 Modo conectado a Supabase - Mostrando datos reales
+        {modoPrueba ? (
+          <div className="mt-4 p-3 bg-red-900/20 border border-red-500 rounded-lg">
+            <p className="text-red-300 text-sm">
+              ⚠️ Modo prueba - Datos simulados
+            </p>
+          </div>
+        ) : (
+          <div className="mt-4 p-3 bg-green-900/20 border border-green-500 rounded-lg">
+            <p className="text-green-300 text-sm">
+              ✅ Modo conectado a Supabase - Mostrando datos reales
             </p>
           </div>
         )}
