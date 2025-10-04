@@ -23,14 +23,10 @@ const EquippedBadgeDisplay = ({ equippedBadge, className = '' }) => {
 
   return (
     <div 
-      className={`inline-flex items-center space-x-1 bg-gradient-to-r from-gray-900/80 to-gray-800/80 border rounded-full px-2 py-1 shadow-lg ${getRarityStyles(badge.rareza)} ${className}`}
+      className={`inline-flex items-center justify-center bg-gradient-to-r from-gray-900/80 to-gray-800/80 border rounded-full p-1 shadow-lg ${getRarityStyles(badge.rareza)} ${className}`}
       title={`${badge.nombre} - ${badge.descripcion}`}
     >
-      <span className="text-sm">{badge.icono}</span>
-      <Crown className="h-3 w-3 text-yellow-400" />
-      <span className="text-xs font-medium text-white truncate max-w-20">
-        {badge.nombre}
-      </span>
+      <span className="text-lg animate-glow">{badge.icono}</span>
     </div>
   );
 };
