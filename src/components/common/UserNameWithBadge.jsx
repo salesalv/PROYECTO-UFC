@@ -50,8 +50,8 @@ const UserNameWithBadge = ({
   }
 
   return (
-    <div className={`flex items-center space-x-2 ${className}`}>
-      <span>{username}</span>
+    <div className={`flex items-start space-x-2 ${className}`}>
+      <span className="leading-tight">{username}</span>
       <EquippedBadgeDisplay 
         equippedBadge={equippedBadge} 
         className="flex-shrink-0"
