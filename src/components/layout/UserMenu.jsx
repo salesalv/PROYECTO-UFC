@@ -86,12 +86,12 @@ const UserMenu =() => {
             <div className="flex flex-col space-y-2 flex-1">
               {/* Nombre del usuario con insignia equipada */}
               <div className="flex flex-col space-y-1">
-                <div className="flex flex-col space-y-1">
+                <div className="flex items-center space-x-2">
                   <p className="text-lg font-bold text-white">{userData?.nombre_usuario || t('user.default')}</p>
                   {/* Mostrar insignia equipada si existe */}
                   <EquippedBadgeDisplay 
                     equippedBadge={equippedBadge} 
-                    className="self-start"
+                    className="flex-shrink-0"
                   />
                 </div>
                 <p className="text-xs text-gray-400">{userData?.correo || "-"}</p>

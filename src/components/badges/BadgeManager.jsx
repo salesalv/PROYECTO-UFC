@@ -14,10 +14,12 @@ import {
   obtenerInsigniasDisponibles 
 } from '@/services/insigniasService';
 import { useBadgePurchase } from '@/hooks/useBadgePurchase';
+import { useUser } from '@/context/UserContext';
 
 const BadgeManager = ({ userId }) => {
   const { t } = useTranslation();
   const { toast } = useToast();
+  const { refreshUser } = useUser();
   
   const [userBadges, setUserBadges] = useState([]);
   const [equippedBadge, setEquippedBadge] = useState(null);
@@ -82,6 +84,11 @@ const BadgeManager = ({ userId }) => {
       await loadEquippedBadge();
       await loadUserBadges();
       
+      // Refrescar el contexto del usuario para actualizar otras interfaces
+      if (refreshUser) {
+        refreshUser();
+      }
+      
       toast({
         title: "✨ Insignia equipada",
         description: `Has equipado la insignia ${userBadge?.insignias_catalogo?.nombre}`,
@@ -100,6 +107,11 @@ const BadgeManager = ({ userId }) => {
     try {
       await desequiparInsignia(userId);
       await loadEquippedBadge();
+      
+      // Refrescar el contexto del usuario para actualizar otras interfaces
+      if (refreshUser) {
+        refreshUser();
+      }
       
       toast({
         title: "Insignia desequipada",

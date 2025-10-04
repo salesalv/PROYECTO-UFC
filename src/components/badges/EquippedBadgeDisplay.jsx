@@ -26,7 +26,7 @@ const EquippedBadgeDisplay = ({ equippedBadge, className = '' }) => {
       className={`inline-flex items-center justify-center bg-gradient-to-r from-gray-900/80 to-gray-800/80 border rounded-full p-1 shadow-lg ${getRarityStyles(badge.rareza)} ${className}`}
       title={`${badge.nombre} - ${badge.descripcion}`}
     >
-      <span className="text-lg animate-glow">{badge.icono}</span>
+      <span className="text-sm animate-glow">{badge.icono}</span>
     </div>
   );
 };
