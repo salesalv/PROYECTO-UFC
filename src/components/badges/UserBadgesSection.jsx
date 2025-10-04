@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Crown, Users, Gift, Zap } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { useUser } from '@/context/UserContext';
+import API_BASE_URL from '@/utils/apiConfig';
 
 const UserBadgesSection = ({ userId }) => {
   const { refreshUser } = useUser();
@@ -16,15 +17,22 @@ const UserBadgesSection = ({ userId }) => {
 
   useEffect(() => {
     if (userId) {
-      loadBadges();
-      loadEquippedBadge();
+      const loadData = async () => {
+        setLoading(true);
+        await Promise.all([
+          loadBadges(),
+          loadEquippedBadge()
+        ]);
+        setLoading(false);
+      };
+      loadData();
     }
   }, [userId]);
 
   const loadBadges = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('/api/recompensas/usuario/insignias', {
+      const response = await fetch(`${API_BASE_URL}/recompensas/usuario/insignias`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -32,23 +40,26 @@ const UserBadgesSection = ({ userId }) => {
       const data = await response.json();
       if (data.success) {
         setInsignias(data.insignias);
+      } else {
+        console.error('Error obteniendo insignias:', data.error);
       }
     } catch (error) {
       console.error('Error cargando insignias:', error);
     }
   };
 
+
   const loadEquippedBadge = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('/api/recompensas/usuario/insignia-equipada', {
+      const response = await fetch(`${API_BASE_URL}/recompensas/usuario/insignia-equipada`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
       const data = await response.json();
       if (data.success) {
-        setInsigniaEquipada(data.insigniaEquipada);
+        setInsigniaEquipada(data.insigniaEquipada || null);
       }
     } catch (error) {
       console.error('Error cargando insignia equipada:', error);
@@ -59,7 +70,7 @@ const UserBadgesSection = ({ userId }) => {
     setEquipando(true);
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('/api/recompensas/equipar-insignia', {
+      const response = await fetch(`${API_BASE_URL}/recompensas/equipar-insignia`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -95,7 +106,7 @@ const UserBadgesSection = ({ userId }) => {
     setEquipando(true);
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('/api/recompensas/desequipar-insignia', {
+      const response = await fetch(`${API_BASE_URL}/recompensas/desequipar-insignia`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`

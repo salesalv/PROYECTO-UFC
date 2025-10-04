@@ -15,7 +15,7 @@ import { useTranslation } from "react-i18next";
 import UserBadgesSection from "@/components/badges/UserBadgesSection";
 
 const UserProfilePage = () => {
-  const { user: userData, loading, refreshUser } = useUser();
+  const { user, loading, refreshUser } = useUser();
   const [notifications, setNotifications] = useState(false);
   const [theme, setTheme] = useState('dark');
   const [privacy, setPrivacy] = useState('public');
@@ -32,24 +32,10 @@ const UserProfilePage = () => {
   }, [selectedLanguage, i18n]);
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      const user = JSON.parse(localStorage.getItem('user'));
-      if (!user) return;
-      // Buscar datos personalizados en la tabla 'usuario'
-      const { data, error } = await supabase
-        .from('usuario')
-        .select('*')
-        .eq('correo', user.email)
-        .single();
-      if (data) {
-        setUserData(data);
-        setNotifications(data.notificaciones);
-        setTheme(data.tema);
-        setEditableUsername(data.nombre_usuario);
-      }
-    };
-    fetchUserData();
-  }, []);
+    if (user) {
+      setEditableUsername(user.nombre_usuario || '');
+    }
+  }, [user]);
 
   const handleAvatarChange = (e) => {
     const file = e.target.files[0];
@@ -61,13 +47,13 @@ const UserProfilePage = () => {
 
   const handleEditToggle = async () => {
     if (isEditing) {
-      let avatarUrl = userData?.avatar;
+      let avatarUrl = user?.avatar;
       let updateError = null;
 
       if (avatarFile) {
         // Subir imagen a Supabase Storage
         const fileExt = avatarFile.name.split('.').pop();
-        const fileName = `${userData.id}_${Date.now()}.${fileExt}`;
+        const fileName = `${user.id}_${Date.now()}.${fileExt}`;
         const { data: storageData, error: storageError } = await supabase.storage
           .from('avatars')
           .upload(fileName, avatarFile, { upsert: true });
@@ -83,7 +69,7 @@ const UserProfilePage = () => {
       const { error } = await supabase
         .from('usuario')
         .update({ nombre_usuario: editableUsername, avatar: avatarUrl })
-        .eq('correo', userData.correo);
+        .eq('correo', user.correo);
 
       if (error) {
         alert('Error al guardar los cambios: ' + error.message);
@@ -95,7 +81,7 @@ const UserProfilePage = () => {
         if (refreshUser) refreshUser();
       }
     } else {
-      setEditableUsername(userData?.nombre_usuario || '');
+      setEditableUsername(user?.nombre_usuario || '');
       setIsEditing(true);
     }
   };
@@ -117,7 +103,7 @@ const UserProfilePage = () => {
                   <img  
                     className="w-32 h-32 rounded-full mx-auto border-4 border-red-600 object-cover"
                     alt="User Avatar"
-                    src={avatarPreview || userData?.avatar || "/pain.png"} />
+                    src={avatarPreview || user?.avatar || "/pain.png"} />
                   <Button variant="ghost" size="icon" className="absolute bottom-0 right-0 bg-gray-700/80 rounded-full hover:bg-red-600" onClick={() => fileInputRef.current.click()}>
                     <Edit className="w-4 h-4" />
                   </Button>
@@ -132,10 +118,10 @@ const UserProfilePage = () => {
                   )}
                 </div>
                 <CardTitle className="text-3xl font-black uppercase tracking-wider text-red-500">
-                  {userData?.nombre_usuario || t('profile.username')}
+                  {user?.nombre_usuario || t('profile.username')}
                 </CardTitle>
                 <CardDescription className="text-gray-300">
-                  {t('profile.member_since')} {userData ? new Date(userData.fecha_registro).toLocaleDateString() : "-"}
+                  {t('profile.member_since')} {user ? new Date(user.fecha_registro).toLocaleDateString() : "-"}
                 </CardDescription>
                 <div className="flex justify-center mt-4">
                   <Select value={selectedLanguage} onValueChange={setSelectedLanguage}>
@@ -162,7 +148,7 @@ const UserProfilePage = () => {
                         onChange={(e) => setEditableUsername(e.target.value)}
                       />
                     ) : (
-                      <p className="font-semibold text-white">{userData?.nombre_usuario}</p>
+                      <p className="font-semibold text-white">{user?.nombre_usuario}</p>
                     )}
                   </div>
                 </div>
@@ -170,7 +156,7 @@ const UserProfilePage = () => {
                   <Mail className="w-6 h-6 text-red-500" />
                   <div>
                     <p className="text-sm text-gray-300">{t('profile.email')}</p>
-                    <p className="font-semibold text-white">{userData?.correo}</p>
+                    <p className="font-semibold text-white">{user?.correo}</p>
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
@@ -178,14 +164,14 @@ const UserProfilePage = () => {
                     <Coins className="w-6 h-6 text-yellow-400" />
                     <div>
                       <p className="text-sm text-gray-300">Monedas</p>
-                      <p className="font-semibold text-xl text-white">{userData?.saldo?.toLocaleString() ?? 0}</p>
+                      <p className="font-semibold text-xl text-white">{user?.saldo?.toLocaleString() ?? 0}</p>
                     </div>
                   </div>
                   <div className="flex items-center space-x-4 p-4 bg-gray-900/50 rounded-lg border border-gray-700">
                     <Trophy className="w-6 h-6 text-yellow-500" />
                     <div>
                       <p className="text-sm text-gray-300">{t('profile.ranking')}</p>
-                      <p className="font-semibold text-xl text-white">{userData?.rango ?? '-'}</p>
+                      <p className="font-semibold text-xl text-white">{user?.rango ?? '-'}</p>
                     </div>
                   </div>
                 </div>
@@ -203,7 +189,7 @@ const UserProfilePage = () => {
 
           {/* Columna Lateral - Insignias */}
           <div className="md:col-span-1">
-            <UserBadgesSection userId={userData?.id} />
+            <UserBadgesSection userId={user?.id} />
           </div>
         </div>
       </motion.div>
