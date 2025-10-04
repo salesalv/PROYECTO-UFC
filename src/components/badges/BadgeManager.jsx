@@ -36,6 +36,14 @@ const BadgeManager = ({ userId }) => {
     }
   }, [userId, isSheetOpen]);
 
+  // Refrescar insignias cuando cambian las props del user
+  useEffect(() => {
+    if (userId) {
+      loadUserBadges();
+      loadEquippedBadge();
+    }
+  }, [userId]);
+
   const loadUserBadges = async () => {
     try {
       const badges = await obtenerInsigniasUsuario(userId);
@@ -67,14 +75,16 @@ const BadgeManager = ({ userId }) => {
 
   const handleEquipBadge = async (badgeId) => {
     try {
+      // Buscar la insignia antes de equiparla para obtener el nombre
+      const userBadge = userBadges.find(b => b.insignias_catalogo?.id === badgeId);
+      
       await equiparInsignia(userId, badgeId);
       await loadEquippedBadge();
       await loadUserBadges();
       
-      const badge = userBadges.find(b => b.insignias_catalogo?.id === badgeId);
       toast({
-        title: "Insignia equipada",
-        description: `Has equipado la insignia ${badge.insignias_catalogo?.nombre}`,
+        title: "✨ Insignia equipada",
+        description: `Has equipado la insignia ${userBadge?.insignias_catalogo?.nombre}`,
       });
     } catch (error) {
       console.error('Error equipando insignia:', error);
@@ -167,36 +177,53 @@ const BadgeManager = ({ userId }) => {
         </CardHeader>
         <CardContent>
           {equippedBadge ? (
-            <div className="flex items-center justify-between p-4 bg-gray-800/50 rounded-lg border border-gray-600">
-              <div className="flex items-center space-x-4">
-                <div className="text-3xl">
-                  {equippedBadge.insignias_catalogo?.icono || '🏆'}
-                </div>
-                <div>
-                  <div className="flex items-center space-x-2 mb-1">
-                    <h3 className="font-semibold text-white">
-                      {equippedBadge.insignias_catalogo?.nombre}
-                    </h3>
-                    <Badge className={getBadgeRarityStyles(equippedBadge.insignias_catalogo?.rareza).badge}>
-                      {getBadgeRarityIcon(equippedBadge.insignias_catalogo?.rareza)}
-                      <span className="ml-1 capitalize">
-                        {equippedBadge.insignias_catalogo?.rareza}
-                      </span>
-                    </Badge>
+            <div className="group relative p-4 bg-gradient-to-r from-green-900/30 to-emerald-900/20 rounded-xl border-2 border-green-500 shadow-lg">
+              {/* Efecto de brillo animado */}
+              <div className="absolute inset-0 bg-gradient-to-r from-green-500/10 via-emerald-500/5 to-green-500/10 rounded-xl opacity-50 animate-pulse"></div>
+              
+              <div className="relative z-10">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-4">
+                    <div className="text-4xl transform transition-transform group-hover:scale-110 animate-glow">
+                      {equippedBadge.insignias_catalogo?.icono || '🏆'}
+                    </div>
+                    <div>
+                      <div className="flex items-center space-x-2 mb-1">
+                        <h3 className="font-bold text-white text-lg">
+                          {equippedBadge.insignias_catalogo?.nombre}
+                        </h3>
+                        <Badge className="bg-green-500 text-white text-xs animate-pulse shadow-lg">
+                          <Crown className="h-3 w-3 mr-1" />
+                          <span>Equipada</span>
+                        </Badge>
+                      </div>
+                      <p className="text-sm text-gray-300 mb-2">
+                        {equippedBadge.insignias_catalogo?.descripcion}
+                      </p>
+                      <div className="flex items-center space-x-2">
+                        <Badge className={`${getBadgeRarityStyles(equippedBadge.insignias_catalogo?.rareza).badge} text-xs`}>
+                          {getBadgeRarityIcon(equippedBadge.insignias_catalogo?.rareza)}
+                          <span className="ml-1 capitalize">
+                            {equippedBadge.insignias_catalogo?.rareza}
+                          </span>
+                        </Badge>
+                        <span className="text-xs text-yellow-400">
+                          Comprada por {equippedBadge.precio_pagado} monedas
+                        </span>
+                      </div>
+                    </div>
                   </div>
-                  <p className="text-sm text-gray-400">
-                    {equippedBadge.insignias_catalogo?.descripcion}
-                  </p>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleUnequipBadge}
+                    className="border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition-all duration-300 hover:shadow-lg"
+                  >
+                    <Crown className="h-4 w-4 mr-1" />
+                    Desequipar
+                  </Button>
                 </div>
               </div>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleUnequipBadge}
-                className="border-red-500 text-red-500 hover:bg-red-500 hover:text-white"
-              >
-                Desequipar
-              </Button>
             </div>
           ) : (
             <div className="text-center py-8 text-gray-400">
@@ -293,46 +320,92 @@ const BadgeManager = ({ userId }) => {
               <p className="text-sm mt-2">Compra tu primera insignia para empezar</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-64 overflow-y-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-80 overflow-y-auto">
               {userBadges.map((userBadge) => {
                 const badge = userBadge.insignias_catalogo;
                 const isEquipped = userBadge.equipada;
                 
                 return (
                   <div 
-                    key={userBadge.id}
-                    className={`p-3 rounded-lg border ${
+                    key={`${userBadge.id}-${badge?.id}`}
+                    className={`group relative p-4 rounded-xl border-2 transition-all duration-300 hover:scale-105 hover:shadow-lg ${
                       isEquipped 
-                        ? 'bg-green-900/30 border-green-600' 
-                        : 'bg-gray-800/50 border-gray-600'
+                        ? 'bg-gradient-to-r from-green-900/30 to-emerald-900/20 border-green-500 shadow-green-500/20' 
+                        : 'bg-gradient-to-r from-gray-800/50 to-gray-800/30 border-gray-600 hover:border-gray-500'
                     } ${getBadgeRarityStyles(badge?.rareza).border}`}
                   >
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center space-x-2">
-                        <span className="text-lg">{badge?.icono}</span>
-                        <div className="flex flex-col">
-                          <span className="font-medium text-white text-sm">{badge?.nombre}</span>
-                          {isEquipped && (
-                            <Badge className="bg-green-600 text-white text-xs">
-                              Equipada
-                            </Badge>
-                          )}
+                    {/* Efecto de brillo para insignias equipadas */}
+                    {isEquipped && (
+                      <div className="absolute inset-0 bg-gradient-to-r from-green-500/10 via-emerald-500/5 to-green-500/10 rounded-xl opacity-50 animate-pulse"></div>
+                    )}
+                    
+                    <div className="relative z-10">
+                      {/* Header de la insignia */}
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="flex items-center space-x-3">
+                          <div className={`text-3xl transform transition-transform group-hover:scale-110 ${isEquipped ? 'animate-glow' : ''}`}>
+                            {badge?.icono}
+                          </div>
+                          <div className="flex flex-col">
+                            <h3 className="font-bold text-white text-sm leading-tight">{badge?.nombre}</h3>
+                            <p className="text-xs text-gray-400 mt-1">{badge?.descripcion}</p>
+                          </div>
+                        </div>
+                        
+                        {/* Indicador de rareza */}
+                        <Badge className={`${getBadgeRarityStyles(badge?.rareza).badge} text-xs px-2 py-1`}>
+                          {getBadgeRarityIcon(badge?.rareza)}
+                          <span className="ml-1 capitalize">{badge?.rareza}</span>
+                        </Badge>
+                      </div>
+
+                      {/* Badge de equipada */}
+                      {isEquipped && (
+                        <div className="absolute top-2 right-2">
+                          <Badge className="bg-green-500 text-white text-xs px-2 py-1 animate-pulse shadow-lg">
+                            <span className="flex items-center space-x-1">
+                              <Crown className="h-3 w-3" />
+                              <span>Equipada</span>
+                            </span>
+                          </Badge>
+                        </div>
+                      )}
+
+                      {/* Información de compra */}
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="text-xs text-gray-400">
+                          Comprada: {new Date(userBadge.fecha_compra).toLocaleDateString('es-ES')}
+                        </div>
+                        <div className="flex items-center space-x-1 text-yellow-400">
+                          <Coins className="h-3 w-3" />
+                          <span className="text-xs font-semibold">{userBadge.precio_pagado}</span>
                         </div>
                       </div>
-                      <Badge className={getBadgeRarityStyles(badge?.rareza).badge}>
-                        {getBadgeRarityIcon(badge?.rareza)}
-                      </Badge>
+
+                      {/* Botones de acción */}
+                      <div className="flex space-x-2">
+                        {isEquipped ? (
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="flex-1 border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition-colors text-xs"
+                            onClick={handleUnequipBadge}
+                          >
+                            <Crown className="h-3 w-3 mr-1" />
+                            Desequipar
+                          </Button>
+                        ) : (
+                          <Button
+                            size="sm"
+                            className="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-xs transition-all duration-300 hover:shadow-lg"
+                            onClick={() => handleEquipBadge(badge.id)}
+                          >
+                            <Crown className="h-3 w-3 mr-1" />
+                            Equipar
+                          </Button>
+                        )}
+                      </div>
                     </div>
-                    {!isEquipped && (
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        className="w-full text-xs"
-                        onClick={() => handleEquipBadge(badge.id)}
-                      >
-                        Equipar
-                      </Button>
-                    )}
                   </div>
                 );
               })}

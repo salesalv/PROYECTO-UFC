@@ -14,12 +14,25 @@ import supabase from "@/db";
 import { useUser } from "@/context/UserContext";
 import { useTranslation } from 'react-i18next';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useEquippedBadge } from '@/hooks/useEquippedBadge';
+import EquippedBadgeDisplay from '@/components/badges/EquippedBadgeDisplay';
 
-const UserMenu = () => {
+const UserMenu =() => {
   const navigate = useNavigate();
   const { user: userData, loading, refreshUser } = useUser();
   const { t, i18n } = useTranslation();
   const [selectedLanguage, setSelectedLanguage] = useState(i18n.language || 'es');
+  
+  // Hook para obtener la insignia equipada
+  const { equippedBadge, loading: badgeLoading } = useEquippedBadge(userData?.id);
+
+  // Refrescar datos del usuario cuando se abre el menú
+  const handleOpenChange = (open) => {
+    if (open && refreshUser) {
+      // Refrescar datos cuando se abre el menú
+      refreshUser();
+    }
+  };
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -51,7 +64,7 @@ const UserMenu = () => {
   };
 
   return (
-    <DropdownMenu>
+    <DropdownMenu onOpenChange={handleOpenChange}>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" size="icon" className="relative">
           <UserCircle className="h-8 w-8" />
@@ -70,9 +83,20 @@ const UserMenu = () => {
                 {userData?.nivel || 1}
               </div>
             </div>
-            <div className="flex flex-col space-y-1">
-              <p className="text-lg font-bold text-white">{userData?.nombre_usuario || t('user.default')}</p>
-              <p className="text-xs text-gray-400">{userData?.correo || "-"}</p>
+            <div className="flex flex-col space-y-2 flex-1">
+              {/* Nombre del usuario con insignia equipada */}
+              <div className="flex flex-col space-y-1">
+                <div className="flex flex-col space-y-1">
+                  <p className="text-lg font-bold text-white">{userData?.nombre_usuario || t('user.default')}</p>
+                  {/* Mostrar insignia equipada si existe */}
+                  <EquippedBadgeDisplay 
+                    equippedBadge={equippedBadge} 
+                    className="self-start"
+                  />
+                </div>
+                <p className="text-xs text-gray-400">{userData?.correo || "-"}</p>
+              </div>
+              
               <div className="flex items-center space-x-2">
                 <Coins className="h-4 w-4 text-yellow-400" />
                 <span className="text-sm font-medium text-yellow-400">{userData?.saldo?.toLocaleString() || 0} Monedas</span>
@@ -112,9 +136,9 @@ const UserMenu = () => {
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
-            <Link to="/rewards" className="flex items-center text-gray-300 hover:text-white hover:bg-gray-800/50 rounded-md">
+            <Link to="/badges" className="flex items-center text-gray-300 hover:text-white hover:bg-gray-800/50 rounded-md">
               <Crown className="mr-2 h-4 w-4 text-purple-400" />
-              <span>{t('nav.rewards')}</span>
+              <span>Insignias</span>
             </Link>
           </DropdownMenuItem>
           <div className="mt-3 px-2">
