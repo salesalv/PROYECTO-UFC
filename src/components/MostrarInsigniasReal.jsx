@@ -15,6 +15,7 @@ const MostrarInsigniasReal = () => {
   const cargarInsigniasReales = async () => {
     try {
       console.log('🔍 Cargando insignias desde Supabase...');
+      console.log('🕐 Timestamp:', new Date().toLocaleTimeString());
       
       // Buscar recompensas del usuario Rugal44
       const { data: recompensas, error: errorRecompensas } = await supabase
@@ -61,6 +62,7 @@ const MostrarInsigniasReal = () => {
           setInsigniasReales(insigniasData);
           setModoPrueba(false);
           console.log('🏆 Insignias reales cargadas:', insigniasData);
+          console.log('✅ Modo Supabase activado - datos actualizados');
         }
       } else {
         console.log('❌ No se encontraron recompensas');
