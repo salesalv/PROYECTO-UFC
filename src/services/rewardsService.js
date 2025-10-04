@@ -1,4 +1,4 @@
-import supabase from "@/db";
+import supabase from "../db.js";
 
 /**
  * Catálogo de recompensas disponibles

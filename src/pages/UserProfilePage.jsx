@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { User, Mail, Calendar, Award, Edit, Trophy, Bell, Shield, Coins } from "lucide-react";
+import { User, Mail, Calendar, Award, Edit, Trophy, Bell, Shield, Coins, Crown } from "lucide-react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -12,9 +12,7 @@ import { Input } from "@/components/ui/input";
 import supabase from "@/db";
 import { useUser } from "@/context/UserContext";
 import { useTranslation } from "react-i18next";
-import MainLayout from "@/components/layout/MainLayout";
-import MostrarInsignias from "@/components/MostrarInsigniasReal";
-import InsigniasDebugger from "@/components/InsigniasDebugger";
+import UserBadgesSection from "@/components/badges/UserBadgesSection";
 
 const UserProfilePage = () => {
   const { user: userData, loading, refreshUser } = useUser();
@@ -110,15 +108,9 @@ const UserProfilePage = () => {
         transition={{ duration: 0.5 }}
         className="container mx-auto max-w-4xl"
       >
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           {/* Columna Principal */}
-          <div className="md:col-span-2">
-            {/* Componente Simple de Insignias */}
-            <MostrarInsignias />
-            
-            {/* Debugger temporal */}
-            <InsigniasDebugger />
-
+          <div className="md:col-span-3">
             <Card className="bg-black/70 border border-gray-800 backdrop-blur-sm shadow-lg">
               <CardHeader className="text-center">
                 <div className="relative inline-block mb-4">
@@ -209,7 +201,10 @@ const UserProfilePage = () => {
             </Card>
           </div>
 
-          {/* Columna Lateral eliminada (Notificaciones y Seguridad) */}
+          {/* Columna Lateral - Insignias */}
+          <div className="md:col-span-1">
+            <UserBadgesSection userId={userData?.id} />
+          </div>
         </div>
       </motion.div>
     </div>

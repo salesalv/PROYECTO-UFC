@@ -13,7 +13,6 @@ import {
 } from '@/services/rewardsService';
 import RewardCard from '@/components/rewards/RewardCard';
 import UserRewardsList from '@/components/rewards/UserRewardsList';
-import RecompensasBackendTest from '@/components/RecompensasBackendTest';
 import { useToast } from '@/components/ui/use-toast';
 
 const RewardsPage = () => {
@@ -29,7 +28,6 @@ const RewardsPage = () => {
     totalGastado: 0,
     promedioPorRecompensa: 0
   });
-  const [showBackendTest, setShowBackendTest] = useState(false);
 
   const categories = [
     { id: 'all', name: t('rewards.all_categories'), icon: Gift },
@@ -147,24 +145,10 @@ const RewardsPage = () => {
             <Crown className="h-8 w-8 text-yellow-400" />
             <h1 className="text-4xl font-bold text-white">{t('rewards.title')}</h1>
           </div>
-          <p className="text-gray-400 text-lg max-w-2xl mx-auto mb-4">
+          <p className="text-gray-400 text-lg max-w-2xl mx-auto">
             {t('rewards.subtitle')}
           </p>
-          <Button
-            variant="outline"
-            onClick={() => setShowBackendTest(!showBackendTest)}
-            className="border-gray-600 text-gray-300 hover:bg-gray-800"
-          >
-            {showBackendTest ? 'Ocultar' : 'Mostrar'} Test Backend
-          </Button>
         </div>
-
-        {/* Backend Testing Component */}
-        {showBackendTest && (
-          <div className="mb-8">
-            <RecompensasBackendTest />
-          </div>
-        )}
 
         {/* Current Balance */}
         <Card className="mb-8 bg-gradient-to-r from-gray-800 to-gray-900 border-yellow-500/70 shadow-lg">

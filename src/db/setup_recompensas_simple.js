@@ -1,95 +1,22 @@
 import supabase from '../db.js';
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 
 /**
  * Configura la base de datos para el sistema de recompensas e insignias
+ * Versión simplificada que funciona directamente con la API de Supabase
  */
 async function setupRecompensas() {
   console.log('🚀 Configurando sistema de recompensas...');
 
   try {
-    // Leer el archivo SQL de recompensas
-    const sqlPath = path.join(__dirname, 'tables_recompensas.sql');
-    const sqlContent = fs.readFileSync(sqlPath, 'utf8');
-
-    // Ejecutar el script SQL para crear las tablas
-    const { error } = await supabase.rpc('exec_sql', { sql_query: sqlContent });
-
-    if (error) {
-      console.error('Error ejecutando SQL:', error);
-      
-      // Si el RPC no existe, intentar ejecutar las sentencias individualmente
-      await ejecutarSentenciasIndividuales();
-    } else {
-      console.log('✅ Tablas de recompensas creadas exitosamente');
-    }
-
-    // Verificar que las tablas existen
+    // Verificar si ya existen las tablas
     await verificarTablas();
-
+    
+    // Insertar datos iniciales del catálogo
+    await insertarDatosIniciales();
+    
+    console.log('✅ Sistema de recompensas configurado exitosamente');
   } catch (error) {
     console.error('Error configurando recompensas:', error);
-  }
-}
-
-/**
- * Ejecuta las sentencias SQL individualmente si el RPC no funciona
- */
-async function ejecutarSentenciasIndividuales() {
-  console.log('📝 Ejecutando sentencias SQL individualmente...');
-  
-  const sentencias = [
-    `CREATE TABLE IF NOT EXISTS recompensas_catalogo (
-      id VARCHAR(100) PRIMARY KEY,
-      categoria VARCHAR(50) NOT NULL,
-      tipo VARCHAR(50) NOT NULL,
-      nombre VARCHAR(100) NOT NULL,
-      descripcion TEXT,
-      precio DECIMAL(10,2) NOT NULL,
-      icono VARCHAR(10),
-      rareza VARCHAR(20) DEFAULT 'comun',
-      disponible BOOLEAN DEFAULT TRUE,
-      limitada BOOLEAN DEFAULT FALSE,
-      fecha_limite DATE NULL,
-      contenido JSONB NULL,
-      beneficios JSONB NULL,
-      orden INTEGER DEFAULT 0,
-      creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-
-    )`,
-    `CREATE TABLE IF NOT EXISTS recompensas_usuario (
-      id SERIAL PRIMARY KEY,
-      usuario_id INTEGER NOT NULL REFERENCES usuario(id) ON DELETE CASCADE,
-      recompensa_id VARCHAR(100) NOT NULL REFERENCES recompensas_catalogo(id) ON DELETE CASCADE,
-      fecha_canje TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-      precio_pagado DECIMAL(10,2) NOT NULL,
-      equipado BOOLEAN DEFAULT FALSE,
-      UNIQUE(usuario_id, recompensa_id)
-    )`,
-    `CREATE TABLE IF NOT EXISTS insignias_equipadas (
-      id SERIAL PRIMARY KEY,
-      usuario_id INTEGER UNIQUE REFERENCES usuario(id) ON DELETE CASCADE,
-      recompensa_id VARCHAR(100) REFERENCES recompensas_catalogo(id) ON DELETE CASCADE,
-      fecha_equipado TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-      activo BOOLEAN DEFAULT TRUE
-    )`
-  ];
-
-  for (const sentencia of sentencias) {
-    try {
-      const { error } = await supabase.rpc('sql_query', { query: sentencia });
-      if (error) {
-        console.warn('Error ejecutando sentencia:', error.message);
-      }
-    } catch (err) {
-      console.warn('Error ejecutando sentencia:', err.message);
-    }
   }
 }
 
@@ -109,7 +36,12 @@ async function verificarTablas() {
         .limit(1);
       
       if (error) {
-        console.warn(`⚠️  Tabla ${tabla} no encontrada:`, error.message);
+        console.warn(`⚠️  Tabla ${tabla} no encontrada o no accesible:`, error.message);
+        
+        // Solo si es error de tabla no encontrada
+        if (error.message.includes('relation') || error.message.includes('does not exist')) {
+          console.log(`📝 Después de crear la tabla ${tabla}, este script podrá insertar los datos`);
+        }
       } else {
         console.log(`✅ Tabla ${tabla} existe y es accesible`);
       }
@@ -163,6 +95,7 @@ async function insertarDatosIniciales() {
       disponible: true,
       orden: 3
     },
+    // Insignias Especiales
     {
       id: 'badge_cinturon',
       categoria: 'insignias',
@@ -211,6 +144,7 @@ async function insertarDatosIniciales() {
       disponible: true,
       orden: 7
     },
+    // Insignias Legendarias
     {
       id: 'badge_campeon_octubre_2026',
       categoria: 'insignias',
@@ -235,23 +169,70 @@ async function insertarDatosIniciales() {
       
       if (error) {
         console.warn(`Error insertando recompensa ${recompensa.id}:`, error.message);
+      } else {
+        console.log(`✅ Recompensa ${recompensa.id} insertada/actualizada`);
       }
     } catch (err) {
       console.warn(`Error insertando recompensa ${recompensa.id}:`, err.message);
     }
   }
   
-  console.log('✅ Datos iniciales insertados');
+  console.log('🎉 Datos iniciales procesados');
+}
+
+/**
+ * Función auxiliar para mostrar el estado del sistema
+ */
+async function mostrarEstado() {
+  console.log('\n📊 Estado del sistema de recompensas:');
+  
+  try {
+    // Contar recompensas disponibles
+    const { data: recompensas, error: recompensasError } = await supabase
+      .from('recompensas_catalogo')
+      .select('id', { count: 'exact' })
+      .eq('disponible', true);
+    
+    if (!recompensasError && recompensas) {
+      console.log(`  📋 Recompensas disponibles: ${recompensas.length}`);
+    }
+    
+    // Contar usuarios con recompensas
+    const { data: usuariosConRecompensas, error: usuariosError } = await supabase
+      .from('recompensas_usuario')
+      .select('usuario_id', { count: 'exact' });
+    
+    if (!usuariosError && usuariosConRecompensas) {
+      console.log(`  👥 Usuarios con recompensas: ${usuariosConRecompensas.length}`);
+    }
+    
+    // Insignias equipadas
+    const { data: insigniasEquipadas, error: insigniasError } = await supabase
+      .from('insignias_equipadas')
+      .select('id', { count: 'exact' })
+      .eq('activo', true);
+    
+    if (!insigniasError && insigniasEquipadas) {
+      console.log(`  🏆 Insignias equipadas: ${insigniasEquipadas.length}`);
+    }
+    
+  } catch (error) {
+    console.warn('Error obteniendo estadísticas:', error.message);
+  }
 }
 
 // Función principal
 async function main() {
   try {
     await setupRecompensas();
-    await insertarDatosIniciales();
-    console.log('🎉 Sistema de recompensas configurado exitosamente');
+    await mostrarEstado();
+    console.log('\n🎉 Proceso completado!');
+    console.log('💡 Para usar el sistema:');
+    console.log('   1. Las insignias ya están disponibles en /recompensas');
+    console.log('   2. Los usuarios pueden comprarlas con sus monedas');
+    console.log('   3. Las insignias aparecen automáticamente en el perfil');
   } catch (error) {
-    console.error('💥 Error configurando sistema de recompensas:', error);
+    console.error('💥 Error en el proceso:', error);
   }
 }
 

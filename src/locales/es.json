@@ -8,20 +8,6 @@
     "ranking": "Ranking",
     "language": "Idioma"
   },
-  "insignias": {
-    "title": "Insignias",
-    "no_badges": "No tienes insignias aún",
-    "no_badges_description": "¡Comienza a coleccionar insignias!",
-    "get_badges": "Obtener Insignias",
-    "change_badge": "Cambiar Insignia",
-    "equipped": "Equipada",
-    "obtained": "Obtenida",
-    "buy_more": "Comprar Más",
-    "success": {
-      "title": "¡Éxito!",
-      "equipped": "Insignia equipada exitosamente"
-    }
-  },
   "main_card": "Cartelera Estelar",
   "prelims": "Preliminares",
   "vs": "VS",
@@ -364,7 +350,6 @@
     "loading_rewards": "Error al cargar las recompensas",
     "redeem_failed": "Error al canjear la recompensa. Inténtalo de nuevo."
   },
-  "loading": "Cargando...",
   "rewards": {
     "title": "Catálogo de Recompensas",
     "subtitle": "Canjea tus monedas virtuales por recompensas exclusivas y contenido premium",

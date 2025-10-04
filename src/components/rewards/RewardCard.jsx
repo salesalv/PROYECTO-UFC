@@ -155,7 +155,7 @@ const RewardCard = ({ recompensa, onRedeem, isOwned, isLoading, userBalance }) =
           ) : isOwned ? (
             <div className="flex items-center space-x-2">
               <Crown className="h-4 w-4" />
-              <span>{t('rewards.owned')}</span>
+              <span>{recompensa.tipo === 'badge' ? 'Insignia Obtenida' : t('rewards.owned')}</span>
             </div>
           ) : !canAfford ? (
             <div className="flex items-center space-x-2">
@@ -165,7 +165,7 @@ const RewardCard = ({ recompensa, onRedeem, isOwned, isLoading, userBalance }) =
           ) : (
             <div className="flex items-center space-x-2">
               <Coins className="h-4 w-4" />
-              <span>{t('rewards.redeem')}</span>
+              <span>{recompensa.tipo === 'badge' ? 'Comprar Insignia' : t('rewards.redeem')}</span>
             </div>
           )}
         </Button>
