@@ -33,6 +33,8 @@ export default async function handler(req, res) {
   
   // Obtener información del usuario desde Supabase usando el token
   try {
+    console.log('🔑 Token recibido:', token ? 'Presente' : 'Ausente');
+    
     const userResponse = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
       method: 'GET',
       headers: {
@@ -41,6 +43,8 @@ export default async function handler(req, res) {
         'Content-Type': 'application/json',
       },
     });
+    
+    console.log('📡 Respuesta de Supabase auth:', userResponse.status);
     
     if (userResponse.ok) {
       const userData = await userResponse.json();
@@ -74,7 +78,11 @@ export default async function handler(req, res) {
       }
     }
   } catch (error) {
-    console.warn('No se pudo obtener usuario del token:', error);
+    console.error('❌ Error obteniendo usuario del token:', error);
+    return res.status(401).json({ 
+      success: false, 
+      error: 'Error de autenticación' 
+    });
   }
 
   try {
