@@ -43,17 +43,24 @@ async function apiRequest(endpoint, options = {}) {
   };
 
   try {
+    console.log('🌐 Haciendo petición a:', url);
+    console.log('🔑 Token presente:', !!token);
+    
     const response = await fetch(url, config);
+    
+    console.log('📡 Respuesta recibida:', response.status, response.statusText);
     
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
+      console.error('❌ Error en respuesta:', errorData);
       throw new Error(errorData.error || `Error ${response.status}: ${response.statusText}`);
     }
 
     const data = await response.json();
+    console.log('✅ Datos recibidos:', data);
     return data;
   } catch (error) {
-    console.error(`Error en API request ${endpoint}:`, error);
+    console.error(`❌ Error en API request ${endpoint}:`, error);
     throw error;
   }
 }
