@@ -65,10 +65,10 @@ const CoinPurchaseCard = ({ paquete, onSelect, isSelected, isLoading }) => {
       <CardContent className="text-center">
         <div className="mb-4">
           <div className="text-2xl font-bold text-white">
-            ${paquete.precio.toFixed(2)}
+            ${paquete.precio < 1 ? paquete.precio.toFixed(4) : paquete.precio.toFixed(2)}
           </div>
           <div className="text-sm text-gray-200">
-            {t('coins.per_coin')}: ${(paquete.precio / paquete.monedas).toFixed(3)}
+            {t('coins.per_coin')}: ${(paquete.precio / paquete.monedas).toFixed(6)}
           </div>
         </div>
 

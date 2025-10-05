@@ -117,7 +117,7 @@ export const PAQUETES_MONEDAS = [
     id: 'basico',
     nombre: 'Paquete Básico',
     monedas: 100,
-    precio: 0.0007,
+    precio: 0.01,
     descuento: 0,
     popular: false,
     descripcion: 'Perfecto para empezar'
