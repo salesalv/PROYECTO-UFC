@@ -79,10 +79,7 @@ export default async function handler(req, res) {
     }
   } catch (error) {
     console.error('❌ Error obteniendo usuario del token:', error);
-    return res.status(401).json({ 
-      success: false, 
-      error: 'Error de autenticación' 
-    });
+    // Continuar con valores por defecto si hay error de autenticación
   }
 
   try {
