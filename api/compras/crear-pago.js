@@ -26,31 +26,50 @@ export default async function handler(req, res) {
     return res.status(401).json({ error: 'Token de autorización requerido' });
   }
 
-  // Obtener email del usuario desde el token (simplificado)
+  // Obtener usuario desde el token de autenticación
   const token = authHeader.replace('Bearer ', '');
   let userEmail = 'usuario@smashufc.com'; // Default para testing
   let userId = null; // ID del usuario
   
-  // Intentar obtener email del usuario desde Supabase
+  // Obtener información del usuario desde Supabase usando el token
   try {
-    const userResponse = await fetch(`${SUPABASE_URL}/rest/v1/usuario?select=id,correo&limit=1`, {
+    const userResponse = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
       method: 'GET',
       headers: {
         'apikey': SUPABASE_KEY,
-        'Authorization': `Bearer ${SUPABASE_KEY}`,
+        'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
     });
     
     if (userResponse.ok) {
-      const users = await userResponse.json();
-      if (users && users.length > 0) {
-        userEmail = users[0].correo;
-        userId = users[0].id;
+      const userData = await userResponse.json();
+      console.log('👤 Usuario autenticado:', userData);
+      
+      if (userData.user && userData.user.email) {
+        userEmail = userData.user.email;
+        
+        // Buscar el usuario en la tabla usuario por email
+        const usuarioResponse = await fetch(`${SUPABASE_URL}/rest/v1/usuario?correo=eq.${userEmail}&select=id`, {
+          method: 'GET',
+          headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`,
+            'Content-Type': 'application/json',
+          },
+        });
+        
+        if (usuarioResponse.ok) {
+          const usuarios = await usuarioResponse.json();
+          if (usuarios && usuarios.length > 0) {
+            userId = usuarios[0].id;
+            console.log('✅ Usuario encontrado en BD:', userId);
+          }
+        }
       }
     }
   } catch (error) {
-    console.warn('No se pudo obtener email del usuario:', error);
+    console.warn('No se pudo obtener usuario del token:', error);
   }
 
   try {
