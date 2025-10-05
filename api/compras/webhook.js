@@ -19,18 +19,37 @@ export default async function handler(req, res) {
   }
 
   try {
-    console.log('🔔 Webhook recibido:', req.body);
+    console.log('🔔 Webhook recibido:', JSON.stringify(req.body, null, 2));
     
-    // Obtener el ID del pago de la notificación
-    const { data } = req.body;
-    if (!data || !data.id) {
-      console.error('❌ Webhook sin ID de pago:', req.body);
+    // MercadoPago puede enviar diferentes formatos de notificación
+    let paymentId = null;
+    
+    // Formato 1: { data: { id: "123456" } }
+    if (req.body.data && req.body.data.id) {
+      paymentId = req.body.data.id;
+      console.log('💳 ID del pago (formato 1):', paymentId);
+    }
+    // Formato 2: { id: "123456" }
+    else if (req.body.id) {
+      paymentId = req.body.id;
+      console.log('💳 ID del pago (formato 2):', paymentId);
+    }
+    // Formato 3: { resource: "/v1/payments/123456" }
+    else if (req.body.resource) {
+      const resourceMatch = req.body.resource.match(/\/v1\/payments\/(\d+)/);
+      if (resourceMatch) {
+        paymentId = resourceMatch[1];
+        console.log('💳 ID del pago (formato 3):', paymentId);
+      }
+    }
+    
+    if (!paymentId) {
+      console.error('❌ No se pudo extraer el ID del pago de:', req.body);
       return res.status(400).json({ error: 'ID de pago no encontrado' });
     }
 
-    const paymentId = data.id;
-
     // Verificar el estado del pago en MercadoPago
+    console.log('🔍 Verificando pago en MercadoPago...');
     const mpResponse = await fetch(`https://api.mercadopago.com/v1/payments/${paymentId}`, {
       method: 'GET',
       headers: {
@@ -40,11 +59,13 @@ export default async function handler(req, res) {
     });
 
     if (!mpResponse.ok) {
+      const errorText = await mpResponse.text();
+      console.error(`❌ Error verificando pago en MercadoPago: ${mpResponse.status}`, errorText);
       throw new Error(`Error verificando pago en MercadoPago: ${mpResponse.status}`);
     }
 
     const paymentData = await mpResponse.json();
-    console.log('💳 Datos del pago:', paymentData);
+    console.log('💳 Datos del pago:', JSON.stringify(paymentData, null, 2));
 
     // Verificar si el pago fue aprobado
     if (paymentData.status !== 'approved') {
@@ -79,6 +100,7 @@ export default async function handler(req, res) {
 
     // Obtener el email del pagador para encontrar el usuario
     const payerEmail = paymentData.payer?.email;
+    console.log('📧 Email del pagador:', payerEmail);
     if (!payerEmail) {
       throw new Error('Email del pagador no encontrado');
     }
@@ -98,12 +120,15 @@ export default async function handler(req, res) {
     }
 
     const usuarios = await supabaseResponse.json();
+    console.log('👤 Usuarios encontrados:', usuarios);
     if (!usuarios || usuarios.length === 0) {
       throw new Error('Usuario no encontrado en Supabase');
     }
 
     const usuario = usuarios[0];
+    console.log('👤 Usuario encontrado:', usuario.nombre_usuario, 'Saldo actual:', usuario.saldo);
     const nuevoSaldo = Number(usuario.saldo) + Number(paquete.monedas);
+    console.log('💰 Nuevo saldo calculado:', nuevoSaldo);
 
     // Actualizar el saldo del usuario en Supabase
     const updateResponse = await fetch(`${SUPABASE_URL}/rest/v1/usuario?id=eq.${usuario.id}`, {
