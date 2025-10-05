@@ -21,6 +21,7 @@ import UFC304CardPage from '../pages/UFC304CardPage';
 import UFCSandhagenNurmagomedovCardPage from '../pages/UFCSandhagenNurmagomedovCardPage';
 import CoinPurchasePage from '../pages/CoinPurchasePage';
 import BadgesShopPage from '../pages/BadgesShopPage';
+import PaymentResultPage from '../pages/PaymentResultPage';
 
 const AppRoutes = () => {
   return (
@@ -43,6 +44,9 @@ const AppRoutes = () => {
       <Route path="/clips" element={<SavedClipsPage />} />
       <Route path="/coins" element={<CoinPurchasePage />} />
       <Route path="/badges" element={<BadgesShopPage />} />
+      <Route path="/comprar-monedas/success" element={<PaymentResultPage />} />
+      <Route path="/comprar-monedas/failure" element={<PaymentResultPage />} />
+      <Route path="/comprar-monedas/pending" element={<PaymentResultPage />} />
       <Route path="/thread/:id" element={<ThreadPage />} />
       <Route path="/category/:id" element={<CategoryPage />} />
       <Route path="/event/:id" element={<EventCardPage />} />

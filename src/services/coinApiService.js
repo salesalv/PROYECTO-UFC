@@ -3,7 +3,10 @@
  * Este servicio comunica el frontend con el backend Express que implementamos
  */
 
-const API_BASE_URL = 'http://localhost:3001/api/compras';
+// Usar la URL de producción en Vercel
+const API_BASE_URL = import.meta.env.PROD 
+  ? 'https://smashufc-nine.vercel.app/api/compras'
+  : 'http://localhost:3001/api/compras';
 
 /**
  * Obtiene el token JWT del almacenamiento local
@@ -112,3 +115,5 @@ export default {
   simularPago,
   procesarPagoCompletado,
 };
+
+

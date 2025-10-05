@@ -1,0 +1,32 @@
+# 💰 CONFIGURACIÓN DE PRODUCCIÓN - DINERO REAL
+
+# 🌍 MODO DE PRODUCCIÓN
+NODE_ENV=production
+
+# 🔧 SERVIDOR
+PORT=3001
+HOST=0.0.0.0
+
+# 🔐 SEGURIDAD JWT
+JWT_SECRET=mi-jwt-super-secreto-de-produccion-smash-ufc-2024
+
+# 💳 MERCADO PAGO - CREDENCIALES DE PRODUCCIÓN (DINERO REAL)
+MERCADOPAGO_ACCESS_TOKEN=APP_USR-130708112804803-100510-d3ce971c5ac19413518658f868eb33f1-1444955939
+MERCADOPAGO_PUBLIC_KEY=APP_USR-dde802f9-f57a-4d15-bb52-6697acf00b3a
+MERCADOPAGO_CLIENT_ID=130708112804803
+MERCADOPAGO_CLIENT_SECRET=ovndufrug8eCyxiLUwdb0sAfWiaXS2ia
+
+# 🌐 TU DOMINIO REAL DESPLEGADO
+BASE_URL=https://smashufc-nine.vercel.app
+FRONTEND_URL=https://smashufc-nine.vercel.app
+
+# 🗄️ BASE DE DATOS SUPABASE (Ya configurada)
+SUPABASE_URL=https://gqylknstxjwlybyvvcvx.supabase.co
+SUPABASE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdxeWxrbnN0eGp3bHlieXZ2Y3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAwOTMyNzIsImV4cCI6MjA2NTY2OTI3Mn0.fdOlalxcPaKzpjaUnFowsY3gz6f0LYmCdE--aJ76zc8
+
+# 💰 CONFIGURACIÓN PARA DINERO REAL:
+# ✅ Estas credenciales procesarán pagos REALES
+# ✅ Dinero llegará a TU cuenta de MercadoPago
+# ✅ Comisiones: ~3.5% por transacción
+# ✅ Transferencia a banco: Sin costo adicional
+# ✅ Sistema completamente funcional para negocio real

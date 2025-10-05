@@ -73,8 +73,8 @@ export const useCoinPurchase = () => {
           description: t('coins.redirecting_payment'),
         });
         
-        // Redirigir a MercadoPago
-        window.location.href = response.checkout_url;
+        // Redirigir a MercadoPago Checkout Pro
+        window.location.href = response.init_point;
       }
 
       return true;

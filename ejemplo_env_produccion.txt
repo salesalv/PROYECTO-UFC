@@ -34,3 +34,5 @@ SUPABASE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZi
 # 2. Reemplaza "tu-dominio.com" con tu dominio real
 # 3. Reemplaza las credenciales de MercadoPago con las tuyas
 # 4. Configura NODE_ENV=production
+
+

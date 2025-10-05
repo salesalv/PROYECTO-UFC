@@ -217,3 +217,5 @@ Una vez configurado:
 5. **Comisiones mínimas** → Solo MercadoPago
 
 **¡Tu plataforma podrá recibir pagos reales de usuarios y monetizar el sistema de monedas virtuales!** 🚀💎
+
+

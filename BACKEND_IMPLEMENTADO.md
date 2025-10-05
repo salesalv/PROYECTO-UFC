@@ -154,3 +154,5 @@ Solo falta conectar las URLs de los endpoints del backend:
 - Asegurar que el token JWT se incluya en las requests
 
 ¡El backend está **100% listo para producción**! 🚀
+
+

@@ -41,3 +41,5 @@ COMMENT ON TABLE compras_monedas IS 'Registro de todas las compras de monedas vi
 COMMENT ON TABLE paquetes_monedas IS 'Catálogo de paquetes de monedas virtuales disponibles';
 COMMENT ON COLUMN compras_monedas.payment_id IS 'ID único del pago proporcionado por MercadoPago';
 COMMENT ON COLUMN compras_monedas.estado IS 'Estado del pago: pendiente, completado, rechazado';
+
+

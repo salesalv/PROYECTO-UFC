@@ -1,7 +1,7 @@
 import express from 'express';
 import supabase from '../db.js';
 import jwt from 'jsonwebtoken';
-import mercadopagoService from '../services/mercadopagoService.js';
+import { crearPreferenciaCheckoutPro } from '../services/checkoutProService.js';
 
 const router = express.Router();
 
@@ -99,7 +99,7 @@ router.get('/saldo', verifyToken, async (req, res) => {
   }
 });
 
-// POST /api/compras/crear-pago - Crear intención de pago
+// POST /api/compras/crear-pago - Crear intención de pago con Checkout Pro
 router.post('/crear-pago', verifyToken, async (req, res) => {
   try {
     const { paqueteId } = req.body;
@@ -114,18 +114,13 @@ router.post('/crear-pago', verifyToken, async (req, res) => {
 
     const datosPago = {
       usuario_id: req.userId,
-      paquete: paquete
+      paquete: paquete,
+      baseUrl: process.env.BASE_URL || 'http://localhost:3001',
+      frontendUrl: process.env.FRONTEND_URL || 'http://localhost:5173'
     };
 
-    let respuestaPago;
-    
-    // Crear preferencia en MercadoPago
-    if (process.env.NODE_ENV !== 'development') {
-      respuestaPago = await mercadopagoService.crearPreferenciaMercadoPago(datosPago);
-    } else {
-      // En desarrollo, usar simulación
-      respuestaPago = await mercadopagoService.simularPago(datosPago);
-    }
+    // Crear preferencia con Checkout Pro
+    const respuestaPago = await crearPreferenciaCheckoutPro(datosPago);
 
     // Registrar la intención de pago en la base de datos
     try {
@@ -134,7 +129,7 @@ router.post('/crear-pago', verifyToken, async (req, res) => {
         paquete_id: paquete.id,
         monedas: paquete.monedas,
         precio: paquete.precio,
-        payment_id: respuestaPago.id,
+        payment_id: respuestaPago.external_reference,
         estado: 'pendiente'
       }]);
     } catch (dbError) {
@@ -144,8 +139,11 @@ router.post('/crear-pago', verifyToken, async (req, res) => {
     res.json({
       success: true,
       preference_id: respuestaPago.id,
-      checkout_url: respuestaPago.init_point,
-      external_reference: respuestaPago.external_reference
+      init_point: respuestaPago.init_point,
+      sandbox_init_point: respuestaPago.sandbox_init_point,
+      external_reference: respuestaPago.external_reference,
+      expires: respuestaPago.expires,
+      expiration_date_to: respuestaPago.expiration_date_to
     });
   } catch (error) {
     console.error('Error creando pago:', error);

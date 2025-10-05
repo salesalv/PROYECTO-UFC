@@ -197,3 +197,5 @@ Una vez configurado:
 **Tu sistema está 100% listo técnicamente. Solo faltan estos 6 pasos administrativos para empezar a ganar dinero real.**
 
 **¿Empezamos ahora mismo con el Paso 1? 🚀**
+
+

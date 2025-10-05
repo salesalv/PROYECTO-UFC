@@ -12,6 +12,7 @@ import CoinPurchaseCard from '@/components/coins/CoinPurchaseCard';
 import TransactionHistory from '@/components/coins/TransactionHistory';
 import { useToast } from '@/components/ui/use-toast';
 import BackendTest from '@/components/BackendTest';
+import MercadoPagoCheckout from '@/components/coins/MercadoPagoCheckout';
 
 const CoinPurchasePage = () => {
   const { user, refreshUser } = useUser();
@@ -236,6 +237,34 @@ const CoinPurchasePage = () => {
 
       {/* Componente de prueba del backend */}
       <BackendTest />
+
+      {/* Nuevo componente de Checkout Pro */}
+      <div className="mt-8">
+        <h2 className="text-2xl font-bold text-center mb-6">
+          💳 Checkout Pro - MercadoPago
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {PAQUETES_MONEDAS.map((paquete) => (
+            <MercadoPagoCheckout
+              key={paquete.id}
+              paquete={paquete}
+              onSuccess={() => {
+                toast({
+                  title: 'Pago procesado',
+                  description: 'Redirigiendo a MercadoPago...',
+                });
+              }}
+              onError={(error) => {
+                toast({
+                  title: 'Error',
+                  description: error.message,
+                  variant: 'destructive'
+                });
+              }}
+            />
+          ))}
+        </div>
+      </div>
     </div>
   );
 };

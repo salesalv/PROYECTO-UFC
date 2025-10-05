@@ -1,0 +1,33 @@
+# 💰 CONFIGURACIÓN PARA DINERO REAL - PRODUCCIÓN
+
+# 🌍 MODO DE PRODUCCIÓN
+NODE_ENV=production
+
+# 🔧 SERVIDOR
+PORT=3001
+HOST=0.0.0.0
+
+# 🔐 SEGURIDAD JWT (Cambiar por uno único y seguro)
+JWT_SECRET=mi-jwt-super-secreto-de-produccion-2024-$(openssl rand -hex 16)
+
+# 💳 MERCADO PAGO - CREDENCIALES DE PRODUCCIÓN (DINERO REAL)
+# ⚠️ REEMPLAZAR CON TUS CREDENCIALES REALES DE PRODUCCIÓN
+MERCADOPAGO_ACCESS_TOKEN=APP_USR_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+MERCADOPAGO_PUBLIC_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+# 🌐 TU DOMINIO REAL EN PRODUCCIÓN
+# ⚠️ REEMPLAZAR CON TU DOMINIO REAL (ejemplo: https://smashufc.com)
+BASE_URL=https://tu-dominio.com
+FRONTEND_URL=https://tu-dominio.com
+
+# 🗄️ BASE DE DATOS SUPABASE (Ya configurada)
+SUPABASE_URL=https://gqylknstxjwlybyvvcvx.supabase.co
+SUPABASE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdxeWxrbnN0eGp3bHlieXZ2Y3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAwOTMyNzIsImV4cCI6MjA2NTY2OTI3Mn0.fdOlalxcPaKzpjaUnFowsY3gz6f0LYmCdE--aJ76zc8
+
+# 💰 CONFIGURACIÓN PARA DINERO REAL:
+# ✅ Estas credenciales procesarán pagos REALES
+# ✅ Dinero llegará a TU cuenta de MercadoPago
+# ✅ Comisiones: ~3.5% por transacción
+# ✅ Transferencia a banco: Sin costo adicional
+# ✅ Sistema completamente funcional para negocio real
+

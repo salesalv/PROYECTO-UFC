@@ -1,0 +1,33 @@
+# 🔧 CONFIGURACIÓN PARA PROYECTO SMASH UFC
+# Copia este contenido a un archivo llamado .env en la raíz del proyecto
+
+# 🌍 MODO DE DESARROLLO/PROYECTO
+NODE_ENV=development
+
+# 🔧 SERVIDOR
+PORT=3001
+HOST=localhost
+
+# 🔐 SEGURIDAD JWT (Para proyecto)
+JWT_SECRET=mi-jwt-secreto-para-proyecto-smash-ufc-2024
+
+# 💳 MERCADO PAGO - CREDENCIALES DE PRUEBA (NO REALES)
+# ✅ Estas son las credenciales que ya tienes configuradas en MercadoPago
+MERCADOPAGO_ACCESS_TOKEN=APP_USR-6082603998976520-100418-2a1d606a17c86190e7589c021dfa3a60-2903456179
+MERCADOPAGO_PUBLIC_KEY=APP_USR-b5cb8f5c-c0d3-4dca-a136-98979854ae67
+
+# 🌐 URLs PARA DESARROLLO/PROYECTO
+BASE_URL=http://localhost:3001
+FRONTEND_URL=http://localhost:5173
+
+# 🗄️ BASE DE DATOS SUPABASE (Ya configurada)
+SUPABASE_URL=https://gqylknstxjwlybyvvcvx.supabase.co
+SUPABASE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdxeWxrbnN0eGp3bHlieXZ2Y3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAwOTMyNzIsImV4cCI6MjA2NTY2OTI3Mn0.fdOlalxcPaKzpjaUnFowsY3gz6f0LYmCdE--aJ76zc8
+
+# 📝 NOTA IMPORTANTE PARA PROYECTO:
+# ✅ Estas son credenciales de PRUEBA - NO dinero real
+# ✅ Perfectas para proyectos y portafolio
+# ✅ MercadoPago procesará pagos pero NO transferirá dinero
+# ✅ Ideal para demostrar funcionalidad completa
+# ✅ Usuarios pueden probar con tarjetas de prueba
+

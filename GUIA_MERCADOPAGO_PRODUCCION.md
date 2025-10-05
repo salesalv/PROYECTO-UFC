@@ -321,3 +321,5 @@ const logger = winston.createLogger({
 - **Ingreso neto**: ~$1,140/mes
 
 **¡Tu plataforma SMASH UFC puede ser súper rentable! 🚀💰**
+
+

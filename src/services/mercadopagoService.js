@@ -1,8 +1,8 @@
 import { MercadoPagoConfig, Payment, Preference } from 'mercadopago';
 
-// Configuración de MercadoPago (en producción usar variables de entorno)
+// Configuración de MercadoPago (CREDENCIALES DE PRUEBA PARA PROYECTO)
 const config = {
-  accessToken: process.env.MERCADOPAGO_ACCESS_TOKEN || 'TEST_ACCESS_TOKEN',
+  accessToken: process.env.MERCADOPAGO_ACCESS_TOKEN || 'APP_USR-6082603998976520-100418-2a1d606a17c86190e7589c021dfa3a60-2903456179',
   options: {
     timeout: 5000,
     idempotencyKey: `mp_${Date.now()}`,
@@ -153,3 +153,4 @@ export default {
   procesarWebhook,
   simularPago,
 };
+

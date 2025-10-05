@@ -1,5 +1,17 @@
 {
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/" }
-  ]
-} 
+  "version": 2,
+  "functions": {
+    "api/compras/paquetes.js": {
+      "runtime": "nodejs18.x"
+    },
+    "api/compras/crear-pago.js": {
+      "runtime": "nodejs18.x"
+    },
+    "api/compras/webhook.js": {
+      "runtime": "nodejs18.x"
+    }
+  },
+  "env": {
+    "NODE_ENV": "production"
+  }
+}

@@ -285,3 +285,5 @@ Para soporte técnico o consultas:
 - Documentación completa en `/docs`
 - Logs del servidor para debugging
 - Base de datos Supabase para monitoreo
+
+
