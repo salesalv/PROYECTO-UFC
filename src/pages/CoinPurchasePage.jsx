@@ -7,8 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Coins, CreditCard, Shield, Zap, Star } from 'lucide-react';
 import { useUser } from '@/context/UserContext';
 import { useTranslation } from 'react-i18next';
-import { PAQUETES_MONEDAS } from '@/services/coinService';
-import { crearPaymentIntent } from '@/services/coinApiService';
+import { crearPaymentIntent, obtenerPaquetesDisponibles } from '@/services/coinApiService';
 import CoinPurchaseCard from '@/components/coins/CoinPurchaseCard';
 import TransactionHistory from '@/components/coins/TransactionHistory';
 import { useToast } from '@/components/ui/use-toast';
@@ -23,12 +22,34 @@ const CoinPurchasePage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [transactions, setTransactions] = useState([]);
   const [loadingTransactions, setLoadingTransactions] = useState(true);
+  const [paquetes, setPaquetes] = useState([]);
+  const [loadingPaquetes, setLoadingPaquetes] = useState(true);
 
   useEffect(() => {
+    loadPaquetes();
     if (user?.id) {
       loadTransactionHistory();
     }
   }, [user?.id]);
+
+  const loadPaquetes = async () => {
+    try {
+      setLoadingPaquetes(true);
+      const response = await obtenerPaquetesDisponibles();
+      if (response.success) {
+        setPaquetes(response.paquetes);
+      }
+    } catch (error) {
+      console.error('Error cargando paquetes:', error);
+      toast({
+        title: 'Error',
+        description: 'No se pudieron cargar los paquetes',
+        variant: 'destructive'
+      });
+    } finally {
+      setLoadingPaquetes(false);
+    }
+  };
 
   const loadTransactionHistory = async () => {
     try {
@@ -173,7 +194,7 @@ const CoinPurchasePage = () => {
           <div className="lg:col-span-2">
             <h2 className="text-2xl font-bold text-white mb-6">{t('coins.choose_package')}</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {PAQUETES_MONEDAS.map((paquete) => (
+              {paquetes.map((paquete) => (
                 <CoinPurchaseCard
                   key={paquete.id}
                   paquete={paquete}
