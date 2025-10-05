@@ -134,7 +134,9 @@ export default async function handler(req, res) {
 
     // Obtener información del paquete desde external_reference
     const externalReference = paymentData.external_reference;
+    console.log('🔗 External reference del pago:', externalReference);
     if (!externalReference) {
+      console.error('❌ External reference no encontrado en paymentData');
       throw new Error('External reference no encontrado');
     }
 
@@ -154,6 +156,7 @@ export default async function handler(req, res) {
     }
 
     // Buscar la compra en compras_monedas por external_reference
+    console.log('🔍 Buscando compra con external_reference:', externalReference);
     const compraResponse = await fetch(`${SUPABASE_URL}/rest/v1/compras_monedas?external_reference=eq.${externalReference}`, {
       method: 'GET',
       headers: {
@@ -164,18 +167,26 @@ export default async function handler(req, res) {
     });
 
     if (!compraResponse.ok) {
+      const errorText = await compraResponse.text();
+      console.error('❌ Error en respuesta de Supabase:', compraResponse.status, errorText);
       throw new Error(`Error buscando compra en Supabase: ${compraResponse.status}`);
     }
 
     const compras = await compraResponse.json();
     console.log('🛒 Compras encontradas:', compras);
     if (!compras || compras.length === 0) {
+      console.error('❌ No se encontraron compras con external_reference:', externalReference);
       throw new Error('Compra no encontrada en la base de datos');
     }
 
     const compra = compras[0];
     const userId = compra.usuario_id;
     console.log('👤 ID del usuario:', userId);
+
+    // Validar que userId no sea null o undefined
+    if (!userId) {
+      throw new Error('Usuario ID no encontrado en la compra');
+    }
 
     // Buscar el usuario en Supabase por ID
     const supabaseResponse = await fetch(`${SUPABASE_URL}/rest/v1/usuario?id=eq.${userId}`, {
