@@ -266,7 +266,7 @@ const CoinPurchasePage = () => {
           💳 Checkout Pro - MercadoPago
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {PAQUETES_MONEDAS.map((paquete) => (
+          {paquetes.map((paquete) => (
             <MercadoPagoCheckout
               key={paquete.id}
               paquete={paquete}
