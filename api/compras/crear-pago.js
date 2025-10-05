@@ -29,10 +29,11 @@ export default async function handler(req, res) {
   // Obtener email del usuario desde el token (simplificado)
   const token = authHeader.replace('Bearer ', '');
   let userEmail = 'usuario@smashufc.com'; // Default para testing
+  let userId = null; // ID del usuario
   
   // Intentar obtener email del usuario desde Supabase
   try {
-    const userResponse = await fetch(`${SUPABASE_URL}/rest/v1/usuario?select=correo&limit=1`, {
+    const userResponse = await fetch(`${SUPABASE_URL}/rest/v1/usuario?select=id,correo&limit=1`, {
       method: 'GET',
       headers: {
         'apikey': SUPABASE_KEY,
@@ -45,6 +46,7 @@ export default async function handler(req, res) {
       const users = await userResponse.json();
       if (users && users.length > 0) {
         userEmail = users[0].correo;
+        userId = users[0].id;
       }
     }
   } catch (error) {
@@ -119,6 +121,7 @@ export default async function handler(req, res) {
     // Registrar la compra en la base de datos
     try {
       const compraData = {
+        usuario_id: userId,
         paquete_id: paquete.id,
         monedas: paquete.monedas,
         precio: paquete.precio,
