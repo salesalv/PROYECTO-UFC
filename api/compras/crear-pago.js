@@ -54,7 +54,10 @@ export default async function handler(req, res) {
         userEmail = userData.user.email;
         
         // Buscar el usuario en la tabla usuario por email
-        const usuarioResponse = await fetch(`${SUPABASE_URL}/rest/v1/usuario?correo=eq.${userEmail}&select=id`, {
+        const encodedEmail = encodeURIComponent(userEmail);
+        console.log('📧 Email codificado:', encodedEmail);
+        
+        const usuarioResponse = await fetch(`${SUPABASE_URL}/rest/v1/usuario?correo=eq.${encodedEmail}&select=id`, {
           method: 'GET',
           headers: {
             'apikey': SUPABASE_KEY,
@@ -73,7 +76,8 @@ export default async function handler(req, res) {
             console.error('❌ No se encontró usuario con email:', userEmail);
           }
         } else {
-          console.error('❌ Error buscando usuario por email:', usuarioResponse.status);
+          const errorText = await usuarioResponse.text();
+          console.error('❌ Error buscando usuario por email:', usuarioResponse.status, errorText);
         }
       }
     }
