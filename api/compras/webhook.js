@@ -44,8 +44,19 @@ export default async function handler(req, res) {
     }
     // Formato 4: { resource: "123456789", topic: "payment" }
     else if (req.body.resource && req.body.topic === 'payment') {
-      paymentId = req.body.resource;
-      console.log('💳 ID del pago (formato 4):', paymentId);
+      // Si resource es solo un número, es el payment_id
+      if (/^\d+$/.test(req.body.resource)) {
+        paymentId = req.body.resource;
+        console.log('💳 ID del pago (formato 4 - número):', paymentId);
+      }
+      // Si resource es una URL, extraer el ID
+      else if (req.body.resource.includes('/payments/')) {
+        const paymentMatch = req.body.resource.match(/\/payments\/(\d+)/);
+        if (paymentMatch) {
+          paymentId = paymentMatch[1];
+          console.log('💳 ID del pago (formato 4 - URL):', paymentId);
+        }
+      }
     }
     // Formato 5: { resource: "https://api.mercadolibre.com/merchant_orders/123" }
     else if (req.body.resource && req.body.resource.includes('merchant_orders')) {
