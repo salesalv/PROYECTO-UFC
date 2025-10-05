@@ -28,7 +28,7 @@ export default async function handler(req, res) {
     const { paqueteId } = req.body;
     
     const paquetes = [
-      { id: 'basico', nombre: 'Paquete Básico', monedas: 100, precio: 2.99 },
+      { id: 'basico', nombre: 'Paquete Básico', monedas: 100, precio: 0.0007 },
       { id: 'estandar', nombre: 'Paquete Estándar', monedas: 500, precio: 9.99 },
       { id: 'premium', nombre: 'Paquete Premium', monedas: 1200, precio: 19.99 },
       { id: 'pro', nombre: 'Paquete Pro', monedas: 2500, precio: 34.99 }
@@ -47,7 +47,7 @@ export default async function handler(req, res) {
           description: `Paquete de ${paquete.monedas} monedas virtuales para SMASH UFC`,
           category_id: 'entertainment',
           quantity: 1,
-          currency_id: 'ARS',
+          currency_id: 'USD',
           unit_price: paquete.precio,
         },
       ],

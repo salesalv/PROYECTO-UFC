@@ -66,7 +66,7 @@ export default async function handler(req, res) {
     const paqueteId = externalReference.split('_')[2]; // smash_ufc_{paqueteId}_{timestamp}
     
     const paquetes = [
-      { id: 'basico', nombre: 'Paquete Básico', monedas: 100, precio: 2.99 },
+      { id: 'basico', nombre: 'Paquete Básico', monedas: 100, precio: 0.0007 },
       { id: 'estandar', nombre: 'Paquete Estándar', monedas: 500, precio: 9.99 },
       { id: 'premium', nombre: 'Paquete Premium', monedas: 1200, precio: 19.99 },
       { id: 'pro', nombre: 'Paquete Pro', monedas: 2500, precio: 34.99 }
