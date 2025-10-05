@@ -42,10 +42,49 @@ export default async function handler(req, res) {
         console.log('💳 ID del pago (formato 3):', paymentId);
       }
     }
+    // Formato 4: { resource: "123456789", topic: "payment" }
+    else if (req.body.resource && req.body.topic === 'payment') {
+      paymentId = req.body.resource;
+      console.log('💳 ID del pago (formato 4):', paymentId);
+    }
+    // Formato 5: { resource: "https://api.mercadolibre.com/merchant_orders/123" }
+    else if (req.body.resource && req.body.resource.includes('merchant_orders')) {
+      // Para merchant_orders, necesitamos obtener el payment_id
+      const merchantOrderMatch = req.body.resource.match(/merchant_orders\/(\d+)/);
+      if (merchantOrderMatch) {
+        const merchantOrderId = merchantOrderMatch[1];
+        console.log('🛒 Merchant Order ID:', merchantOrderId);
+        
+        // Obtener el payment_id del merchant_order
+        try {
+          const moResponse = await fetch(`https://api.mercadopago.com/merchant_orders/${merchantOrderId}`, {
+            method: 'GET',
+            headers: {
+              'Authorization': `Bearer ${MERCADOPAGO_ACCESS_TOKEN}`,
+              'Content-Type': 'application/json',
+            },
+          });
+          
+          if (moResponse.ok) {
+            const moData = await moResponse.json();
+            if (moData.payments && moData.payments.length > 0) {
+              paymentId = moData.payments[0].id;
+              console.log('💳 ID del pago (desde merchant_order):', paymentId);
+            }
+          }
+        } catch (error) {
+          console.error('❌ Error obteniendo merchant_order:', error);
+        }
+      }
+    }
     
     if (!paymentId) {
-      console.error('❌ No se pudo extraer el ID del pago de:', req.body);
-      return res.status(400).json({ error: 'ID de pago no encontrado' });
+      console.log('⚠️ Notificación no relacionada con pagos:', req.body);
+      return res.status(200).json({ 
+        received: true,
+        message: 'Notificación procesada (no es un pago)',
+        type: req.body.topic || 'unknown'
+      });
     }
 
     // Verificar el estado del pago en MercadoPago
