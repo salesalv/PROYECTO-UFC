@@ -2,6 +2,8 @@
 const MERCADOPAGO_ACCESS_TOKEN = 'APP_USR-130708112804803-100510-d3ce971c5ac19413518658f868eb33f1-1444955939';
 const BASE_URL = 'https://smashufc-nine.vercel.app';
 const FRONTEND_URL = 'https://smashufc-nine.vercel.app';
+const SUPABASE_URL = 'https://gqylknstxjwlybyvvcvx.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdxeWxrbnN0eGp3bHlieXZ2Y3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAwOTMyNzIsImV4cCI6MjA2NTY2OTI3Mn0.fdOlalxcPaKzpjaUnFowsY3gz6f0LYmCdE--aJ76zc8';
 
 export default async function handler(req, res) {
   // Configurar CORS
@@ -22,6 +24,31 @@ export default async function handler(req, res) {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return res.status(401).json({ error: 'Token de autorización requerido' });
+  }
+
+  // Obtener email del usuario desde el token (simplificado)
+  const token = authHeader.replace('Bearer ', '');
+  let userEmail = 'usuario@smashufc.com'; // Default para testing
+  
+  // Intentar obtener email del usuario desde Supabase
+  try {
+    const userResponse = await fetch(`${SUPABASE_URL}/rest/v1/usuario?select=correo&limit=1`, {
+      method: 'GET',
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`,
+        'Content-Type': 'application/json',
+      },
+    });
+    
+    if (userResponse.ok) {
+      const users = await userResponse.json();
+      if (users && users.length > 0) {
+        userEmail = users[0].correo;
+      }
+    }
+  } catch (error) {
+    console.warn('No se pudo obtener email del usuario:', error);
   }
 
   try {
@@ -54,7 +81,7 @@ export default async function handler(req, res) {
       external_reference: `smash_ufc_${paquete.id}_${Date.now()}`,
       payer: {
         name: "Usuario",
-        email: "usuario@smashufc.com"
+        email: userEmail
       },
       payment_methods: {
         excluded_payment_methods: [],
@@ -88,6 +115,36 @@ export default async function handler(req, res) {
     }
 
     const response = await mpResponse.json();
+    
+    // Registrar la compra en la base de datos
+    try {
+      const compraData = {
+        paquete_id: paquete.id,
+        monedas: paquete.monedas,
+        precio: paquete.precio,
+        payment_id: response.id,
+        external_reference: response.external_reference,
+        estado: 'pendiente'
+      };
+      
+      const compraResponse = await fetch(`${SUPABASE_URL}/rest/v1/compras_monedas`, {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(compraData),
+      });
+      
+      if (!compraResponse.ok) {
+        console.warn('No se pudo registrar la compra:', await compraResponse.text());
+      } else {
+        console.log('✅ Compra registrada en la base de datos');
+      }
+    } catch (error) {
+      console.warn('Error registrando compra:', error);
+    }
     
     res.json({
       success: true,
