@@ -26,64 +26,29 @@ export default async function handler(req, res) {
     return res.status(401).json({ error: 'Token de autorización requerido' });
   }
 
-  // Obtener usuario desde el token de autenticación
+  // Obtener email del usuario desde el token (simplificado)
   const token = authHeader.replace('Bearer ', '');
   let userEmail = 'usuario@smashufc.com'; // Default para testing
-  let userId = null; // ID del usuario
   
-  // Obtener información del usuario desde Supabase usando el token
+  // Intentar obtener email del usuario desde Supabase
   try {
-    console.log('🔑 Token recibido:', token ? 'Presente' : 'Ausente');
-    
-    const userResponse = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
+    const userResponse = await fetch(`${SUPABASE_URL}/rest/v1/usuario?select=correo&limit=1`, {
       method: 'GET',
       headers: {
         'apikey': SUPABASE_KEY,
-        'Authorization': `Bearer ${token}`,
+        'Authorization': `Bearer ${SUPABASE_KEY}`,
         'Content-Type': 'application/json',
       },
     });
     
-    console.log('📡 Respuesta de Supabase auth:', userResponse.status);
-    
     if (userResponse.ok) {
-      const userData = await userResponse.json();
-      console.log('👤 Usuario autenticado:', userData);
-      
-      if (userData.user && userData.user.email) {
-        userEmail = userData.user.email;
-        
-        // Buscar el usuario en la tabla usuario por email
-        const encodedEmail = encodeURIComponent(userEmail);
-        console.log('📧 Email codificado:', encodedEmail);
-        
-        const usuarioResponse = await fetch(`${SUPABASE_URL}/rest/v1/usuario?correo=eq.${encodedEmail}&select=id`, {
-          method: 'GET',
-          headers: {
-            'apikey': SUPABASE_KEY,
-            'Authorization': `Bearer ${SUPABASE_KEY}`,
-            'Content-Type': 'application/json',
-          },
-        });
-        
-        if (usuarioResponse.ok) {
-          const usuarios = await usuarioResponse.json();
-          console.log('🔍 Usuarios encontrados por email:', usuarios);
-          if (usuarios && usuarios.length > 0) {
-            userId = usuarios[0].id;
-            console.log('✅ Usuario encontrado en BD:', userId);
-          } else {
-            console.error('❌ No se encontró usuario con email:', userEmail);
-          }
-        } else {
-          const errorText = await usuarioResponse.text();
-          console.error('❌ Error buscando usuario por email:', usuarioResponse.status, errorText);
-        }
+      const users = await userResponse.json();
+      if (users && users.length > 0) {
+        userEmail = users[0].correo;
       }
     }
   } catch (error) {
-    console.error('❌ Error obteniendo usuario del token:', error);
-    // Continuar con valores por defecto si hay error de autenticación
+    console.warn('No se pudo obtener email del usuario:', error);
   }
 
   try {
@@ -153,18 +118,7 @@ export default async function handler(req, res) {
     
     // Registrar la compra en la base de datos
     try {
-      console.log('💾 Guardando compra con userId:', userId);
-      
-      if (!userId) {
-        console.error('❌ No se puede guardar compra sin userId');
-        return res.status(400).json({ 
-          success: false, 
-          error: 'No se pudo identificar al usuario' 
-        });
-      }
-      
       const compraData = {
-        usuario_id: userId,
         paquete_id: paquete.id,
         monedas: paquete.monedas,
         precio: paquete.precio,
@@ -172,8 +126,6 @@ export default async function handler(req, res) {
         external_reference: response.external_reference,
         estado: 'pendiente'
       };
-      
-      console.log('📦 Datos de compra a guardar:', compraData);
       
       const compraResponse = await fetch(`${SUPABASE_URL}/rest/v1/compras_monedas`, {
         method: 'POST',

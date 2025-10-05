@@ -57,11 +57,6 @@ export default async function handler(req, res) {
           console.log('💳 ID del pago (formato 4 - URL):', paymentId);
         }
       }
-      // Si resource es cualquier string que contenga solo números
-      else if (typeof req.body.resource === 'string' && /^\d+$/.test(req.body.resource)) {
-        paymentId = req.body.resource;
-        console.log('💳 ID del pago (formato 4 - string numérico):', paymentId);
-      }
     }
     // Formato 5: { resource: "https://api.mercadolibre.com/merchant_orders/123" }
     else if (req.body.resource && req.body.resource.includes('merchant_orders')) {
@@ -134,9 +129,7 @@ export default async function handler(req, res) {
 
     // Obtener información del paquete desde external_reference
     const externalReference = paymentData.external_reference;
-    console.log('🔗 External reference del pago:', externalReference);
     if (!externalReference) {
-      console.error('❌ External reference no encontrado en paymentData');
       throw new Error('External reference no encontrado');
     }
 
@@ -155,41 +148,15 @@ export default async function handler(req, res) {
       throw new Error('Paquete no encontrado');
     }
 
-    // Buscar la compra en compras_monedas por external_reference
-    console.log('🔍 Buscando compra con external_reference:', externalReference);
-    const compraResponse = await fetch(`${SUPABASE_URL}/rest/v1/compras_monedas?external_reference=eq.${externalReference}`, {
-      method: 'GET',
-      headers: {
-        'apikey': SUPABASE_KEY,
-        'Authorization': `Bearer ${SUPABASE_KEY}`,
-        'Content-Type': 'application/json',
-      },
-    });
-
-    if (!compraResponse.ok) {
-      const errorText = await compraResponse.text();
-      console.error('❌ Error en respuesta de Supabase:', compraResponse.status, errorText);
-      throw new Error(`Error buscando compra en Supabase: ${compraResponse.status}`);
+    // Obtener el email del pagador para encontrar el usuario
+    const payerEmail = paymentData.payer?.email;
+    console.log('📧 Email del pagador:', payerEmail);
+    if (!payerEmail) {
+      throw new Error('Email del pagador no encontrado');
     }
 
-    const compras = await compraResponse.json();
-    console.log('🛒 Compras encontradas:', compras);
-    if (!compras || compras.length === 0) {
-      console.error('❌ No se encontraron compras con external_reference:', externalReference);
-      throw new Error('Compra no encontrada en la base de datos');
-    }
-
-    const compra = compras[0];
-    const userId = compra.usuario_id;
-    console.log('👤 ID del usuario:', userId);
-
-    // Validar que userId no sea null o undefined
-    if (!userId) {
-      throw new Error('Usuario ID no encontrado en la compra');
-    }
-
-    // Buscar el usuario en Supabase por ID
-    const supabaseResponse = await fetch(`${SUPABASE_URL}/rest/v1/usuario?id=eq.${userId}`, {
+    // Buscar el usuario en Supabase por email
+    const supabaseResponse = await fetch(`${SUPABASE_URL}/rest/v1/usuario?correo=eq.${payerEmail}`, {
       method: 'GET',
       headers: {
         'apikey': SUPABASE_KEY,
@@ -226,25 +193,6 @@ export default async function handler(req, res) {
 
     if (!updateResponse.ok) {
       throw new Error(`Error actualizando saldo en Supabase: ${updateResponse.status}`);
-    }
-
-    // Actualizar el estado de la compra a 'aprobado' y agregar fecha_procesado
-    try {
-      await fetch(`${SUPABASE_URL}/rest/v1/compras_monedas?id=eq.${compra.id}`, {
-        method: 'PATCH',
-        headers: {
-          'apikey': SUPABASE_KEY,
-          'Authorization': `Bearer ${SUPABASE_KEY}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ 
-          estado: 'aprobado',
-          fecha_procesado: new Date().toISOString()
-        }),
-      });
-      console.log('✅ Estado de compra actualizado a aprobado');
-    } catch (error) {
-      console.warn('No se pudo actualizar el estado de la compra:', error);
     }
 
     // Registrar la transacción en el historial (si la tabla existe)
