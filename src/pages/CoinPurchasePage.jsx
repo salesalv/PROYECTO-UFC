@@ -34,13 +34,16 @@ const CoinPurchasePage = () => {
 
   const loadPaquetes = async () => {
     try {
+      console.log('🔄 Cargando paquetes...');
       setLoadingPaquetes(true);
       const response = await obtenerPaquetesDisponibles();
+      console.log('📦 Respuesta de paquetes:', response);
       if (response.success) {
         setPaquetes(response.paquetes);
+        console.log('✅ Paquetes cargados:', response.paquetes);
       }
     } catch (error) {
-      console.error('Error cargando paquetes:', error);
+      console.error('❌ Error cargando paquetes:', error);
       toast({
         title: 'Error',
         description: 'No se pudieron cargar los paquetes',
@@ -54,7 +57,7 @@ const CoinPurchasePage = () => {
   const loadTransactionHistory = async () => {
     try {
       setLoadingTransactions(true);
-      const history = await obtenerHistorialTransacciones(user.id, 20);
+      const history = await obtenerHistorialTransacciones();
       setTransactions(history);
     } catch (error) {
       console.error('Error cargando historial:', error);
@@ -193,17 +196,23 @@ const CoinPurchasePage = () => {
           {/* Purchase Packages */}
           <div className="lg:col-span-2">
             <h2 className="text-2xl font-bold text-white mb-6">{t('coins.choose_package')}</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {paquetes.map((paquete) => (
-                <CoinPurchaseCard
-                  key={paquete.id}
-                  paquete={paquete}
-                  onSelect={handlePurchase}
-                  isSelected={selectedPaquete?.id === paquete.id}
-                  isLoading={isLoading && selectedPaquete?.id === paquete.id}
-                />
-              ))}
-            </div>
+            {loadingPaquetes ? (
+              <div className="text-center py-8">
+                <div className="text-white">Cargando paquetes...</div>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {paquetes.map((paquete) => (
+                  <CoinPurchaseCard
+                    key={paquete.id}
+                    paquete={paquete}
+                    onSelect={handlePurchase}
+                    isSelected={selectedPaquete?.id === paquete.id}
+                    isLoading={isLoading && selectedPaquete?.id === paquete.id}
+                  />
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Transaction History */}
