@@ -7,7 +7,8 @@ import { Badge } from '@/components/ui/badge';
 import { Coins, CreditCard, Shield, Zap, Star } from 'lucide-react';
 import { useUser } from '@/context/UserContext';
 import { useTranslation } from 'react-i18next';
-import { PAQUETES_MONEDAS, crearPreferenciaMercadoPago, obtenerHistorialTransacciones } from '@/services/coinService';
+import { PAQUETES_MONEDAS } from '@/services/coinService';
+import { crearPaymentIntent } from '@/services/coinApiService';
 import CoinPurchaseCard from '@/components/coins/CoinPurchaseCard';
 import TransactionHistory from '@/components/coins/TransactionHistory';
 import { useToast } from '@/components/ui/use-toast';
@@ -60,30 +61,21 @@ const CoinPurchasePage = () => {
     setSelectedPaquete(paquete);
 
     try {
-      // Crear preferencia de MercadoPago
-      const preferencia = await crearPreferenciaMercadoPago(paquete, user.id);
+      // Crear intención de pago usando el nuevo servicio
+      const response = await crearPaymentIntent(paquete.id);
       
-      // En un entorno real, aquí redirigirías a MercadoPago
-      // window.location.href = preferencia.init_point;
-      
-      // Por ahora, simulamos el proceso
+      if (!response.success) {
+        throw new Error(response.error || 'Error creando pago');
+      }
+
+      // Redirigir a MercadoPago Checkout Pro
       toast({
         title: t('coins.purchase_initiated'),
         description: t('coins.redirecting_payment'),
       });
 
-      // Simular redirección a MercadoPago (en desarrollo)
-      setTimeout(() => {
-        toast({
-          title: t('coins.purchase_success'),
-          description: t('coins.coins_added', { coins: paquete.monedas }),
-        });
-        
-        // Refrescar datos del usuario
-        refreshUser();
-        loadTransactionHistory();
-        setSelectedPaquete(null);
-      }, 2000);
+      // Redirigir a MercadoPago
+      window.location.href = response.init_point;
 
     } catch (error) {
       console.error('Error iniciando compra:', error);

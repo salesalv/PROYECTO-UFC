@@ -9,12 +9,22 @@ const API_BASE_URL = import.meta.env.PROD
   : 'http://localhost:3001/api/compras';
 
 /**
- * Obtiene el token JWT del almacenamiento local
+ * Obtiene el token de Supabase del almacenamiento local
  */
 function getAuthToken() {
-  // Aquí deberías obtener el token del contexto de usuario o localStorage
-  const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
-  return token;
+  // Obtener token de Supabase
+  const supabaseToken = localStorage.getItem('sb-gqylknstxjwlybyvvcvx-auth-token');
+  if (supabaseToken) {
+    try {
+      const parsed = JSON.parse(supabaseToken);
+      return parsed.access_token;
+    } catch (error) {
+      console.error('Error parsing Supabase token:', error);
+    }
+  }
+  
+  // Fallback a token JWT si existe
+  return localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
 }
 
 /**

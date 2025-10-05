@@ -25,6 +25,12 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
+  // Verificar autenticación (simplificado para testing)
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({ error: 'Token de autorización requerido' });
+  }
+
   try {
     const { paqueteId } = req.body;
     
@@ -53,6 +59,10 @@ export default async function handler(req, res) {
         },
       ],
       external_reference: `smash_ufc_${paquete.id}_${Date.now()}`,
+      payer: {
+        name: "Usuario",
+        email: "usuario@smashufc.com"
+      },
       payment_methods: {
         excluded_payment_methods: [],
         excluded_payment_types: [],
