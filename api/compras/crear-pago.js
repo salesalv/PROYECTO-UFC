@@ -61,10 +61,15 @@ export default async function handler(req, res) {
         
         if (usuarioResponse.ok) {
           const usuarios = await usuarioResponse.json();
+          console.log('🔍 Usuarios encontrados por email:', usuarios);
           if (usuarios && usuarios.length > 0) {
             userId = usuarios[0].id;
             console.log('✅ Usuario encontrado en BD:', userId);
+          } else {
+            console.error('❌ No se encontró usuario con email:', userEmail);
           }
+        } else {
+          console.error('❌ Error buscando usuario por email:', usuarioResponse.status);
         }
       }
     }
@@ -139,6 +144,16 @@ export default async function handler(req, res) {
     
     // Registrar la compra en la base de datos
     try {
+      console.log('💾 Guardando compra con userId:', userId);
+      
+      if (!userId) {
+        console.error('❌ No se puede guardar compra sin userId');
+        return res.status(400).json({ 
+          success: false, 
+          error: 'No se pudo identificar al usuario' 
+        });
+      }
+      
       const compraData = {
         usuario_id: userId,
         paquete_id: paquete.id,
@@ -148,6 +163,8 @@ export default async function handler(req, res) {
         external_reference: response.external_reference,
         estado: 'pendiente'
       };
+      
+      console.log('📦 Datos de compra a guardar:', compraData);
       
       const compraResponse = await fetch(`${SUPABASE_URL}/rest/v1/compras_monedas`, {
         method: 'POST',
