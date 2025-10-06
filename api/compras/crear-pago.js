@@ -31,23 +31,55 @@ export default async function handler(req, res) {
   let userEmail = 'usuario@smashufc.com'; // Default para testing
   let userId = null; // Necesario para registrar la compra
   
-  // Intentar obtener usuario desde Supabase
+  // Intentar obtener usuario desde el token JWT
   try {
-    const userResponse = await fetch(`${SUPABASE_URL}/rest/v1/usuario?select=id,correo&limit=1`, {
-      method: 'GET',
-      headers: {
-        'apikey': SUPABASE_KEY,
-        'Authorization': `Bearer ${SUPABASE_KEY}`,
-        'Content-Type': 'application/json',
-      },
-    });
+    // Decodificar el token JWT para obtener el usuario
+    const tokenParts = token.split('.');
+    if (tokenParts.length === 3) {
+      const payload = JSON.parse(atob(tokenParts[1]));
+      console.log('🔍 Token payload:', payload);
+      
+      // Buscar usuario por email del token
+      if (payload.email) {
+        const userResponse = await fetch(`${SUPABASE_URL}/rest/v1/usuario?correo=eq.${payload.email}&select=id,correo`, {
+          method: 'GET',
+          headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`,
+            'Content-Type': 'application/json',
+          },
+        });
+        
+        if (userResponse.ok) {
+          const users = await userResponse.json();
+          if (users && users.length > 0) {
+            userEmail = users[0].correo;
+            userId = users[0].id;
+            console.log('👤 Usuario obtenido del token:', { id: userId, email: userEmail });
+          }
+        }
+      }
+    }
     
-    if (userResponse.ok) {
-      const users = await userResponse.json();
-      if (users && users.length > 0) {
-        userEmail = users[0].correo;
-        userId = users[0].id;
-        console.log('👤 Usuario obtenido:', { id: userId, email: userEmail });
+    // Si no se pudo obtener del token, usar el primer usuario como fallback
+    if (!userId) {
+      console.log('⚠️ No se pudo obtener usuario del token, usando fallback');
+      const userResponse = await fetch(`${SUPABASE_URL}/rest/v1/usuario?select=id,correo&limit=1`, {
+        method: 'GET',
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      
+      if (userResponse.ok) {
+        const users = await userResponse.json();
+        if (users && users.length > 0) {
+          userEmail = users[0].correo;
+          userId = users[0].id;
+          console.log('👤 Usuario obtenido (fallback):', { id: userId, email: userEmail });
+        }
       }
     }
   } catch (error) {
