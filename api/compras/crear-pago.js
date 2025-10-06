@@ -26,13 +26,14 @@ export default async function handler(req, res) {
     return res.status(401).json({ error: 'Token de autorización requerido' });
   }
 
-  // Obtener email del usuario desde el token (simplificado)
+  // Obtener usuario desde el token (simplificado)
   const token = authHeader.replace('Bearer ', '');
   let userEmail = 'usuario@smashufc.com'; // Default para testing
+  let userId = null; // Necesario para registrar la compra
   
-  // Intentar obtener email del usuario desde Supabase
+  // Intentar obtener usuario desde Supabase
   try {
-    const userResponse = await fetch(`${SUPABASE_URL}/rest/v1/usuario?select=correo&limit=1`, {
+    const userResponse = await fetch(`${SUPABASE_URL}/rest/v1/usuario?select=id,correo&limit=1`, {
       method: 'GET',
       headers: {
         'apikey': SUPABASE_KEY,
@@ -45,10 +46,21 @@ export default async function handler(req, res) {
       const users = await userResponse.json();
       if (users && users.length > 0) {
         userEmail = users[0].correo;
+        userId = users[0].id;
+        console.log('👤 Usuario obtenido:', { id: userId, email: userEmail });
       }
     }
   } catch (error) {
-    console.warn('No se pudo obtener email del usuario:', error);
+    console.warn('No se pudo obtener usuario:', error);
+  }
+
+  // Verificar que tenemos userId
+  if (!userId) {
+    console.error('❌ No se pudo obtener userId');
+    return res.status(500).json({ 
+      success: false, 
+      error: 'No se pudo identificar al usuario' 
+    });
   }
 
   try {
