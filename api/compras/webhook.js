@@ -34,33 +34,8 @@ export default async function handler(req, res) {
       paymentId = req.body.id;
       console.log('💳 ID del pago (formato 2):', paymentId);
     }
-    // Formato 3: { resource: "/v1/payments/123456" }
-    else if (req.body.resource) {
-      const resourceMatch = req.body.resource.match(/\/v1\/payments\/(\d+)/);
-      if (resourceMatch) {
-        paymentId = resourceMatch[1];
-        console.log('💳 ID del pago (formato 3):', paymentId);
-      }
-    }
-    // Formato 4: { resource: "123456789", topic: "payment" }
-    else if (req.body.resource && req.body.topic === 'payment') {
-      // Si resource es solo un número, es el payment_id
-      if (/^\d+$/.test(req.body.resource)) {
-        paymentId = req.body.resource;
-        console.log('💳 ID del pago (formato 4 - número):', paymentId);
-      }
-      // Si resource es una URL, extraer el ID
-      else if (req.body.resource.includes('/payments/')) {
-        const paymentMatch = req.body.resource.match(/\/payments\/(\d+)/);
-        if (paymentMatch) {
-          paymentId = paymentMatch[1];
-          console.log('💳 ID del pago (formato 4 - URL):', paymentId);
-        }
-      }
-    }
-    // Formato 5: { resource: "https://api.mercadolibre.com/merchant_orders/123" }
+    // 🛒 Formato 3: merchant_orders PRIMERO, antes que los otros
     else if (req.body.resource && req.body.resource.includes('merchant_orders')) {
-      // Para merchant_orders, necesitamos obtener el payment_id
       const merchantOrderMatch = req.body.resource.match(/merchant_orders\/(\d+)/);
       if (merchantOrderMatch) {
         const merchantOrderId = merchantOrderMatch[1];
@@ -78,13 +53,43 @@ export default async function handler(req, res) {
           
           if (moResponse.ok) {
             const moData = await moResponse.json();
+            console.log('📦 Merchant Order Data:', JSON.stringify(moData, null, 2));
+            
             if (moData.payments && moData.payments.length > 0) {
               paymentId = moData.payments[0].id;
               console.log('💳 ID del pago (desde merchant_order):', paymentId);
+            } else {
+              console.log('⚠️ No se encontraron pagos en el merchant_order');
             }
+          } else {
+            console.error('❌ Error en respuesta de merchant_order:', moResponse.status);
           }
         } catch (error) {
           console.error('❌ Error obteniendo merchant_order:', error);
+        }
+      }
+    }
+    // Formato 4: { resource: "/v1/payments/123456" }
+    else if (req.body.resource && req.body.resource.includes('/v1/payments/')) {
+      const resourceMatch = req.body.resource.match(/\/v1\/payments\/(.+)/);
+      if (resourceMatch) {
+        paymentId = resourceMatch[1];
+        console.log('💳 ID del pago (formato 4):', paymentId);
+      }
+    }
+    // Formato 5: { resource: "123456789", topic: "payment" }
+    else if (req.body.resource && req.body.topic === 'payment') {
+      // Si resource es solo un número o string, es el payment_id
+      if (/^[a-zA-Z0-9_]+$/.test(req.body.resource)) {
+        paymentId = req.body.resource;
+        console.log('💳 ID del pago (formato 5 - string):', paymentId);
+      }
+      // Si resource es una URL, extraer el ID
+      else if (req.body.resource.includes('/payments/')) {
+        const paymentMatch = req.body.resource.match(/\/payments\/(.+)/);
+        if (paymentMatch) {
+          paymentId = paymentMatch[1];
+          console.log('💳 ID del pago (formato 5 - URL):', paymentId);
         }
       }
     }
@@ -148,15 +153,78 @@ export default async function handler(req, res) {
       throw new Error('Paquete no encontrado');
     }
 
-    // Obtener el email del pagador para encontrar el usuario
-    const payerEmail = paymentData.payer?.email;
-    console.log('📧 Email del pagador:', payerEmail);
-    if (!payerEmail) {
-      throw new Error('Email del pagador no encontrado');
+    // Buscar la compra en la base de datos para obtener el usuario correcto
+    let compra = null;
+    
+    // Buscar por external_reference primero
+    const compraResponse = await fetch(`${SUPABASE_URL}/rest/v1/compras_monedas?external_reference=eq.${externalReference}`, {
+      method: 'GET',
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (compraResponse.ok) {
+      const compras = await compraResponse.json();
+      if (compras && compras.length > 0) {
+        compra = compras[0];
+        console.log('✅ Compra encontrada por external_reference:', compra.id);
+      }
+    }
+    
+    // Si no se encontró por external_reference, buscar por payment_id
+    if (!compra) {
+      const compraResponse2 = await fetch(`${SUPABASE_URL}/rest/v1/compras_monedas?payment_id=eq.${paymentId}`, {
+        method: 'GET',
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (compraResponse2.ok) {
+        const compras = await compraResponse2.json();
+        if (compras && compras.length > 0) {
+          compra = compras[0];
+          console.log('✅ Compra encontrada por payment_id:', compra.id);
+        }
+      }
+    }
+    
+    if (!compra) {
+      console.log('❌ Compra no encontrada en la base de datos');
+      console.log('🔍 Datos disponibles:', {
+        paymentId,
+        externalReference,
+        paymentData: {
+          id: paymentData.id,
+          status: paymentData.status,
+          external_reference: paymentData.external_reference,
+          transaction_amount: paymentData.transaction_amount
+        }
+      });
+      throw new Error('Compra no encontrada en la base de datos');
     }
 
-    // Buscar el usuario en Supabase por email
-    const supabaseResponse = await fetch(`${SUPABASE_URL}/rest/v1/usuario?correo=eq.${payerEmail}`, {
+    // Verificar si ya se procesó este pago
+    if (compra.estado === 'completado') {
+      console.log('⚠️ Pago ya fue procesado anteriormente:', paymentId);
+      return res.status(200).json({ 
+        received: true,
+        message: 'Pago ya procesado',
+        paymentId: paymentId,
+        estado: compra.estado
+      });
+    }
+
+    const userId = compra.usuario_id;
+    console.log('👤 ID del usuario desde compra:', userId);
+
+    // Buscar el usuario en Supabase por ID
+    const supabaseResponse = await fetch(`${SUPABASE_URL}/rest/v1/usuario?id=eq.${userId}`, {
       method: 'GET',
       headers: {
         'apikey': SUPABASE_KEY,
@@ -193,6 +261,24 @@ export default async function handler(req, res) {
 
     if (!updateResponse.ok) {
       throw new Error(`Error actualizando saldo en Supabase: ${updateResponse.status}`);
+    }
+
+    // Actualizar el estado de la compra
+    const estadoResponse = await fetch(`${SUPABASE_URL}/rest/v1/compras_monedas?id=eq.${compra.id}`, {
+      method: 'PATCH',
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ 
+        estado: 'completado',
+        procesado_at: new Date().toISOString()
+      }),
+    });
+
+    if (!estadoResponse.ok) {
+      console.warn('⚠️ No se pudo actualizar el estado de la compra');
     }
 
     // Registrar la transacción en el historial (si la tabla existe)
