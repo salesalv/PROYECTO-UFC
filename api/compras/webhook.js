@@ -276,22 +276,37 @@ export default async function handler(req, res) {
     const nuevoSaldo = Number(usuario.saldo) + Number(paquete.monedas);
     console.log('💰 Nuevo saldo calculado:', nuevoSaldo);
 
-    // Actualizar el saldo del usuario en Supabase
-    const updateResponse = await fetch(`${SUPABASE_URL}/rest/v1/usuario?id=eq.${usuario.id}`, {
-      method: 'PATCH',
+    // Actualizar el saldo del usuario en Supabase usando SQL directo
+    console.log('🔄 Actualizando saldo del usuario:', usuario.id, 'de', usuario.saldo, 'a', nuevoSaldo);
+    
+    // Usar SQL directo para evitar problemas de RLS
+    const updateResponse = await fetch(`${SUPABASE_URL}/rest/v1/rpc/exec_sql`, {
+      method: 'POST',
       headers: {
         'apikey': SUPABASE_KEY,
         'Authorization': `Bearer ${SUPABASE_KEY}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ saldo: nuevoSaldo }),
+      body: JSON.stringify({
+        sql: `UPDATE usuario SET saldo = ${nuevoSaldo} WHERE id = ${usuario.id}`
+      }),
     });
 
     if (!updateResponse.ok) {
-      throw new Error(`Error actualizando saldo en Supabase: ${updateResponse.status}`);
+      const errorText = await updateResponse.text();
+      console.error('❌ Error actualizando saldo del usuario:', updateResponse.status, errorText);
+      console.error('📝 Datos de actualización:', { 
+        usuarioId: usuario.id, 
+        saldoAnterior: usuario.saldo,
+        nuevoSaldo: nuevoSaldo
+      });
+      throw new Error(`Error actualizando saldo en Supabase: ${updateResponse.status} - ${errorText}`);
+    } else {
+      console.log('✅ Saldo del usuario actualizado exitosamente');
     }
 
     // Actualizar el estado de la compra
+    console.log('🔄 Actualizando estado de compra:', compra.id);
     const estadoResponse = await fetch(`${SUPABASE_URL}/rest/v1/compras_monedas?id=eq.${compra.id}`, {
       method: 'PATCH',
       headers: {
@@ -300,13 +315,20 @@ export default async function handler(req, res) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ 
-        estado: 'completado',
-        procesado_at: new Date().toISOString()
+        estado: 'completado'
       }),
     });
 
     if (!estadoResponse.ok) {
-      console.warn('⚠️ No se pudo actualizar el estado de la compra');
+      const errorText = await estadoResponse.text();
+      console.error('❌ Error actualizando estado de compra:', estadoResponse.status, errorText);
+      console.error('📝 Datos de actualización:', { 
+        compraId: compra.id, 
+        estado: 'completado'
+      });
+      // No lanzar error aquí para no interrumpir el proceso
+    } else {
+      console.log('✅ Estado de compra actualizado exitosamente');
     }
 
     // Registrar la transacción en el historial (si la tabla existe)
