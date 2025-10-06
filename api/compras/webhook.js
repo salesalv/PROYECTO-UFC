@@ -36,10 +36,11 @@ export default async function handler(req, res) {
     }
     // 🛒 Formato 3: merchant_orders PRIMERO, antes que los otros
     else if (req.body.resource && req.body.resource.includes('merchant_orders')) {
+      console.log('🛒 Detectado merchant_order:', req.body.resource);
       const merchantOrderMatch = req.body.resource.match(/merchant_orders\/(\d+)/);
       if (merchantOrderMatch) {
         const merchantOrderId = merchantOrderMatch[1];
-        console.log('🛒 Merchant Order ID:', merchantOrderId);
+        console.log('🛒 Merchant Order ID extraído:', merchantOrderId);
         
         // Obtener el payment_id del merchant_order
         try {
@@ -62,11 +63,14 @@ export default async function handler(req, res) {
               console.log('⚠️ No se encontraron pagos en el merchant_order');
             }
           } else {
-            console.error('❌ Error en respuesta de merchant_order:', moResponse.status);
+            const errorText = await moResponse.text();
+            console.error('❌ Error en respuesta de merchant_order:', moResponse.status, errorText);
           }
         } catch (error) {
           console.error('❌ Error obteniendo merchant_order:', error);
         }
+      } else {
+        console.log('⚠️ No se pudo extraer merchant_order_id de:', req.body.resource);
       }
     }
     // Formato 4: { resource: "/v1/payments/123456" }
@@ -207,7 +211,28 @@ export default async function handler(req, res) {
           transaction_amount: paymentData.transaction_amount
         }
       });
-      throw new Error('Compra no encontrada en la base de datos');
+      
+      // Verificar si hay compras en la base de datos
+      const allComprasResponse = await fetch(`${SUPABASE_URL}/rest/v1/compras_monedas?select=*&order=fecha_compra.desc&limit=5`, {
+        method: 'GET',
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      
+      if (allComprasResponse.ok) {
+        const allCompras = await allComprasResponse.json();
+        console.log('📋 Últimas 5 compras en la base de datos:', allCompras);
+      }
+      
+      return res.status(200).json({ 
+        received: true,
+        message: 'Compra no encontrada - posiblemente no se registró correctamente',
+        paymentId: paymentId,
+        externalReference: externalReference
+      });
     }
 
     // Verificar si ya se procesó este pago

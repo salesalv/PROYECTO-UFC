@@ -119,6 +119,7 @@ export default async function handler(req, res) {
     // Registrar la compra en la base de datos
     try {
       const compraData = {
+        usuario_id: userId,
         paquete_id: paquete.id,
         monedas: paquete.monedas,
         precio: paquete.precio,
@@ -138,12 +139,16 @@ export default async function handler(req, res) {
       });
       
       if (!compraResponse.ok) {
-        console.warn('No se pudo registrar la compra:', await compraResponse.text());
+        const errorText = await compraResponse.text();
+        console.error('❌ Error registrando compra:', compraResponse.status, errorText);
+        console.error('📝 Datos de compra:', compraData);
+        throw new Error(`Error registrando compra: ${compraResponse.status} - ${errorText}`);
       } else {
-        console.log('✅ Compra registrada en la base de datos');
+        console.log('✅ Compra registrada en la base de datos:', compraData);
       }
     } catch (error) {
-      console.warn('Error registrando compra:', error);
+      console.error('❌ Error registrando compra:', error);
+      throw error; // Re-lanzar el error para que se maneje apropiadamente
     }
     
     res.json({
