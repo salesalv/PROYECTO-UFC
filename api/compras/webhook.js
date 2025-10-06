@@ -95,11 +95,12 @@ export default async function handler(req, res) {
     }
     
     if (!paymentId) {
-      console.log('⚠️ Notificación no relacionada con pagos:', req.body);
+      console.log('⚠️ Notificación no relacionada con pagos:', JSON.stringify(req.body, null, 2));
       return res.status(200).json({ 
         received: true,
         message: 'Notificación procesada (no es un pago)',
-        type: req.body.topic || 'unknown'
+        type: req.body.topic || 'unknown',
+        body: req.body
       });
     }
 
@@ -224,7 +225,7 @@ export default async function handler(req, res) {
     console.log('👤 ID del usuario desde compra:', userId);
 
     // Buscar el usuario en Supabase por ID
-    const supabaseResponse = await fetch(`${SUPABASE_URL}/rest/v1/usuario?id=eq.${userId}`, {
+    const supabaseResponse = await fetch(`${SUPABASE_URL}/rest/v1/usuario?id=eq.${userId}&select=id,nombre_usuario,correo,saldo`, {
       method: 'GET',
       headers: {
         'apikey': SUPABASE_KEY,
@@ -234,7 +235,9 @@ export default async function handler(req, res) {
     });
 
     if (!supabaseResponse.ok) {
-      throw new Error(`Error buscando usuario en Supabase: ${supabaseResponse.status}`);
+      const errorText = await supabaseResponse.text();
+      console.error(`❌ Error buscando usuario en Supabase: ${supabaseResponse.status}`, errorText);
+      throw new Error(`Error buscando usuario en Supabase: ${supabaseResponse.status} - ${errorText}`);
     }
 
     const usuarios = await supabaseResponse.json();
