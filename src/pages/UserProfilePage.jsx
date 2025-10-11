@@ -123,7 +123,7 @@ const UserProfilePage = () => {
                     />
                   ) : (
                     <div className="w-32 h-32 rounded-full mx-auto border-4 border-red-600 bg-gray-700 flex items-center justify-center">
-                      <User className="h-16 w-16 text-gray-400" />
+                      <User className="h-24 w-24 text-gray-400" />
                     </div>
                   )}
                   <Button 
@@ -209,12 +209,35 @@ const UserProfilePage = () => {
                 </div>
               </CardContent>
               <CardFooter className="flex justify-between">
-                <Button
-                  className="bg-red-600 hover:bg-red-700 font-bold uppercase tracking-wider"
-                  onClick={handleEditToggle}
-                >
-                  {isEditing ? t('profile.edit_profile') : t('profile.edit_profile')}
-                </Button>
+                {isEditing ? (
+                  <>
+                    <Button
+                      variant="outline"
+                      className="border-red-600 text-red-400 hover:bg-red-600 hover:text-white font-bold uppercase tracking-wider"
+                      onClick={() => {
+                        setIsEditing(false);
+                        setEditableUsername(userData?.nombre_usuario || '');
+                        setAvatarFile(null);
+                        setAvatarPreview(null);
+                      }}
+                    >
+                      Cancelar
+                    </Button>
+                    <Button
+                      className="bg-red-600 hover:bg-red-700 font-bold uppercase tracking-wider"
+                      onClick={handleEditToggle}
+                    >
+                      Confirmar Cambios
+                    </Button>
+                  </>
+                ) : (
+                  <Button
+                    className="bg-red-600 hover:bg-red-700 font-bold uppercase tracking-wider"
+                    onClick={handleEditToggle}
+                  >
+                    {t('profile.edit_profile')}
+                  </Button>
+                )}
               </CardFooter>
             </Card>
           </div>

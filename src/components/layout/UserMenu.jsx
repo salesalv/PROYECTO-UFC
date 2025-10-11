@@ -82,7 +82,7 @@ const UserMenu =() => {
                 />
               ) : (
                 <div className="h-20 w-20 rounded-full bg-gray-700 ring-2 ring-red-600 flex items-center justify-center">
-                  <UserCircle className="h-12 w-12 text-gray-400" />
+                  <UserCircle className="h-16 w-16 text-gray-400" />
                 </div>
               )}
               <div className="absolute -bottom-1 -right-1 bg-yellow-500 text-black text-xs rounded-full w-6 h-6 flex items-center justify-center font-bold">
