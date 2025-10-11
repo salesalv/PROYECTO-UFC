@@ -115,11 +115,23 @@ const UserProfilePage = () => {
             <Card className="bg-black/70 border border-gray-800 backdrop-blur-sm shadow-lg">
               <CardHeader className="text-center">
                 <div className="relative inline-block mb-4">
-                  <img  
-                    className="w-32 h-32 rounded-full mx-auto border-4 border-red-600 object-cover"
-                    alt="User Avatar"
-                    src={avatarPreview || userData?.avatar || "/pain.png"} />
-                  <Button variant="ghost" size="icon" className="absolute bottom-0 right-0 bg-gray-700/80 rounded-full hover:bg-red-600" onClick={() => fileInputRef.current.click()}>
+                  {avatarPreview || userData?.avatar ? (
+                    <img  
+                      className="w-32 h-32 rounded-full mx-auto border-4 border-red-600 object-cover"
+                      alt="User Avatar"
+                      src={avatarPreview || userData?.avatar} 
+                    />
+                  ) : (
+                    <div className="w-32 h-32 rounded-full mx-auto border-4 border-red-600 bg-gray-700 flex items-center justify-center">
+                      <User className="h-16 w-16 text-gray-400" />
+                    </div>
+                  )}
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className={`absolute bottom-0 right-0 bg-gray-700/80 rounded-full ${isEditing ? 'hover:bg-red-600' : ''}`} 
+                    onClick={() => fileInputRef.current.click()}
+                  >
                     <Edit className="w-4 h-4" />
                   </Button>
                   {isEditing && (

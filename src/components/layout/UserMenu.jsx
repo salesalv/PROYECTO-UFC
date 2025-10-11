@@ -8,7 +8,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { UserCircle, LogOut, Award, BarChart2, Star, Coins, Crown } from "lucide-react";
+import { UserCircle, LogOut, Award, Coins, Crown, Menu } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import supabase from "@/db";
 import { useUser } from "@/context/UserContext";
@@ -67,18 +67,24 @@ const UserMenu =() => {
     <DropdownMenu onOpenChange={handleOpenChange}>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" size="icon" className="relative">
-          <UserCircle className="h-8 w-8" />
+          <Menu className="h-8 w-8" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-72" align="end">
         <div className="p-4 bg-gradient-to-br from-red-900/20 to-black border-b border-gray-800">
           <div className="flex items-center space-x-4">
             <div className="relative">
-              <img
-                src={userData?.avatar || "/pain.png"}
-                alt={userData?.nombre_usuario || t('user.default')}
-                className="h-20 w-20 rounded-full object-cover ring-2 ring-red-600"
-              />
+              {userData?.avatar ? (
+                <img
+                  src={userData.avatar}
+                  alt={userData?.nombre_usuario || t('user.default')}
+                  className="h-20 w-20 rounded-full object-cover ring-2 ring-red-600"
+                />
+              ) : (
+                <div className="h-20 w-20 rounded-full bg-gray-700 ring-2 ring-red-600 flex items-center justify-center">
+                  <UserCircle className="h-12 w-12 text-gray-400" />
+                </div>
+              )}
               <div className="absolute -bottom-1 -right-1 bg-yellow-500 text-black text-xs rounded-full w-6 h-6 flex items-center justify-center font-bold">
                 {userData?.nivel || 1}
               </div>
@@ -105,22 +111,6 @@ const UserMenu =() => {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-2 p-3 bg-gray-900/50">
-          <div className="flex items-center space-x-2 p-2 rounded-lg bg-gray-800/50">
-            <BarChart2 className="h-4 w-4 text-green-500" />
-            <div>
-              <p className="text-xs text-gray-400">{t('user.win_rate')}</p>
-              <p className="text-sm font-medium text-white">{userData?.winRate || "-"}</p>
-            </div>
-          </div>
-          <div className="flex items-center space-x-2 p-2 rounded-lg bg-gray-800/50">
-            <Star className="h-4 w-4 text-blue-500" />
-            <div>
-              <p className="text-xs text-gray-400">{t('user.predictions')}</p>
-              <p className="text-sm font-medium text-white">{userData?.predictions || "-"}</p>
-            </div>
-          </div>
-        </div>
 
         <div className="p-2">
           <DropdownMenuItem asChild>
