@@ -6,7 +6,6 @@ import { User, Mail, Calendar, Award, Edit, Trophy, Bell, Shield, Coins } from "
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
 import BadgeManager from "@/components/badges/BadgeManager";
@@ -25,12 +24,8 @@ const UserProfilePage = () => {
   const fileInputRef = useRef();
   const [avatarFile, setAvatarFile] = useState(null);
   const [avatarPreview, setAvatarPreview] = useState(null);
-  const { t, i18n } = useTranslation();
-  const [selectedLanguage, setSelectedLanguage] = useState(i18n.language || 'es');
+  const { t } = useTranslation();
 
-  useEffect(() => {
-    i18n.changeLanguage(selectedLanguage);
-  }, [selectedLanguage, i18n]);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -162,18 +157,6 @@ const UserProfilePage = () => {
                 <CardDescription className="text-gray-300">
                   {t('profile.member_since')} {userData ? new Date(userData.fecha_registro).toLocaleDateString() : "-"}
                 </CardDescription>
-                <div className="flex justify-center mt-4">
-                  <Select value={selectedLanguage} onValueChange={setSelectedLanguage}>
-                    <SelectTrigger className="w-48 bg-gray-800 border-gray-700 text-white">
-                      <SelectValue>{t('profile.language')}</SelectValue>
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="es">Español</SelectItem>
-                      <SelectItem value="en">English</SelectItem>
-                      <SelectItem value="pt">Português</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
               </CardHeader>
               <CardContent className="mt-6 space-y-6">
                 <div className="flex items-center space-x-4 p-4 bg-gray-900/50 rounded-lg border border-gray-700">
