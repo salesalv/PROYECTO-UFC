@@ -13,15 +13,13 @@ import { Link, useNavigate } from "react-router-dom";
 import supabase from "@/db";
 import { useUser } from "@/context/UserContext";
 import { useTranslation } from 'react-i18next';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useEquippedBadge } from '@/hooks/useEquippedBadge';
 import EquippedBadgeDisplay from '@/components/badges/EquippedBadgeDisplay';
 
 const UserMenu =() => {
   const navigate = useNavigate();
   const { user: userData, loading, refreshUser } = useUser();
-  const { t, i18n } = useTranslation();
-  const [selectedLanguage, setSelectedLanguage] = useState(i18n.language || 'es');
+  const { t } = useTranslation();
   
   // Hook para obtener la insignia equipada
   const { equippedBadge, loading: badgeLoading } = useEquippedBadge(userData?.id);
@@ -51,9 +49,6 @@ const UserMenu =() => {
     return () => window.removeEventListener('storage', onStorage);
   }, []);
 
-  useEffect(() => {
-    i18n.changeLanguage(selectedLanguage);
-  }, [selectedLanguage, i18n]);
 
   const handleLogout = async () => {
     await supabase.auth.signOut({ redirectTo: window.location.origin + '/login' });
@@ -140,18 +135,6 @@ const UserMenu =() => {
               Smashufc.soporte@gmail.com
             </div>
           </DropdownMenuItem>
-          <div className="mt-3 px-2">
-            <Select value={selectedLanguage} onValueChange={setSelectedLanguage}>
-              <SelectTrigger className="w-full bg-gray-800 border-gray-700 text-white">
-                <SelectValue>{t('profile.language')}</SelectValue>
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="es">Español</SelectItem>
-                <SelectItem value="en">English</SelectItem>
-                <SelectItem value="pt">Português</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
         </div>
 
         <DropdownMenuSeparator />
