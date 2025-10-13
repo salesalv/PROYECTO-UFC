@@ -89,12 +89,6 @@ export async function obtenerHistorialCompras() {
   return apiRequest('/historial');
 }
 
-/**
- * Obtiene el historial de transacciones de monedas
- */
-export async function obtenerHistorialTransacciones() {
-  return apiRequest('/transacciones');
-}
 
 /**
  * Simula un pago para testing (solo en desarrollo)
@@ -121,7 +115,6 @@ export default {
   obtenerSaldoUsuario,
   crearPaymentIntent,
   obtenerHistorialCompras,
-  obtenerHistorialTransacciones,
   simularPago,
   procesarPagoCompletado,
 };

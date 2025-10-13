@@ -9,7 +9,6 @@ import { useUser } from '@/context/UserContext';
 import { useTranslation } from 'react-i18next';
 import { crearPaymentIntent, obtenerPaquetesDisponibles } from '@/services/coinApiService';
 import CoinPurchaseCard from '@/components/coins/CoinPurchaseCard';
-import TransactionHistory from '@/components/coins/TransactionHistory';
 import { useToast } from '@/components/ui/use-toast';
 
 const CoinPurchasePage = () => {
@@ -18,17 +17,12 @@ const CoinPurchasePage = () => {
   const { toast } = useToast();
   const [selectedPaquete, setSelectedPaquete] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [transactions, setTransactions] = useState([]);
-  const [loadingTransactions, setLoadingTransactions] = useState(true);
   const [paquetes, setPaquetes] = useState([]);
   const [loadingPaquetes, setLoadingPaquetes] = useState(true);
 
   useEffect(() => {
     loadPaquetes();
-    if (user?.id) {
-      loadTransactionHistory();
-    }
-  }, [user?.id]);
+  }, []);
 
   const loadPaquetes = async () => {
     try {
@@ -52,22 +46,6 @@ const CoinPurchasePage = () => {
     }
   };
 
-  const loadTransactionHistory = async () => {
-    try {
-      setLoadingTransactions(true);
-      const history = await obtenerHistorialTransacciones();
-      setTransactions(history);
-    } catch (error) {
-      console.error('Error cargando historial:', error);
-      toast({
-        title: t('error.title'),
-        description: t('error.loading_history'),
-        variant: 'destructive'
-      });
-    } finally {
-      setLoadingTransactions(false);
-    }
-  };
 
   const handlePurchase = async (paquete) => {
     if (!user) {
@@ -190,36 +168,26 @@ const CoinPurchasePage = () => {
           </Card>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Purchase Packages */}
-          <div className="lg:col-span-2">
-            <h2 className="text-2xl font-bold text-white mb-6">{t('coins.choose_package')}</h2>
-            {loadingPaquetes ? (
-              <div className="text-center py-8">
-                <div className="text-white">Cargando paquetes...</div>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {paquetes.map((paquete) => (
-                  <CoinPurchaseCard
-                    key={paquete.id}
-                    paquete={paquete}
-                    onSelect={handlePurchase}
-                    isSelected={selectedPaquete?.id === paquete.id}
-                    isLoading={isLoading && selectedPaquete?.id === paquete.id}
-                  />
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* Transaction History */}
-          <div>
-            <TransactionHistory 
-              transactions={transactions} 
-              isLoading={loadingTransactions}
-            />
-          </div>
+        {/* Purchase Packages */}
+        <div>
+          <h2 className="text-2xl font-bold text-white mb-6">{t('coins.choose_package')}</h2>
+          {loadingPaquetes ? (
+            <div className="text-center py-8">
+              <div className="text-white">Cargando paquetes...</div>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {paquetes.map((paquete) => (
+                <CoinPurchaseCard
+                  key={paquete.id}
+                  paquete={paquete}
+                  onSelect={handlePurchase}
+                  isSelected={selectedPaquete?.id === paquete.id}
+                  isLoading={isLoading && selectedPaquete?.id === paquete.id}
+                />
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Payment Info */}

@@ -92,22 +92,6 @@ export async function obtenerSaldo(userId) {
   return Number(data.saldo);
 }
 
-/**
- * Obtiene el historial de transacciones del usuario
- * @param {number} userId
- * @param {number} limit - Límite de transacciones a obtener
- */
-export async function obtenerHistorialTransacciones(userId, limit = 50) {
-  const { data, error } = await supabase
-    .from('transacciones_moneda')
-    .select('*')
-    .eq('usuario_id', userId)
-    .order('fecha', { ascending: false })
-    .limit(limit);
-  
-  if (error) throw error;
-  return data || [];
-}
 
 /**
  * Paquetes de monedas disponibles para compra
