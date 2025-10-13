@@ -8,7 +8,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { UserCircle, LogOut, Award, Coins, Crown, Menu } from "lucide-react";
+import { UserCircle, LogOut, Award, Coins, Crown, Menu, Mail } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import supabase from "@/db";
 import { useUser } from "@/context/UserContext";
@@ -130,6 +130,15 @@ const UserMenu =() => {
               <Crown className="mr-2 h-4 w-4 text-purple-400" />
               <span>Canjear Recompensas</span>
             </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem className="flex flex-col items-start text-gray-300 hover:text-white hover:bg-gray-800/50 rounded-md py-3">
+            <div className="flex items-center">
+              <Mail className="mr-2 h-4 w-4 text-blue-400" />
+              <span>Contáctanos</span>
+            </div>
+            <div className="ml-6 mt-1 text-xs text-gray-400">
+              Smashufc.soporte@gmail.com
+            </div>
           </DropdownMenuItem>
           <div className="mt-3 px-2">
             <Select value={selectedLanguage} onValueChange={setSelectedLanguage}>

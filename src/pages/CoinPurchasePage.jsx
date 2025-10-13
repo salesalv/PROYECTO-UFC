@@ -9,7 +9,6 @@ import { useUser } from '@/context/UserContext';
 import { useTranslation } from 'react-i18next';
 import { crearPaymentIntent, obtenerPaquetesDisponibles } from '@/services/coinApiService';
 import CoinPurchaseCard from '@/components/coins/CoinPurchaseCard';
-import PurchaseHistory from '@/components/coins/PurchaseHistory';
 import { useToast } from '@/components/ui/use-toast';
 
 const CoinPurchasePage = () => {
@@ -189,11 +188,6 @@ const CoinPurchasePage = () => {
               ))}
             </div>
           )}
-        </div>
-
-        {/* Purchase History */}
-        <div className="mt-12">
-          <PurchaseHistory />
         </div>
 
         {/* Payment Info */}
