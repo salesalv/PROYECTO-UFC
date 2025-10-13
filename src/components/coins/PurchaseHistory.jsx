@@ -42,11 +42,15 @@ const PurchaseHistory = () => {
       }
     } catch (error) {
       console.error('Error cargando historial:', error);
-      toast({
-        title: 'Error',
-        description: 'No se pudo cargar el historial de compras',
-        variant: 'destructive'
-      });
+      // Solo mostrar toast si no es un error de autenticación
+      if (!error.message.includes('Token') && !error.message.includes('401')) {
+        toast({
+          title: 'Error',
+          description: 'No se pudo cargar el historial de compras',
+          variant: 'destructive'
+        });
+      }
+      setCompras([]); // Establecer array vacío en caso de error
     } finally {
       setLoading(false);
     }
