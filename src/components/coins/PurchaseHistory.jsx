@@ -33,23 +33,37 @@ const PurchaseHistory = () => {
   const loadHistorial = async () => {
     try {
       setLoading(true);
+      console.log('🔄 Cargando historial de compras...');
+      
       const response = await obtenerHistorialCompras();
+      console.log('📊 Respuesta del historial:', response);
       
       if (response.success) {
         setCompras(response.compras || []);
+        console.log('✅ Historial cargado exitosamente:', response.compras?.length || 0, 'compras');
       } else {
         throw new Error(response.error || 'Error cargando historial');
       }
     } catch (error) {
-      console.error('Error cargando historial:', error);
-      // Solo mostrar toast si no es un error de autenticación
-      if (!error.message.includes('Token') && !error.message.includes('401')) {
-        toast({
-          title: 'Error',
-          description: 'No se pudo cargar el historial de compras',
-          variant: 'destructive'
-        });
+      console.error('❌ Error cargando historial:', error);
+      
+      // Mostrar diferentes mensajes según el tipo de error
+      let errorMessage = 'No se pudo cargar el historial de compras';
+      
+      if (error.message.includes('Token') || error.message.includes('401')) {
+        errorMessage = 'Sesión expirada. Por favor, inicia sesión nuevamente.';
+      } else if (error.message.includes('500')) {
+        errorMessage = 'Error del servidor. Intenta nuevamente en unos minutos.';
+      } else if (error.message.includes('Network')) {
+        errorMessage = 'Error de conexión. Verifica tu internet.';
       }
+      
+      toast({
+        title: 'Error',
+        description: errorMessage,
+        variant: 'destructive'
+      });
+      
       setCompras([]); // Establecer array vacío en caso de error
     } finally {
       setLoading(false);

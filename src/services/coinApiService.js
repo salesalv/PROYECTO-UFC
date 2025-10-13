@@ -86,7 +86,35 @@ export async function crearPaymentIntent(paqueteId) {
  * Obtiene el historial de compras del usuario
  */
 export async function obtenerHistorialCompras() {
-  return apiRequest('/historial');
+  // Usar endpoint directo en la raíz de la API
+  const API_BASE_URL_HISTORIAL = import.meta.env.PROD 
+    ? 'https://smashufc-nine.vercel.app/api'
+    : 'http://localhost:3001/api';
+  
+  const token = getAuthToken();
+  const url = `${API_BASE_URL_HISTORIAL}/historial`;
+  
+  const config = {
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token && { 'Authorization': `Bearer ${token}` }),
+    },
+  };
+
+  try {
+    const response = await fetch(url, config);
+    
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.error || `Error ${response.status}: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error(`Error en historial:`, error);
+    throw error;
+  }
 }
 
 
