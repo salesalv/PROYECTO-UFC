@@ -65,7 +65,7 @@ const UserMenu =() => {
           <Menu className="h-8 w-8" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-72" align="end">
+      <DropdownMenuContent className="w-64 sm:w-72" align="end">
         <div className="p-4 bg-gradient-to-br from-red-900/20 to-black border-b border-gray-800">
           <div className="flex items-center space-x-4">
             <div className="relative">
@@ -73,14 +73,14 @@ const UserMenu =() => {
                 <img
                   src={userData.avatar}
                   alt={userData?.nombre_usuario || t('user.default')}
-                  className="h-20 w-20 rounded-full object-cover ring-2 ring-red-600"
+                  className="h-16 w-16 sm:h-20 sm:w-20 rounded-full object-cover ring-2 ring-red-600"
                 />
               ) : (
-                <div className="h-20 w-20 rounded-full bg-gray-700 ring-2 ring-red-600 flex items-center justify-center">
-                  <UserCircle className="h-16 w-16 text-gray-400" />
+                <div className="h-16 w-16 sm:h-20 sm:w-20 rounded-full bg-gray-700 ring-2 ring-red-600 flex items-center justify-center">
+                  <UserCircle className="h-12 w-12 sm:h-16 sm:w-16 text-gray-400" />
                 </div>
               )}
-              <div className="absolute -bottom-1 -right-1 bg-yellow-500 text-black text-xs rounded-full w-6 h-6 flex items-center justify-center font-bold">
+              <div className="absolute -bottom-1 -right-1 bg-yellow-500 text-black text-xs rounded-full w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center font-bold">
                 {userData?.nivel || 1}
               </div>
             </div>
@@ -88,7 +88,7 @@ const UserMenu =() => {
               {/* Nombre del usuario con insignia equipada */}
               <div className="flex flex-col space-y-1">
                 <div className="flex items-center space-x-2">
-                  <p className="text-lg font-bold text-white">{userData?.nombre_usuario || t('user.default')}</p>
+                  <p className="text-base sm:text-lg font-bold text-white">{userData?.nombre_usuario || t('user.default')}</p>
                   {/* Mostrar insignia equipada si existe */}
                   <EquippedBadgeDisplay 
                     equippedBadge={equippedBadge} 

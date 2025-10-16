@@ -94,7 +94,7 @@ const EventsPage = () => {
             <p className="text-gray-500">Próximamente se agregarán nuevos eventos.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
             {events.map((event, index) => (
               <motion.div
                 key={event.id}
@@ -103,7 +103,7 @@ const EventsPage = () => {
                 transition={{ duration: 0.4, delay: index * 0.1 }}
               >
                 <Card className="bg-black/60 border-gray-800 shadow-lg overflow-hidden backdrop-blur-sm h-full flex flex-col card-hover">
-                  <div className="relative h-48 md:h-56">
+                  <div className="relative h-40 sm:h-48 md:h-56">
                     <img 
                       className="w-full h-full object-cover"
                       alt={event.texto_alternativo || event.titulo}
@@ -114,7 +114,7 @@ const EventsPage = () => {
                       <h2 className="text-2xl font-bold text-white shadow-text">{event.titulo}</h2>
                     </div>
                   </div>
-                  <CardContent className="p-6 flex-grow flex flex-col">
+                  <CardContent className="p-4 sm:p-6 flex-grow flex flex-col">
                     <div className="space-y-3 text-gray-300 mb-5 flex-grow">
                       <p className="flex items-center">
                         <Calendar className="w-4 h-4 mr-2 text-red-500" /> 

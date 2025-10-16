@@ -3,16 +3,13 @@ import { Link } from "react-router-dom";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetClose } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import Logo from "@/components/Logo";
-import { User, LogOut, Coins } from "lucide-react";
+import { User, LogOut, Coins, Crown } from "lucide-react";
 import { useUser } from "@/context/UserContext";
 import supabase from "@/db";
 import { useTranslation } from 'react-i18next';
 
 const Sidebar = ({ trigger, navItems }) => {
   const { t } = useTranslation();
-  // Placeholder user data
-  const userPoints = 1250;
-
   const { user: userData, refreshUser } = useUser();
 
   // Combined sidebar links
@@ -24,6 +21,7 @@ const Sidebar = ({ trigger, navItems }) => {
     })),
     { icon: User, label: t('nav.profile'), path: "/profile" },
     { icon: Coins, label: t('nav.buy_coins'), path: "/coins" },
+    { icon: Crown, label: "Canjear Recompensas", path: "/badges" },
   ];
 
   const handleLogout = async () => {
@@ -49,13 +47,15 @@ const Sidebar = ({ trigger, navItems }) => {
 
         <div className="flex flex-col h-full pb-10 overflow-y-auto">
           {/* User Points */}
-          <div className="mb-6 px-4 py-3 bg-gray-900/50 rounded-lg border border-gray-700 flex items-center justify-between">
-            <span className="font-medium text-gray-300">{t('sidebar.my_points')}</span>
-            <div className="flex items-center text-yellow-400 font-bold text-lg">
-              <Coins className="h-5 w-5 mr-2" />
-              {userPoints.toLocaleString()}
+          {userData && (
+            <div className="mb-6 px-4 py-3 bg-gray-900/50 rounded-lg border border-gray-700 flex items-center justify-between">
+              <span className="font-medium text-gray-300">{t('sidebar.my_points')}</span>
+              <div className="flex items-center text-yellow-400 font-bold text-lg">
+                <Coins className="h-5 w-5 mr-2" />
+                {userData.saldo?.toLocaleString() || 0}
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Navigation Links */}
           <nav className="flex-grow space-y-1">

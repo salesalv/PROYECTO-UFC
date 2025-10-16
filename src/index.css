@@ -171,3 +171,32 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
+/* Mejoras responsive adicionales */
+@media (max-width: 640px) {
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  /* Mejorar scroll horizontal en tablas */
+  .overflow-x-auto {
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Ajustar espaciado en móviles */
+  .space-y-6 > * + * {
+    margin-top: 1rem;
+  }
+}
+
+/* Mejorar contraste en móviles */
+@media (max-width: 768px) {
+  .text-gray-400 {
+    color: rgb(156 163 175);
+  }
+  
+  .text-gray-500 {
+    color: rgb(107 114 128);
+  }
+}

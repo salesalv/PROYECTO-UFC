@@ -46,9 +46,9 @@ const ForumPage = () => {
           />
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
           {/* Categories */}
-          <div className="lg:col-span-1 space-y-6">
+          <div className="lg:col-span-1 space-y-4 md:space-y-6">
             <h2 className="text-2xl font-bold text-red-400 mb-4">{t('forum.categories')}</h2>
             {categories.map(category => (
               <motion.div
@@ -78,7 +78,7 @@ const ForumPage = () => {
               <CardContent className="p-0">
                 <ul className="divide-y divide-gray-800">
                   {recentThreads.map(thread => (
-                    <li key={thread.id} className="p-4 hover:bg-gray-800/50 transition-colors duration-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                    <li key={thread.id} className="p-3 sm:p-4 hover:bg-gray-800/50 transition-colors duration-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
                       <div>
                         <Link to={`/thread/${thread.id}`} className="text-lg font-semibold text-white hover:text-red-400 transition-colors">{thread.title}</Link>
                         <p className="text-sm text-gray-500">

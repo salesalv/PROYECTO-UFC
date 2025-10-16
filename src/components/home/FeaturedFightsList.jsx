@@ -65,7 +65,7 @@ const FeaturedFightsList = (props) => {
           </Button>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
           {events.map((event, index) => (
             <motion.div
               key={event.id}
@@ -84,7 +84,7 @@ const FeaturedFightsList = (props) => {
                    <h4 className="text-lg font-bold text-white shadow-text">{event.titulo}</h4>
                 </div>
               </div>
-              <div className="p-4">
+              <div className="p-3 sm:p-4">
                 <div className="flex items-center text-sm text-gray-400 mb-2">
                   <Calendar className="w-4 h-4 mr-2 text-red-500" />
                   {formatDate(event.fecha)}

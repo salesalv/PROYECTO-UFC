@@ -94,17 +94,18 @@ const FightersPage = () => {
            ) : peleadores.length === 0 ? (
              <p className="p-6 text-center text-gray-400">{t('fighters.no_table')}</p>
            ) : (
-            <Table>
-              <TableHeader>
-                <TableRow className="border-gray-700 hover:bg-gray-800/50">
-                  <TableHead className="w-[80px] text-center font-bold text-red-500">{t('fighters.rank')}</TableHead>
-                  <TableHead className="font-bold text-red-500">{t('fighters.name')}</TableHead>
-                  <TableHead className="font-bold text-red-500 hidden md:table-cell">{t('fighters.division')}</TableHead>
-                  <TableHead className="font-bold text-red-500 hidden lg:table-cell">{t('fighters.record')}</TableHead>
-                  <TableHead className="text-center font-bold text-red-500">{t('fighters.status_col')}</TableHead>
-                  <TableHead className="text-right font-bold text-red-500">{t('fighters.points_col')} <Star className="inline w-4 h-4 mb-1 ml-1 text-yellow-400"/></TableHead>
-                </TableRow>
-              </TableHeader>
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow className="border-gray-700 hover:bg-gray-800/50">
+                    <TableHead className="w-[60px] sm:w-[80px] text-center font-bold text-red-500">{t('fighters.rank')}</TableHead>
+                    <TableHead className="font-bold text-red-500 min-w-[120px]">{t('fighters.name')}</TableHead>
+                    <TableHead className="font-bold text-red-500 hidden md:table-cell">{t('fighters.division')}</TableHead>
+                    <TableHead className="font-bold text-red-500 hidden lg:table-cell">{t('fighters.record')}</TableHead>
+                    <TableHead className="text-center font-bold text-red-500">{t('fighters.status_col')}</TableHead>
+                    <TableHead className="text-right font-bold text-red-500">{t('fighters.points_col')} <Star className="inline w-4 h-4 mb-1 ml-1 text-yellow-400"/></TableHead>
+                  </TableRow>
+                </TableHeader>
               <TableBody>
                 {peleadores.map((fighter, idx) => (
                   <TableRow key={fighter.id || idx} className="border-gray-800 hover:bg-gray-700/50 transition-colors cursor-pointer">
@@ -132,7 +133,8 @@ const FightersPage = () => {
                   </TableRow>
                 ))}
               </TableBody>
-            </Table>
+              </Table>
+            </div>
            )}
         </div>
          <p className="text-center text-gray-500 mt-6 text-sm">

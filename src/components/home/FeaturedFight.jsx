@@ -76,27 +76,27 @@ const FeaturedFight = () => {
             </h2>
             <p className="text-lg md:text-xl mb-8 text-center text-gray-300 font-light">{t('home.star_fight_description')}</p>
 
-            <div className="grid grid-cols-[1fr_auto_1fr] gap-4 md:gap-8 mb-8 items-center">
+            <div className="grid grid-cols-[1fr_auto_1fr] gap-2 sm:gap-4 md:gap-8 mb-8 items-center">
               {/* Fighter A */}
               <div className="text-center flex flex-col items-center">
                 <div className="relative inline-block mb-3">
                    <button
                     onClick={() => handleMedalClick("A")}
                     className={cn(
-                      "absolute -top-2 -left-2 z-20 p-1.5 rounded-full bg-gray-800/70 hover:bg-yellow-500/90 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-yellow-400 ring-offset-2 ring-offset-black/60",
+                      "absolute -top-1 -left-1 sm:-top-2 sm:-left-2 z-20 p-1 sm:p-1.5 rounded-full bg-gray-800/70 hover:bg-yellow-500/90 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-yellow-400 ring-offset-2 ring-offset-black/60",
                       selectedFighter === "A" && "medal-selected"
                     )}
                     aria-label={t('home.select_fav_a')}
                   >
-                    <Award className="h-7 w-7 md:h-8 md:w-8 text-yellow-500 transition-colors duration-300" />
+                    <Award className="h-5 w-5 sm:h-6 sm:w-6 md:h-8 md:w-8 text-yellow-500 transition-colors duration-300" />
                   </button>
                   <img 
-                    className="w-28 h-28 md:w-60 md:h-40 mx-auto object-contain shadow-md filter drop-shadow-[0_5px_5px_rgba(0,0,0,0.4)]" // Changed to object-contain, added drop-shadow
+                    className="w-20 h-20 sm:w-28 sm:h-28 md:w-60 md:h-40 mx-auto object-contain shadow-md filter drop-shadow-[0_5px_5px_rgba(0,0,0,0.4)]"
                     alt={t('home.fighter_a')}
                    src="/foto_jon.png" />
                 </div>
-                <p className="font-bold text-lg md:text-2xl uppercase">Jon </p>
-                <p className="text-gray-400 text-sm mb-2">{t('home.champion')} | 28-0-0</p>
+                <p className="font-bold text-base sm:text-lg md:text-2xl uppercase">Jon </p>
+                <p className="text-gray-400 text-xs sm:text-sm mb-2">{t('home.champion')} | 28-0-0</p>
                 {/* Vote Percentage Display */}
                 <AnimatePresence>
                  {showVotes && (
@@ -125,20 +125,20 @@ const FeaturedFight = () => {
                    <button
                     onClick={() => handleMedalClick("B")}
                     className={cn(
-                      "absolute -top-2 -right-2 z-20 p-1.5 rounded-full bg-gray-800/70 hover:bg-yellow-500/90 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-yellow-400 ring-offset-2 ring-offset-black/60",
+                      "absolute -top-1 -right-1 sm:-top-2 sm:-right-2 z-20 p-1 sm:p-1.5 rounded-full bg-gray-800/70 hover:bg-yellow-500/90 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-yellow-400 ring-offset-2 ring-offset-black/60",
                       selectedFighter === "B" && "medal-selected"
                     )}
                     aria-label={t('home.select_fav_b')}
                   >
-                    <Award className="h-7 w-7 md:h-8 md:w-8 text-yellow-500 transition-colors duration-300" />
+                    <Award className="h-5 w-5 sm:h-6 sm:w-6 md:h-8 md:w-8 text-yellow-500 transition-colors duration-300" />
                    </button>
                   <img 
-                    className="w-28 h-28 md:w-60 md:h-40 mx-auto object-contain shadow-md filter drop-shadow-[0_5px_5px_rgba(0,0,0,0.4)]" // Changed to object-contain, added drop-shadow
+                    className="w-20 h-20 sm:w-28 sm:h-28 md:w-60 md:h-40 mx-auto object-contain shadow-md filter drop-shadow-[0_5px_5px_rgba(0,0,0,0.4)]"
                     alt={t('home.fighter_b')}
                    src="/foto_khabib.png" />
                 </div>
-                <p className="font-bold text-lg md:text-2xl uppercase">khabib </p>
-                <p className="text-gray-400 text-sm mb-2">{t('home.challenger')} | 25-2-0</p>
+                <p className="font-bold text-base sm:text-lg md:text-2xl uppercase">khabib </p>
+                <p className="text-gray-400 text-xs sm:text-sm mb-2">{t('home.challenger')} | 25-2-0</p>
                  {/* Vote Percentage Display */}
                  <AnimatePresence>
                   {showVotes && (
@@ -157,13 +157,13 @@ const FeaturedFight = () => {
               </div>
             </div>
 
-            <div className="flex flex-wrap gap-3 md:gap-4 justify-center mt-6">
-              <Button size="lg" className="bg-red-600 hover:bg-red-700 text-base md:text-lg px-6 md:px-8 font-bold uppercase tracking-wider flex-grow sm:flex-grow-0" asChild>
+            <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center mt-6">
+              <Button size="lg" className="bg-red-600 hover:bg-red-700 text-sm sm:text-base md:text-lg px-4 sm:px-6 md:px-8 font-bold uppercase tracking-wider w-full sm:w-auto" asChild>
                 <Link to="/live">
                   {t('home.see_more')}
                 </Link>
               </Button>
-              <Button size="lg" variant="outline" className="border-red-600 text-red-600 hover:bg-red-600 hover:text-white text-base md:text-lg px-6 md:px-8 font-bold uppercase tracking-wider flex-grow sm:flex-grow-0" asChild>
+              <Button size="lg" variant="outline" className="border-red-600 text-red-600 hover:bg-red-600 hover:text-white text-sm sm:text-base md:text-lg px-4 sm:px-6 md:px-8 font-bold uppercase tracking-wider w-full sm:w-auto" asChild>
                 <Link to="/predict">
                     {t('home.make_prediction')}
                 </Link>

@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import Logo from "@/components/Logo";
 import Sidebar from "@/components/layout/Sidebar";
-import { Coins, BarChart2, UserCircle, Calendar, Star, MessageSquare, PlayCircle, Users, GitCompare, User, Mail, Award, Trophy, Edit, Scissors } from "lucide-react";
+import { Coins, BarChart2, UserCircle, Calendar, Star, MessageSquare, PlayCircle, Users, GitCompare, User, Mail, Award, Trophy, Edit, Scissors, Menu } from "lucide-react";
 import UserMenu from "./UserMenu";
 import { useUser } from "@/context/UserContext";
 import { useTranslation } from 'react-i18next';
@@ -67,7 +67,8 @@ const Header = () => {
           </div>
         </div>
 
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-2 md:space-x-4">
+          {/* Desktop: Botones de login/register y UserMenu */}
           <div className="hidden md:flex items-center space-x-2">
             {!userData && (
               <>
@@ -80,13 +81,13 @@ const Header = () => {
               </>
             )}
             
-            
-            <UserMenu />
+            {userData && <UserMenu />}
           </div>
 
-          <div className="lg:hidden">
+          {/* Mobile: Sidebar con menú hamburguesa */}
+          <div className="md:hidden">
             <Sidebar 
-              trigger={<Button variant="ghost" size="icon"><UserCircle className="h-6 w-6" /></Button>}
+              trigger={<Button variant="ghost" size="icon"><Menu className="h-6 w-6" /></Button>}
               navItems={navItems}
             />
           </div>
