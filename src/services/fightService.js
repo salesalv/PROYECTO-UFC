@@ -14,7 +14,11 @@ export const getFightsByEventId = async (eventId) => {
   try {
     const { data, error } = await supabase
       .from('peleas')
-      .select('*')
+      .select(`
+        *,
+        peleador_1_foto,
+        peleador_2_foto
+      `)
       .eq('evento_id', eventId)
       .eq('activo', true)
       .order('orden_pelea', { ascending: true });
@@ -66,7 +70,11 @@ export const getMainEvent = async (eventId) => {
   try {
     const { data, error } = await supabase
       .from('peleas')
-      .select('*')
+      .select(`
+        *,
+        peleador_1_foto,
+        peleador_2_foto
+      `)
       .eq('evento_id', eventId)
       .eq('tipo_pelea', 'principal')
       .eq('activo', true)
@@ -95,7 +103,11 @@ export const getCoMainEvent = async (eventId) => {
   try {
     const { data, error } = await supabase
       .from('peleas')
-      .select('*')
+      .select(`
+        *,
+        peleador_1_foto,
+        peleador_2_foto
+      `)
       .eq('evento_id', eventId)
       .eq('tipo_pelea', 'co-estelar')
       .eq('activo', true)
@@ -124,7 +136,11 @@ export const getMainCardFights = async (eventId) => {
   try {
     const { data, error } = await supabase
       .from('peleas')
-      .select('*')
+      .select(`
+        *,
+        peleador_1_foto,
+        peleador_2_foto
+      `)
       .eq('evento_id', eventId)
       .eq('tipo_pelea', 'estelar')
       .eq('activo', true)
@@ -150,7 +166,11 @@ export const getPreliminaryFights = async (eventId) => {
   try {
     const { data, error } = await supabase
       .from('peleas')
-      .select('*')
+      .select(`
+        *,
+        peleador_1_foto,
+        peleador_2_foto
+      `)
       .eq('evento_id', eventId)
       .eq('tipo_pelea', 'preliminar')
       .eq('activo', true)

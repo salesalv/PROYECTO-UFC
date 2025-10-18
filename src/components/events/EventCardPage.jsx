@@ -250,6 +250,11 @@ const EventCardPage = ({ eventTitle, eventId = null }) => {
                 </div>
                 <div className="grid grid-cols-12 items-center gap-2">
                   <div className="col-span-5 flex items-center justify-end gap-2">
+                    <img 
+                      src={mainEvent.peleador_1_foto || "https://via.placeholder.com/60x60/333/fff?text=?"} 
+                      alt={mainEvent.peleador_1_nombre} 
+                      className="w-16 h-16 md:w-18 md:h-18 rounded-full object-contain border-2 border-gray-700 bg-black" 
+                    />
                     <span className="text-white text-base md:text-lg font-bold drop-shadow text-right">
                       {mainEvent.peleador_1_nombre}
                     </span>
@@ -267,6 +272,11 @@ const EventCardPage = ({ eventTitle, eventId = null }) => {
                     <span className="text-white text-base md:text-lg font-bold drop-shadow text-left">
                       {mainEvent.peleador_2_nombre}
                     </span>
+                    <img 
+                      src={mainEvent.peleador_2_foto || "https://via.placeholder.com/60x60/333/fff?text=?"} 
+                      alt={mainEvent.peleador_2_nombre} 
+                      className="w-16 h-16 md:w-18 md:h-18 rounded-full object-contain border-2 border-gray-700 bg-black" 
+                    />
                   </div>
                 </div>
                 <div className="w-full text-center mt-2">
@@ -283,6 +293,11 @@ const EventCardPage = ({ eventTitle, eventId = null }) => {
                 </div>
                 <div className="grid grid-cols-12 items-center gap-2">
                   <div className="col-span-5 flex items-center justify-end gap-2">
+                    <img 
+                      src={coMainEvent.peleador_1_foto || "https://via.placeholder.com/60x60/333/fff?text=?"} 
+                      alt={coMainEvent.peleador_1_nombre} 
+                      className="w-16 h-16 md:w-18 md:h-18 rounded-full object-contain border-2 border-gray-700 bg-black" 
+                    />
                     <span className="text-white text-base md:text-lg font-bold drop-shadow text-right">
                       {coMainEvent.peleador_1_nombre}
                     </span>
@@ -300,6 +315,11 @@ const EventCardPage = ({ eventTitle, eventId = null }) => {
                     <span className="text-white text-base md:text-lg font-bold drop-shadow text-left">
                       {coMainEvent.peleador_2_nombre}
                     </span>
+                    <img 
+                      src={coMainEvent.peleador_2_foto || "https://via.placeholder.com/60x60/333/fff?text=?"} 
+                      alt={coMainEvent.peleador_2_nombre} 
+                      className="w-16 h-16 md:w-18 md:h-18 rounded-full object-contain border-2 border-gray-700 bg-black" 
+                    />
                   </div>
                 </div>
                 <div className="w-full text-center mt-2">
@@ -315,9 +335,9 @@ const EventCardPage = ({ eventTitle, eventId = null }) => {
                     {/* Izquierda */}
                     <div className="col-span-5 flex items-center justify-end gap-2">
                       <img 
-                        src={fighterImages[fight.peleador_1_nombre] || "https://via.placeholder.com/44x44/333/fff?text=?"} 
+                        src={fight.peleador_1_foto || "https://via.placeholder.com/50x50/333/fff?text=?"} 
                         alt={fight.peleador_1_nombre} 
-                        className="w-11 h-11 rounded-full object-cover border-2 border-gray-700 bg-black" 
+                        className="w-14 h-14 md:w-16 md:h-16 rounded-full object-contain border-2 border-gray-700 bg-black" 
                       />
                       <span className="text-white text-base md:text-lg font-bold drop-shadow">{fight.peleador_1_bandera}</span>
                       <span className="text-white text-base md:text-lg font-bold drop-shadow text-right">{fight.peleador_1_nombre}</span>
@@ -331,9 +351,9 @@ const EventCardPage = ({ eventTitle, eventId = null }) => {
                       <span className="text-white text-base md:text-lg font-bold drop-shadow text-left">{fight.peleador_2_nombre}</span>
                       <span className="text-white text-base md:text-lg font-bold drop-shadow">{fight.peleador_2_bandera}</span>
                       <img 
-                        src={fighterImages[fight.peleador_2_nombre] || "https://via.placeholder.com/44x44/333/fff?text=?"} 
+                        src={fight.peleador_2_foto || "https://via.placeholder.com/50x50/333/fff?text=?"} 
                         alt={fight.peleador_2_nombre} 
-                        className="w-11 h-11 rounded-full object-cover border-2 border-gray-700 bg-black" 
+                        className="w-14 h-14 md:w-16 md:h-16 rounded-full object-contain border-2 border-gray-700 bg-black" 
                       />
                     </div>
                   </div>
@@ -351,9 +371,9 @@ const EventCardPage = ({ eventTitle, eventId = null }) => {
                     {/* Izquierda */}
                     <div className="col-span-5 flex items-center justify-end gap-2">
                       <img 
-                        src={fighterImages[fight.peleador_1_nombre] || "https://via.placeholder.com/36x36/333/fff?text=?"} 
+                        src={fight.peleador_1_foto || "https://via.placeholder.com/40x40/333/fff?text=?"} 
                         alt={fight.peleador_1_nombre} 
-                        className="w-9 h-9 rounded-full object-cover border-2 border-gray-700 bg-black" 
+                        className="w-12 h-12 md:w-14 md:h-14 rounded-full object-contain border-2 border-gray-700 bg-black" 
                       />
                       <span className="text-white text-sm md:text-base font-bold drop-shadow">{fight.peleador_1_bandera}</span>
                       <span className="text-white text-sm md:text-base font-bold drop-shadow text-right">{fight.peleador_1_nombre}</span>
@@ -367,9 +387,9 @@ const EventCardPage = ({ eventTitle, eventId = null }) => {
                       <span className="text-white text-sm md:text-base font-bold drop-shadow text-left">{fight.peleador_2_nombre}</span>
                       <span className="text-white text-sm md:text-base font-bold drop-shadow">{fight.peleador_2_bandera}</span>
                       <img 
-                        src={fighterImages[fight.peleador_2_nombre] || "https://via.placeholder.com/36x36/333/fff?text=?"} 
+                        src={fight.peleador_2_foto || "https://via.placeholder.com/40x40/333/fff?text=?"} 
                         alt={fight.peleador_2_nombre} 
-                        className="w-9 h-9 rounded-full object-cover border-2 border-gray-700 bg-black" 
+                        className="w-12 h-12 md:w-14 md:h-14 rounded-full object-contain border-2 border-gray-700 bg-black" 
                       />
                     </div>
                   </div>
