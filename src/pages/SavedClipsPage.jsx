@@ -99,7 +99,11 @@ const SavedClipsPage = () => {
                           <Button
                             variant="outline"
                             className="border-red-600 text-red-500 hover:bg-red-600 hover:text-white"
-                            onClick={() => deleteClip(clip.id)}
+                            onClick={() => {
+                              if (window.confirm('¿Estás seguro de que quieres eliminar este clip? Esta acción no se puede deshacer.')) {
+                                deleteClip(clip.id);
+                              }
+                            }}
                           >
                             <Trash2 className="w-4 h-4" />
                           </Button>

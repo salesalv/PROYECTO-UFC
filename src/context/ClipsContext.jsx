@@ -51,14 +51,62 @@ export const ClipsProvider = ({ children }) => {
 
   const deleteClip = async (clipId) => {
     if (!user) return;
-    const { error } = await supabase
-      .from('clips')
-      .delete()
-      .eq('id', clipId)
-      .eq('user_id', user.auth.id);
+    
+    try {
+      // Primero obtener la información del clip para acceder al archivo
+      const { data: clipData, error: fetchError } = await supabase
+        .from('clips')
+        .select('video_url')
+        .eq('id', clipId)
+        .eq('user_id', user.auth.id)
+        .single();
 
-    if (!error) {
-    setSavedClips(prev => prev.filter(clip => clip.id !== clipId));
+      if (fetchError) {
+        console.error('Error al obtener datos del clip:', fetchError);
+        return;
+      }
+
+      // Extraer el nombre del archivo de la URL
+      let fileName = null;
+      if (clipData.video_url) {
+        // Si es una URL de Supabase Storage
+        if (clipData.video_url.includes('supabase')) {
+          const urlParts = clipData.video_url.split('/');
+          fileName = urlParts[urlParts.length - 1];
+        }
+        // Si es una URL de Cloudinary
+        else if (clipData.video_url.includes('cloudinary')) {
+          // Para Cloudinary, solo eliminamos de la BD ya que no tenemos API key
+          console.log('Clip de Cloudinary - solo eliminando de BD');
+        }
+      }
+
+      // Eliminar archivo del storage si es de Supabase
+      if (fileName && clipData.video_url.includes('supabase')) {
+        const { error: storageError } = await supabase.storage
+          .from('clips')
+          .remove([fileName]);
+
+        if (storageError) {
+          console.error('Error al eliminar archivo del storage:', storageError);
+        }
+      }
+
+      // Eliminar registro de la base de datos
+      const { error } = await supabase
+        .from('clips')
+        .delete()
+        .eq('id', clipId)
+        .eq('user_id', user.auth.id);
+
+      if (!error) {
+        setSavedClips(prev => prev.filter(clip => clip.id !== clipId));
+        console.log('Clip eliminado exitosamente');
+      } else {
+        console.error('Error al eliminar clip de la BD:', error);
+      }
+    } catch (error) {
+      console.error('Error general al eliminar clip:', error);
     }
   };
 
