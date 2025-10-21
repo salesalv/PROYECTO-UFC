@@ -3,7 +3,6 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Scissors, Download, Share2, Clock } from "lucide-react";
-import Hls from "hls.js";
 import { useClips } from "@/context/ClipsContext";
 import { useUser } from "@/context/UserContext";
 import supabase from "@/db";
@@ -16,7 +15,6 @@ const LivePage = () => {
   const videoRef = useRef(null);
   const mediaRecorderRef = useRef(null);
   const chunksRef = useRef([]);
-  const hlsRef = useRef(null);
   const [chatMessages, setChatMessages] = useState([]);
   const [chatInput, setChatInput] = useState("");
   const chatEndRef = useRef(null);
@@ -30,73 +28,26 @@ const LivePage = () => {
   };
 
   useEffect(() => {
-    const videoSrc = 'https://agvyby.fubohd.com/foxsports2/mono.m3u8?token=d1fc2b72eb241226d14e6f37dca36007fb8dff81-b6-1750547321-1750529321';
+    const videoSrc = '/pelea.mp4';
 
     const initPlayer = () => {
-      if (Hls.isSupported()) {
-        console.log('HLS es soportado en este navegador');
-        const hls = new Hls({
-          debug: true,
-          enableWorker: true,
-          lowLatencyMode: true,
-          backBufferLength: 90
-        });
-
-        hlsRef.current = hls;
-
-        hls.on(Hls.Events.MEDIA_ATTACHED, () => {
-          console.log('Video y HLS están conectados');
-          hls.loadSource(videoSrc);
-        });
-
-        hls.on(Hls.Events.MANIFEST_PARSED, (event, data) => {
-          console.log('Manifest cargado, encontrados ' + data.levels.length + ' niveles de calidad');
-          videoRef.current.play().catch(e => console.error('Error al reproducir:', e));
-        });
-
-        hls.on(Hls.Events.ERROR, (event, data) => {
-          console.error('Error HLS:', data);
-          if (data.fatal) {
-            switch (data.type) {
-              case Hls.ErrorTypes.NETWORK_ERROR:
-                console.log('Error de red fatal, intentando recuperar...');
-                hls.startLoad();
-                break;
-              case Hls.ErrorTypes.MEDIA_ERROR:
-                console.log('Error de media fatal, intentando recuperar...');
-                hls.recoverMediaError();
-                break;
-              default:
-                console.log('Error fatal no recuperable');
-                hls.destroy();
-                break;
-            }
-          }
-        });
-
-        hls.attachMedia(videoRef.current);
-      } else if (videoRef.current.canPlayType('application/vnd.apple.mpegurl')) {
-        console.log('Navegador soporta HLS nativamente');
+      if (videoRef.current) {
+        console.log('Cargando video local:', videoSrc);
         videoRef.current.src = videoSrc;
         videoRef.current.addEventListener('loadedmetadata', () => {
+          console.log('Video cargado correctamente');
           videoRef.current.play().catch(e => console.error('Error al reproducir:', e));
         });
-      } else {
-        console.error('HLS no es soportado en este navegador');
-        setError(t('live.error_no_hls'));
+        videoRef.current.addEventListener('error', (e) => {
+          console.error('Error al cargar el video:', e);
+          setError('Error al cargar el video');
+        });
       }
     };
 
     if (videoRef.current) {
       initPlayer();
     }
-
-    return () => {
-      if (hlsRef.current) {
-        console.log('Limpiando instancia HLS');
-        hlsRef.current.destroy();
-      }
-    };
   }, []);
 
   useEffect(() => {
@@ -282,7 +233,7 @@ const LivePage = () => {
                     <p className="text-center text-gray-500 py-8">{t('live.no_messages')}</p>
                   )}
                   {chatMessages.map((msg) => (
-                    <div key={msg.id} className="mb-2">
+                    <div key={msg.id} className="mb-2 flex items-center">
                       <UserNameWithBadge 
                         username={msg.username}
                         className="font-bold text-red-400 mr-2"
