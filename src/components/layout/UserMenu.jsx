@@ -132,7 +132,7 @@ const UserMenu =() => {
               <span>Contáctanos</span>
             </div>
             <div className="ml-6 mt-1 text-xs text-gray-400">
-              Smashufc.soporte@gmail.com
+              smashufc.soporte@gmail.com
             </div>
           </DropdownMenuItem>
         </div>
