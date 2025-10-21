@@ -28,7 +28,7 @@ const LivePage = () => {
   };
 
   useEffect(() => {
-    const videoSrc = '/pelea.mp4';
+    const videoSrc = 'https://res.cloudinary.com/dujdwhmre/video/upload/f_auto,q_auto,w_auto/pelea_wwhwfa.mp4';
 
     const initPlayer = () => {
       if (videoRef.current) {
