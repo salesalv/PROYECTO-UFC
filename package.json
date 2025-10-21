@@ -5,9 +5,7 @@
   "private": true,
   "scripts": {
     "dev": "vite",
-    "build": "vite build && npm run copy-videos",
-    "build:prod": "vite build && npm run copy-videos",
-    "copy-videos": "powershell -ExecutionPolicy Bypass -File copy-videos.ps1",
+    "build": "vite build",
     "preview": "vite preview",
     "lint": "eslint src --ext js,jsx,ts,tsx",
     "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,css,md}\"",
