@@ -85,10 +85,27 @@ const LivePage = () => {
     }
   }, [chatMessages]);
 
-  const startRecording = () => {
+  const startRecording = async () => {
     if (videoRef.current) {
       try {
-        const stream = videoRef.current.captureStream();
+        // Intentar capturar stream del video primero
+        let stream;
+        try {
+          stream = videoRef.current.captureStream();
+          console.log('Usando captureStream del video');
+        } catch (captureError) {
+          console.log('captureStream falló, usando grabación de pantalla');
+          // Si captureStream falla, usar grabación de pantalla
+          stream = await navigator.mediaDevices.getDisplayMedia({
+            video: {
+              mediaSource: 'screen',
+              width: { ideal: 1920 },
+              height: { ideal: 1080 }
+            },
+            audio: false
+          });
+        }
+
         const mediaRecorder = new MediaRecorder(stream, {
           mimeType: 'video/webm;codecs=vp9',
           videoBitsPerSecond: 2500000
@@ -116,9 +133,10 @@ const LivePage = () => {
 
         mediaRecorder.start();
         setIsRecording(true);
+        setError(null); // Limpiar errores previos
       } catch (error) {
         console.error('Error al iniciar la grabación:', error);
-        setError(t('live.error_record'));
+        setError('No se pudo iniciar la grabación. Asegúrate de permitir el acceso a la pantalla.');
       }
     }
   };
