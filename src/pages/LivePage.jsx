@@ -102,13 +102,14 @@ const LivePage = () => {
               width: { ideal: 1920 },
               height: { ideal: 1080 }
             },
-            audio: false
+            audio: true
           });
         }
 
         const mediaRecorder = new MediaRecorder(stream, {
-          mimeType: 'video/webm;codecs=vp9',
-          videoBitsPerSecond: 2500000
+          mimeType: 'video/webm;codecs=vp9,opus',
+          videoBitsPerSecond: 2500000,
+          audioBitsPerSecond: 128000
         });
         mediaRecorderRef.current = mediaRecorder;
         chunksRef.current = [];
