@@ -197,7 +197,8 @@ export default defineConfig({
 					]
 				}
 			}
-		}
+		},
+		copyPublicDir: true
 	},
 	resolve: {
 		extensions: ['.jsx', '.js', '.tsx', '.ts', '.json'],

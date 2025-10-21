@@ -233,13 +233,17 @@ const LivePage = () => {
                     <p className="text-center text-gray-500 py-8">{t('live.no_messages')}</p>
                   )}
                   {chatMessages.map((msg) => (
-                    <div key={msg.id} className="mb-2 flex items-center">
-                      <UserNameWithBadge 
-                        username={msg.username}
-                        className="font-bold text-red-400 mr-2"
-                      />
-                      <span className="text-gray-300">{msg.message}</span>
-                      <span className="text-xs text-gray-500 ml-2">{new Date(msg.created_at).toLocaleTimeString()}</span>
+                    <div key={msg.id} className="mb-2">
+                      <div className="flex items-start">
+                        <UserNameWithBadge 
+                          username={msg.username}
+                          className="font-bold text-red-400 mr-2 flex-shrink-0"
+                        />
+                        <div className="flex-1 min-w-0">
+                          <span className="text-gray-300 break-words">{msg.message}</span>
+                          <span className="text-xs text-gray-500 ml-2">{new Date(msg.created_at).toLocaleTimeString()}</span>
+                        </div>
+                      </div>
                     </div>
                   ))}
                   <div ref={chatEndRef} />
