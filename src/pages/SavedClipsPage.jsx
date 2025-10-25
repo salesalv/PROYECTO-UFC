@@ -25,10 +25,6 @@ const SavedClipsPage = () => {
       // Marcar como descargando
       setDownloadStates(prev => ({ ...prev, [clipId]: 'downloading' }));
 
-      // Intentar descarga directa primero
-      const a = document.createElement('a');
-      a.href = url;
-      
       // Determinar extensión basada en la URL
       const urlExtension = url.split('.').pop().toLowerCase();
       const validExtensions = ['mp4', 'webm', 'avi', 'mov', 'mkv'];
@@ -36,15 +32,49 @@ const SavedClipsPage = () => {
       
       // Limpiar el título para el nombre del archivo
       const cleanTitle = title.replace(/[^a-zA-Z0-9\s]/g, '_').replace(/\s+/g, '_');
-      a.download = `${cleanTitle}.${extension}`;
-      
-      // Agregar al DOM temporalmente y hacer click
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
+      const fileName = `${cleanTitle}.${extension}`;
+
+      try {
+        // Método 1: Intentar descarga usando fetch y blob (más confiable)
+        const response = await fetch(url);
+        if (!response.ok) throw new Error('Error al obtener el archivo');
+        
+        const blob = await response.blob();
+        const blobUrl = URL.createObjectURL(blob);
+        
+        // Crear enlace de descarga con blob
+        const a = document.createElement('a');
+        a.href = blobUrl;
+        a.download = fileName;
+        a.style.display = 'none';
+        
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        
+        // Limpiar el blob URL
+        URL.revokeObjectURL(blobUrl);
+        
+      } catch (fetchError) {
+        console.log('Fetch falló, intentando método directo:', fetchError);
+        
+        // Método 2: Fallback - descarga directa con atributos adicionales
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = fileName;
+        a.style.display = 'none';
+        
+        // Agregar atributos adicionales para forzar descarga
+        a.setAttribute('target', '_self');
+        a.setAttribute('rel', 'noopener');
+        
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      }
 
       // Simular tiempo de descarga para feedback visual
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise(resolve => setTimeout(resolve, 1500));
       
       // Marcar como exitoso
       setDownloadStates(prev => ({ ...prev, [clipId]: 'success' }));
