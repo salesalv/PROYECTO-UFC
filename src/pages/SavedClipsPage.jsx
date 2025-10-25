@@ -25,19 +25,20 @@ const SavedClipsPage = () => {
       // Marcar como descargando
       setDownloadStates(prev => ({ ...prev, [clipId]: 'downloading' }));
 
-      // Crear elemento de descarga
+      // Intentar descarga directa primero
       const a = document.createElement('a');
       a.href = url;
       
-      // Determinar extensión basada en la URL o tipo MIME
+      // Determinar extensión basada en la URL
       const urlExtension = url.split('.').pop().toLowerCase();
       const validExtensions = ['mp4', 'webm', 'avi', 'mov', 'mkv'];
       const extension = validExtensions.includes(urlExtension) ? urlExtension : 'webm';
       
-      a.download = `${title.replace(/[^a-zA-Z0-9]/g, '_')}.${extension}`;
-      a.target = '_blank';
+      // Limpiar el título para el nombre del archivo
+      const cleanTitle = title.replace(/[^a-zA-Z0-9\s]/g, '_').replace(/\s+/g, '_');
+      a.download = `${cleanTitle}.${extension}`;
       
-      // Agregar al DOM temporalmente
+      // Agregar al DOM temporalmente y hacer click
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
