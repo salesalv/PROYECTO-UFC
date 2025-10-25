@@ -47,6 +47,9 @@
     "no_clips": "You have no saved clips yet.",
     "hint_record": "Record clips during live streams to see them here.",
     "download": "Download",
+    "downloading": "Downloading...",
+    "downloaded": "Downloaded!",
+    "download_error": "Error",
     "share": "Share",
     "clip_title": "UFC Clip",
     "url_copied": "URL copied to clipboard"

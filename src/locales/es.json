@@ -50,6 +50,9 @@
     "no_clips": "No tienes clips guardados aún.",
     "hint_record": "Graba clips durante las transmisiones en vivo para verlos aquí.",
     "download": "Descargar",
+    "downloading": "Descargando...",
+    "downloaded": "¡Descargado!",
+    "download_error": "Error",
     "share": "Compartir",
     "clip_title": "Clip de UFC",
     "url_copied": "URL copiada al portapapeles"

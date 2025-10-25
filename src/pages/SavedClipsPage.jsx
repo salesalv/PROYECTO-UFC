@@ -1,22 +1,67 @@
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Download, Share2, Clock, Trash2 } from "lucide-react";
+import { Download, Share2, Clock, Trash2, Loader2, CheckCircle, XCircle } from "lucide-react";
 import { useClips } from "@/context/ClipsContext";
 import { useTranslation } from 'react-i18next';
 
 const SavedClipsPage = () => {
   const { savedClips, deleteClip } = useClips();
   const { t } = useTranslation();
+  const [downloadStates, setDownloadStates] = useState({});
 
-  const downloadClip = (url, title) => {
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${title}.webm`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+  const downloadClip = async (url, title, clipId) => {
+    // Validar URL
+    if (!url || !url.startsWith('http')) {
+      setDownloadStates(prev => ({ ...prev, [clipId]: 'error' }));
+      setTimeout(() => {
+        setDownloadStates(prev => ({ ...prev, [clipId]: null }));
+      }, 3000);
+      return;
+    }
+
+    try {
+      // Marcar como descargando
+      setDownloadStates(prev => ({ ...prev, [clipId]: 'downloading' }));
+
+      // Crear elemento de descarga
+      const a = document.createElement('a');
+      a.href = url;
+      
+      // Determinar extensión basada en la URL o tipo MIME
+      const urlExtension = url.split('.').pop().toLowerCase();
+      const validExtensions = ['mp4', 'webm', 'avi', 'mov', 'mkv'];
+      const extension = validExtensions.includes(urlExtension) ? urlExtension : 'webm';
+      
+      a.download = `${title.replace(/[^a-zA-Z0-9]/g, '_')}.${extension}`;
+      a.target = '_blank';
+      
+      // Agregar al DOM temporalmente
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+
+      // Simular tiempo de descarga para feedback visual
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Marcar como exitoso
+      setDownloadStates(prev => ({ ...prev, [clipId]: 'success' }));
+      
+      // Limpiar estado después de 2 segundos
+      setTimeout(() => {
+        setDownloadStates(prev => ({ ...prev, [clipId]: null }));
+      }, 2000);
+
+    } catch (error) {
+      console.error('Error al descargar:', error);
+      setDownloadStates(prev => ({ ...prev, [clipId]: 'error' }));
+      
+      // Limpiar estado después de 3 segundos
+      setTimeout(() => {
+        setDownloadStates(prev => ({ ...prev, [clipId]: null }));
+      }, 3000);
+    }
   };
 
   const shareClip = (url) => {
@@ -82,11 +127,33 @@ const SavedClipsPage = () => {
                         <div className="flex gap-2">
                           <Button
                             variant="outline"
-                            className="flex-1 border-red-600 text-red-500 hover:bg-red-600 hover:text-white"
-                            onClick={() => downloadClip(clip.video_url, clip.title)}
+                            className={`flex-1 border-red-600 text-red-500 hover:bg-red-600 hover:text-white ${
+                              downloadStates[clip.id] === 'downloading' ? 'opacity-75 cursor-not-allowed' : ''
+                            } ${
+                              downloadStates[clip.id] === 'success' ? 'border-green-600 text-green-500' : ''
+                            } ${
+                              downloadStates[clip.id] === 'error' ? 'border-red-600 text-red-500' : ''
+                            }`}
+                            onClick={() => downloadClip(clip.video_url, clip.title, clip.id)}
+                            disabled={downloadStates[clip.id] === 'downloading'}
                           >
-                            <Download className="w-4 h-4 mr-2" />
-                            {t('clips.download')}
+                            {downloadStates[clip.id] === 'downloading' ? (
+                              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                            ) : downloadStates[clip.id] === 'success' ? (
+                              <CheckCircle className="w-4 h-4 mr-2" />
+                            ) : downloadStates[clip.id] === 'error' ? (
+                              <XCircle className="w-4 h-4 mr-2" />
+                            ) : (
+                              <Download className="w-4 h-4 mr-2" />
+                            )}
+                            {downloadStates[clip.id] === 'downloading' 
+                              ? t('clips.downloading')
+                              : downloadStates[clip.id] === 'success' 
+                                ? t('clips.downloaded')
+                                : downloadStates[clip.id] === 'error'
+                                  ? t('clips.download_error')
+                                  : t('clips.download')
+                            }
                           </Button>
                           <Button
                             variant="outline"
