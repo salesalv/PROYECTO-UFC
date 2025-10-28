@@ -18,7 +18,7 @@ export default async function handler(req, res) {
       {
         id: 'basico',
         nombre: 'Paquete Básico',
-        monedas: 100,
+        monedas: 200,
         precio: 0.01,
         descripcion: 'Perfecto para empezar',
         popular: false
