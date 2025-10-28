@@ -11,10 +11,17 @@ import { useTranslation } from 'react-i18next';
 const initialVotes = { A: 62, B: 38 };
 
 const FeaturedFight = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [selectedFighter, setSelectedFighter] = useState(null); // null, 'A', or 'B'
   const [votePercentage, setVotePercentage] = useState(initialVotes);
   const [showVotes, setShowVotes] = useState(false);
+
+  // Get current year and add one for a future date example
+  const currentYear = new Date().getFullYear();
+  const futureYear = currentYear + 1;
+  // Usar Intl.DateTimeFormat para traducir el mes
+  const fightDate = new Date(`${futureYear}-06-29`);
+  const formattedDate = fightDate.toLocaleDateString(i18n.language, { month: 'long', day: 'numeric', year: 'numeric' });
 
   const handleMedalClick = (fighter) => {
     const newSelection = selectedFighter === fighter ? null : fighter;
@@ -74,7 +81,10 @@ const FeaturedFight = () => {
             <h2 className="text-3xl md:text-5xl font-black mb-2 text-center uppercase tracking-wider">
               {t('home.ufc_300_title')}
             </h2>
-            <p className="text-lg md:text-xl mb-8 text-center text-gray-300 font-light">{t('home.star_fight_description')}</p>
+            <p className="text-lg md:text-xl mb-2 text-center text-gray-300 font-light">{t('home.star_fight_description')}</p>
+            <p className="text-sm md:text-base mb-8 text-center text-red-500 font-semibold uppercase tracking-wider">
+              {formattedDate}
+            </p>
 
             <div className="grid grid-cols-[1fr_auto_1fr] gap-2 sm:gap-4 md:gap-8 mb-8 items-center">
               {/* Fighter A */}
